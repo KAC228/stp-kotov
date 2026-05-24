@@ -1,0 +1,271 @@
+@import "tailwindcss";
+
+/* ── Glow design-token ──────────────────────────────────────────────────────────
+   Registers shadow-glow and shadow-glow-strong as Tailwind utility classes.
+   In dark mode: full cyan intensity.
+   In light mode (html.light): reduced opacity so glow reads as a halo, not mud.
+   ─────────────────────────────────────────────────────────────────────────── */
+@theme {
+  --shadow-glow:        0 0 20px rgba(0, 210, 255, 0.50);
+  --shadow-glow-strong: 0 0 30px rgba(0, 210, 255, 0.70);
+}
+
+/* ── Custom brand fonts ─────────────────────────────────────────────
+   Раскомментируйте после добавления файлов в /public/fonts/
+   @font-face {
+     font-family: "Zenter SP";
+     src: local("Zenter SP"), url("/fonts/ZenterSP.woff2") format("woff2");
+     font-weight: 900;
+     font-style: normal;
+     font-display: swap;
+   }
+
+   @font-face {
+     font-family: "Lozung Caps";
+     src: local("Lozung Caps"), url("/fonts/LozungCaps.woff2") format("woff2");
+     font-weight: 300 400;
+     font-style: normal;
+     font-display: swap;
+   }
+   ─────────────────────────────────────────────────────────────────── */
+
+:root {
+  --font-brand:  "Zenter SP",   system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --font-slogan: "Lozung Caps", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+/* ── Light theme — CSS variable overrides ───────────────────────────────────────
+   The zinc scale is semantically inverted so that existing utility classes
+   (bg-zinc-950, text-white, border-zinc-800, etc.) produce appropriate light-
+   mode colours without touching any component files.
+
+   Mapping intent:
+     bg-zinc-950  → premium light-grey page background   (#F2F2F7)
+     bg-zinc-900  → card / surface background             (#EAEAEF)
+     bg-zinc-800  → elevated / hover surface              (#DEDEE3)
+     border-zinc-800 / -700 → subtle light borders
+     text-zinc-400/500/600  → accessible dark body text
+     text-white   → near-black heading colour             (#1A1A1C)
+     bg-white / text-zinc-950 CTA buttons → naturally invert to
+                   dark button with light text            ✓
+   ─────────────────────────────────────────────────────────────────────────── */
+html.light {
+  color-scheme: light;
+
+  /* Glow tokens — softer in light mode so cyan reads as a halo, not a stain */
+  --shadow-glow:        0 0 20px rgba(0, 210, 255, 0.22);
+  --shadow-glow-strong: 0 0 30px rgba(0, 210, 255, 0.32);
+
+  /* Zinc scale — dark shades map to light values */
+  --color-zinc-950: oklch(96.7% 0.002 286);   /* page bg      ~#F5F5F7 */
+  --color-zinc-900: oklch(100%  0     0);     /* card bg      white     */
+  --color-zinc-800: oklch(95%   0.002 286);   /* elevated     ~#F0F0F3 */
+  --color-zinc-700: oklch(82%   0.004 285.9); /* borders      ~#CCCCD2 */
+  --color-zinc-600: oklch(61%   0.007 285.9); /* muted text   ~#8E8E95 */
+  --color-zinc-500: oklch(45%   0.007 285.9); /* secondary    ~#636369 */
+  --color-zinc-400: oklch(29%   0.007 285.9); /* body text    ~#3C3C3E */
+  --color-zinc-300: oklch(22%   0.006 285.9); /* strong text  ~#2C2C2E */
+  --color-zinc-200: oklch(16%   0.005 285.9); /* emphasis     ~#1E1E20 */
+  --color-zinc-100: oklch(11%   0.004 285.9); /* near-black   ~#131315 */
+  --color-zinc-50:  oklch(7%    0.003 285.9); /* darkest      ~#0A0A0C */
+
+  /* "white" → near-black heading colour (headings stay readable) */
+  --color-white: oklch(14% 0.005 285.9);      /* ~#1A1A1C               */
+}
+
+/* ── Body base ──────────────────────────────────────────────────────────────── */
+body {
+  background-color: var(--color-zinc-950, #09090b);
+  color: var(--color-white, #ffffff);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Selection follows theme ────────────────────────────────────────────────── */
+::selection {
+  background-color: var(--color-white, #ffffff);
+  color: var(--color-zinc-950, #09090b);
+}
+
+/* ── Hero vignette: hide on light mode so dark overlay doesn't bleed ────────── */
+html.light [data-hero-vignette] {
+  display: none;
+}
+
+/* ── Light mode grid — только Hero + блок «9 технологий» (см. .light-mesh-top на секциях) */
+html.light section.light-mesh-top {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 72px 72px, 72px 72px;
+  background-position: 0 0, 0 0;
+  background-attachment: fixed, fixed;
+}
+
+/* Вторая CTA на Hero — в светлой теме сплошная белая кнопка (перебивает bg-transparent) */
+html.light a.hero-cta-partnership {
+  background-color: #ffffff !important;
+  color: #09090b !important;
+  border-color: rgba(9, 9, 11, 0.12) !important;
+}
+html.light a.hero-cta-partnership:hover {
+  background-color: #fafafa !important;
+  border-color: rgba(0, 210, 255, 0.45) !important;
+  color: #09090b !important;
+  box-shadow: 0 0 22px rgba(0, 210, 255, 0.28);
+}
+
+/* Hero: явные цвета без invert; точки едва заметны, fixed как у тёмной сетки */
+html.light [data-hero-grid].hero-grid-lines {
+  opacity: 1;
+  filter: none;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.032) 1px, transparent 1px) !important;
+  background-size: 72px 72px !important;
+  background-attachment: fixed !important;
+}
+
+/* На светлой теме без radial — только линии (см. .hero-grid-lines) */
+html.light [data-hero-grid].hero-grid-dots {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Make cards/inputs stand out over the grey background */
+html.light .bg-zinc-900,
+html.light [class*="bg-zinc-900/"] {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+/* Ensure guarantee green strip remains readable in light mode */
+html.light .bento-guarantee-strip {
+  border-color: rgba(22, 163, 74, 0.35);
+  background: rgba(22, 163, 74, 0.12);
+}
+
+html.light .bento-guarantee-text {
+  color: #14532d;
+}
+
+html.light .bento-guarantee-text span {
+  color: #052e16;
+}
+
+/* ── Smooth theme transition (applied after first mount via JS) ──────────────── */
+html.theme-ready,
+html.theme-ready body {
+  transition:
+    background-color 0.35s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+/* ── Global input / textarea focus glow ─────────────────────────────────────
+   Every input that carries .ksd-input gets a cyan border + shadow on focus.
+   Applied in components via the shared inputCls constant.               ──── */
+.ksd-input:focus {
+  outline: none;
+  border-color: rgba(0, 210, 255, 0.50) !important;
+  box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.12), var(--shadow-glow);
+  will-change: box-shadow;
+}
+.ksd-input:focus-visible {
+  outline: none;
+}
+
+/* Lighter ring in light mode */
+html.light .ksd-input:focus {
+  border-color: rgba(0, 210, 255, 0.40) !important;
+  box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.08), var(--shadow-glow);
+}
+
+/* ── FieldRow focus-within highlight (OrderForm) ────────────────────────────
+   When any child input/textarea is focused, the row separator gets a cyan tint. */
+.ksd-field-row:not(:first-child) {
+  border-top: 1px solid;
+  border-color: var(--color-zinc-800, #27272a);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.ksd-field-row:focus-within:not(:first-child) {
+  border-color: rgba(0, 210, 255, 0.40);
+  box-shadow: inset 0 1px 0 rgba(0, 210, 255, 0.10);
+}
+
+/* ── KSD Header — always uses dark-mode zinc values so that text stays dark  ──
+   on the silver metallic surface, regardless of the active site theme.
+   Applied via class="ksd-header" on the <header> element.              ──────── */
+.ksd-header {
+  --color-white:    #ffffff;
+  --color-zinc-50:  #fafafa;
+  --color-zinc-100: #f4f4f5;
+  --color-zinc-200: #e4e4e7;
+  --color-zinc-300: #d4d4d8;
+  --color-zinc-400: #a1a1aa;
+  --color-zinc-500: #71717a;
+  --color-zinc-600: #52525b;
+  --color-zinc-700: #3f3f46;
+  --color-zinc-800: #27272a;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
+}
+
+/* ── Scrollbar hidden globally ─────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* ── Skip link: виден только при фокусе с клавиатуры ─────────────────────────── */
+.ksd-skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #09090b;
+  font-size: 0.875rem;
+  font-weight: 600;
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ksd-skip-link:focus {
+  clip-path: none;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  outline: 2px solid rgba(0, 210, 255, 0.6);
+  outline-offset: 2px;
+}
+
+@keyframes ksd-cookie-banner-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.ksd-cookie-banner {
+  animation: ksd-cookie-banner-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}

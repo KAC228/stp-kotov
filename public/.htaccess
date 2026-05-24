@@ -1,0 +1,39 @@
+# СТП-КОТОВ — статический экспорт Next.js на Apache (reg.ru)
+
+Options -Indexes
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # HTTPS (раскомментируйте, если SSL уже включён в панели reg.ru)
+  # RewriteCond %{HTTPS} !=on
+  # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # /partnership → partnership.html (и остальные страницы без .html в URL)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.+?)/?$ $1.html [L]
+</IfModule>
+
+ErrorDocument 404 /404.html
+
+<IfModule mod_mime.c>
+  AddType application/javascript .js
+  AddCharset UTF-8 .html .css .js .json .xml
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+</IfModule>
+
+# send.php должен выполняться — не отдавать как текст
+<Files "send.php">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-store"
+  </IfModule>
+</Files>
