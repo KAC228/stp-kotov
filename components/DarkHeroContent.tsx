@@ -65,17 +65,9 @@ export default function DarkHeroContent() {
       <motion.p
         {...fadeUp(AFTER_TITLE)}
         style={{ fontFamily: "var(--font-slogan)" }}
-        className="text-zinc-400 text-lg sm:text-xl lg:text-2xl font-light tracking-wide mb-6 max-w-2xl mx-auto leading-relaxed"
+        className="text-zinc-400 text-lg sm:text-xl lg:text-2xl font-light tracking-wide mb-10 max-w-2xl mx-auto leading-relaxed"
       >
         Камеры статического давления нового поколения
-      </motion.p>
-
-      <motion.p
-        {...fadeUp(AFTER_TITLE + 0.08)}
-        className="text-zinc-500 text-sm sm:text-base max-w-xl mx-auto leading-relaxed mb-10 px-2"
-      >
-        Инновационная КСД из атмосферостойкого пластика ASA — без коррозии, с точной геометрией
-        и готовым комплектом для монтажа. Соберите конфигурацию онлайн или станьте партнёром.
       </motion.p>
 
       <div className="flex flex-wrap items-center justify-center gap-3">
