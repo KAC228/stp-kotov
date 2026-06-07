@@ -100,7 +100,7 @@ export default function DarkHeroContent() {
         >
           <a
             href={PATHS.partnership}
-            className="hero-cta-partnership inline-flex items-center gap-2 px-8 py-4 bg-transparent text-zinc-300 rounded-full text-[15px] font-medium border border-zinc-700 hover:border-cyan-400/50 hover:text-white hover:shadow-[0_0_22px_rgba(0,210,255,0.35)] will-change-[box-shadow] transition-all duration-200"
+            className="hero-cta-partnership inline-flex items-center gap-2 px-8 py-4 bg-black text-white rounded-full text-[15px] font-semibold border border-zinc-800 hover:bg-zinc-900 hover:border-zinc-600 hover:shadow-[0_0_22px_rgba(0,210,255,0.25)] will-change-[box-shadow] transition-all duration-200"
           >
             Партнёрская программа
           </a>

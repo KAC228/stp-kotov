@@ -10,7 +10,14 @@ DirectoryIndex index.html
   # RewriteCond %{HTTPS} !=on
   # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # /partnership → partnership.html (и остальные страницы без .html в URL)
+  # Next.js export создаёт папки (partnership/) без index.html → 403.
+  # Если есть одноимённый .html — отдаём его.
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_URI} ^/(.+?)/?$
+  RewriteCond %{DOCUMENT_ROOT}/%1.html -f
+  RewriteRule ^(.+?)/?$ $1.html [L]
+
+  # /partnership → partnership.html (нет файла и папки с index)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME}.html -f

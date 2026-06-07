@@ -801,6 +801,7 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
                 <div className="lg:hidden rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4">
                   <KsdEngineerViewer
                     lengthMm={typeof length === "number" ? length : null}
+                    heightMm={height}
                     mountPoints={mountPoints}
                     onMountPointsChange={setMountPoints}
                   />
@@ -1267,6 +1268,7 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
                 {configMode === "engineer" ? (
                   <KsdEngineerViewer
                     lengthMm={typeof length === "number" ? length : null}
+                    heightMm={height}
                     mountPoints={mountPoints}
                     onMountPointsChange={setMountPoints}
                   />

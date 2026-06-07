@@ -107,17 +107,17 @@ html.light section.light-mesh-top {
   background-attachment: fixed, fixed;
 }
 
-/* Вторая CTA на Hero — в светлой теме сплошная белая кнопка (перебивает bg-transparent) */
+/* Вторая CTA на Hero — чёрная кнопка (в светлой теме тоже) */
 html.light a.hero-cta-partnership {
-  background-color: #ffffff !important;
-  color: #09090b !important;
-  border-color: rgba(9, 9, 11, 0.12) !important;
+  background-color: #09090b !important;
+  color: #fafafa !important;
+  border-color: #27272a !important;
 }
 html.light a.hero-cta-partnership:hover {
-  background-color: #fafafa !important;
-  border-color: rgba(0, 210, 255, 0.45) !important;
-  color: #09090b !important;
-  box-shadow: 0 0 22px rgba(0, 210, 255, 0.28);
+  background-color: #18181b !important;
+  border-color: #3f3f46 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 22px rgba(0, 210, 255, 0.22);
 }
 
 /* Hero: явные цвета без invert; точки едва заметны, fixed как у тёмной сетки */
