@@ -33,8 +33,12 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
-# Секреты Telegram (на сервере — свой send.php)
+# Секреты Telegram (на сервере — свой send.php + config)
 /public/send.php
+/public/send.config.php
+
+# Секреты T‑Bank эквайринга (на сервере — pay.config.php из example)
+/public/pay.config.php
 
 # Архивы выгрузки
 /deploy-*.zip

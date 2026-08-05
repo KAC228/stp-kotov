@@ -1,35 +1,14 @@
 <?php
 /**
- * Скопируйте в send.php и подставьте токен бота и chat_id.
- * Файл send.php в .gitignore — не коммитьте секреты.
+ * НЕ заливайте этот файл как send.php.
+ * Рабочий путь: скопируйте send.config.php.example → send.config.php
+ * и используйте полный send.php с Origin/rate-limit (как на сервере).
+ *
+ * Этот stub намеренно нерабочий — только напоминание.
  */
-
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+http_response_code(501);
 header('Content-Type: application/json; charset=utf-8');
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
-    exit;
-}
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
-    exit;
-}
-
-$token = 'YOUR_TELEGRAM_BOT_TOKEN';
-$chat_id = 'YOUR_TELEGRAM_CHAT_ID';
-
-$raw = file_get_contents('php://input');
-$data = json_decode($raw, true);
-
-if (!is_array($data)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Invalid JSON body']);
-    exit;
-}
-
-// Полная версия: скопируйте тело из рабочего send.php на сервере (без публикации токена в Git).
+echo json_encode([
+    'success' => false,
+    'error' => 'Use send.php + send.config.php from the project, not this example stub.',
+]);

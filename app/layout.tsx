@@ -1,47 +1,80 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import Header from "@/components/Header";
 import AppShellOverlays from "@/components/AppShellOverlays";
 import CookieBanner from "@/components/CookieBanner";
-import { SITE_URL } from "@/constants/brand";
+import YandexMetrika from "@/components/YandexMetrika";
+import { BRAND_NAME, PRICE_PER_METER_RUB, SITE_URL, WARRANTY_YEARS } from "@/constants/brand";
+import { OG_IMAGE } from "@/lib/metadata";
+import { siteJsonLd } from "@/lib/jsonld";
+import JsonLd from "@/components/JsonLd";
 
 const inter = Inter({
-  subsets: ["cyrillic"],
+  subsets: ["cyrillic", "latin"],
   display: "swap",
   adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "СТП-КОТОВ — Скрытые теневые потоки",
+  title: `${BRAND_NAME} — Скрытые теневые потоки`,
   description:
-    "Камеры статического давления нового поколения. Единая цена 50 000 ₽ за погонный метр. Гарантия 25 лет. Тип потолка и врезки включены в стоимость.",
+    `Камеры статического давления нового поколения. Единая цена ${PRICE_PER_METER_RUB.toLocaleString("ru-RU")} ₽ за погонный метр. Гарантия ${WARRANTY_YEARS} лет. Тип потолка и врезки включены в стоимость.`,
   keywords:
-    "КСД, камера статического давления, натяжной потолок, ГКЛ, СТП-КОТОВ, шинопровод, вентиляция, гарантия 25 лет",
+    `КСД, камера статического давления, СТП-КОТОВ, стп-котов, натяжной потолок, ГКЛ, ${BRAND_NAME}, шинопровод, вентиляция, гарантия ${WARRANTY_YEARS} лет, Fliben`,
+  applicationName: BRAND_NAME,
+  authors: [{ name: BRAND_NAME, url: SITE_URL }],
+  creator: BRAND_NAME,
+  publisher: BRAND_NAME,
+  category: "business",
+  formatDetection: {
+    telephone: true,
+    email: true,
+    address: true,
+  },
   icons: {
     icon: [{ url: "/images/logo.svg", type: "image/svg+xml" }],
     apple: "/images/logo.svg",
     shortcut: "/images/logo.svg",
   },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: BRAND_NAME,
+  },
+  other: {
+    "theme-color": "#09090b",
+  },
   openGraph: {
-    title: "СТП-КОТОВ — Скрытые теневые потоки",
+    title: `${BRAND_NAME} — Скрытые теневые потоки`,
     description:
-      "Единая цена 50 000 ₽ за метр. Гарантия 25 лет. Тип потолка и врезки уже включены в стоимость. Монтаж из коробки.",
+      `Единая цена ${PRICE_PER_METER_RUB.toLocaleString("ru-RU")} ₽ за метр. Гарантия ${WARRANTY_YEARS} лет. Тип потолка и врезки уже включены в стоимость. Монтаж из коробки.`,
     url: SITE_URL,
-    siteName: "СТП-КОТОВ",
+    siteName: BRAND_NAME,
     locale: "ru_RU",
     type: "website",
-    images: [{ url: "/images/logo.svg", width: 747, height: 684, alt: "Логотип СТП-КОТОВ" }],
+    images: [OG_IMAGE],
   },
   twitter: {
-    card: "summary",
-    title: "СТП-КОТОВ — Скрытые теневые потоки",
-    description: "Камеры статического давления. Гарантия 25 лет.",
-    images: ["/images/logo.svg"],
+    card: "summary_large_image",
+    title: `${BRAND_NAME} — Скрытые теневые потоки`,
+    description: `Камеры статического давления. Гарантия ${WARRANTY_YEARS} лет.`,
+    images: [OG_IMAGE.url],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 
@@ -53,9 +86,6 @@ const themeInitScript = `(function(){try{var t=localStorage.getItem('ksd-theme')
 // Enables smooth CSS transitions only after the first client-side paint,
 // preventing any transition animation on initial page load.
 const themeReadyScript = `(function(){requestAnimationFrame(function(){requestAnimationFrame(function(){document.documentElement.classList.add('theme-ready');});});})();`;
-
-const YM_COUNTER_ID = 109058765;
-const yandexMetrikaInit = `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");ym(${YM_COUNTER_ID},"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true,ecommerce:"dataLayer"});`;
 
 export default function RootLayout({
   children,
@@ -70,21 +100,12 @@ export default function RootLayout({
       <head>
         {/* Theme init — must execute before first paint to prevent FOUC */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <JsonLd data={siteJsonLd()} />
       </head>
       <body
         className={`${inter.className} antialiased bg-zinc-950 text-white`}
         style={{ overflowX: "clip" }}
       >
-        <noscript
-          dangerouslySetInnerHTML={{
-            __html: `<div><img src="https://mc.yandex.ru/watch/${YM_COUNTER_ID}" style="position:absolute;left:-9999px;" alt="" /></div>`,
-          }}
-        />
-        <Script
-          id="yandex-metrika"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{ __html: yandexMetrikaInit }}
-        />
         {/* Enables smooth colour transitions after the initial paint */}
         <script dangerouslySetInnerHTML={{ __html: themeReadyScript }} />
 
@@ -99,6 +120,7 @@ export default function RootLayout({
             </main>
             <AppShellOverlays />
             <CookieBanner />
+            <YandexMetrika />
           </CartProvider>
         </ThemeProvider>
       </body>

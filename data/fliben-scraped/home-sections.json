@@ -1,0 +1,28 @@
+{
+  "links": [
+    "/catalog",
+    "/partnership",
+    "/about",
+    "/docs",
+    "/contacts",
+    "/kompleksnaya_systema_ventilyacii",
+    "/advantages",
+    "/delivery",
+    "/projects",
+    "/articles"
+  ],
+  "ready": [
+    {
+      "id": "2163071361",
+      "headings": [
+        "Системы вентиляции для дома и квартир"
+      ],
+      "texts": [],
+      "images": [
+        "https://static.tildacdn.com/tild3462-6264-4761-b861-313964363732/Frame_94.png",
+        "https://static.tildacdn.com/tild6336-3733-4264-a130-643466623639/Frame_94.png",
+        "https://static.tildacdn.com/tild6363-3134-4534-a435-613935303535/Frame_94.png"
+      ]
+    }
+  ]
+}

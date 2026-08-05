@@ -26,6 +26,7 @@ export default function CookieBanner() {
 
   const accept = () => {
     localStorage.setItem(STORAGE_KEY, "true");
+    window.dispatchEvent(new Event("ksd-cookie-consent"));
     setVisible(false);
   };
 
@@ -38,7 +39,7 @@ export default function CookieBanner() {
       aria-label="Уведомление о файлах cookie"
     >
       <div
-        className="flex flex-col sm:flex-row items-start sm:items-center gap-4 px-5 py-4 rounded-2xl border backdrop-blur-md"
+        className="ksd-cookie-panel flex flex-col sm:flex-row items-start sm:items-center gap-4 px-5 py-4 rounded-2xl border backdrop-blur-md"
         style={{
           background: "rgba(24,24,27,0.92)",
           borderColor: "rgba(63,63,70,0.8)",
@@ -50,12 +51,12 @@ export default function CookieBanner() {
           <Cookie className="w-4 h-4 text-zinc-400" strokeWidth={1.75} />
         </div>
 
-        <p className="flex-1 text-zinc-400 text-[13px] leading-relaxed">
+        <p className="ksd-cookie-text flex-1 text-zinc-400 text-[13px] leading-relaxed">
           Мы используем файлы cookie и Яндекс Метрику для улучшения работы сайта.
           Оставаясь на сайте, вы соглашаетесь с нашей{" "}
           <Link
             href="/privacy"
-            className="text-zinc-300 underline underline-offset-2 decoration-zinc-600 hover:text-white hover:decoration-zinc-400 transition-colors"
+            className="ksd-cookie-link text-zinc-300 underline underline-offset-2 decoration-zinc-600 hover:text-white hover:decoration-zinc-400 transition-colors"
           >
             Политикой конфиденциальности
           </Link>

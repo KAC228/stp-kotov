@@ -25,7 +25,7 @@ export default function DarkHeroEffects() {
   return (
     <motion.div
       aria-hidden="true"
-      className="pointer-events-none absolute top-1/2 -translate-y-1/2"
+      className="pointer-events-none absolute top-1/2 -translate-y-1/2 z-[1]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1.25, ease: [0.22, 1, 0.36, 1] }}

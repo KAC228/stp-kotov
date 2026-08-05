@@ -136,7 +136,7 @@ const DELIVERY_CARDS = [
   {
     icon: PackageCheck,
     title: "Готовность к монтажу",
-    body: "Полный монтажный набор и картонная разметка-шаблон уже внутри коробки. Открыли — сразу приступаете к работе.",
+    body: "Полный монтажный набор уже внутри коробки. Открыли — сразу приступаете к работе.",
     tag: "Ready",
   },
 ] as const;
@@ -500,7 +500,7 @@ export default function DeliveryPaymentClient() {
   const [tab, setTab] = useState<Tab>("delivery");
 
   return (
-    <div className="min-h-screen bg-zinc-950 pt-14">
+    <div className="min-h-screen bg-zinc-950 pt-24">
       <div className="max-w-4xl mx-auto py-24 px-6">
 
         <motion.div

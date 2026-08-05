@@ -1,0 +1,52 @@
+<?php
+/**
+ * Скопируйте в pay.config.php и укажите реальные значения из ЛК Т‑Бизнес → Интернет-эквайринг.
+ * pay.config.php не коммитится в git и удаляется из out/ при сборке.
+ *
+ * Документация: https://developer.tbank.ru/eacq/intro
+ */
+return [
+    /** TerminalKey тестового или боевого терминала */
+    'terminal_key' => 'YOUR_TERMINAL_KEY',
+
+    /** Password терминала (только на сервере, в Token) */
+    'password' => 'YOUR_TERMINAL_PASSWORD',
+
+    /** Базовый URL API (без слэша в конце) */
+    'api_url' => 'https://securepay.tinkoff.ru/v2',
+
+    /**
+     * URL после оплаты. Можно оставить пустым — тогда берутся из настроек терминала в ЛК.
+     * Рекомендуется задать явно.
+     */
+    'success_url' => 'https://стп-котов.рф/success',
+    'fail_url' => 'https://стп-котов.рф/delivery-payment',
+
+    /** NotificationURL — webhook статусов. Должен совпадать с ЛК или передаваться в Init. */
+    'notification_url' => 'https://стп-котов.рф/tbank-notify.php',
+
+    /**
+     * Система налогообложения для Receipt (онлайн-касса в ЛК).
+     * osn | usn_income | usn_income_outcome | envd | esn | patent
+     */
+    'taxation' => 'usn_income',
+
+    /**
+     * Ставка НДС позиции чека.
+     * none | vat0 | vat10 | vat20 | vat105 | vat107 | vat110 | vat120 | …
+     */
+    'tax' => 'none',
+
+    /** Одностадийная оплата */
+    'pay_type' => 'O',
+
+    'allowed_origins' => [
+        'https://стп-котов.рф',
+        'https://www.стп-котов.рф',
+        'https://xn----dtbxqacnie.xn--p1ai',
+        'https://www.xn----dtbxqacnie.xn--p1ai',
+    ],
+    'rate_limit_window_sec' => 15,
+    'rate_limit_max' => 8,
+    'max_body_bytes' => 524288,
+];

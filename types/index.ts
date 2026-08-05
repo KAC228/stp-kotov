@@ -34,7 +34,7 @@ export interface CartItem {
 export type CustomerType = "individual" | "legal";
 
 /** Выбранный способ оплаты */
-export type PaymentMethod = "card" | "sbp" | "mirpay" | "invoice";
+export type PaymentMethod = "card" | "sbp" | "invoice";
 
 export interface IndividualFormData {
   customerType: "individual";

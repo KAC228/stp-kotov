@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { ConfiguratorQuotePayload, Product } from "@/types";
-import { PRICE_PER_METER_RUB } from "@/constants/brand";
+import { PATHS, PRICE_PER_METER_RUB, WARRANTY_YEARS } from "@/constants/brand";
 import CustomSizeForm from "./CustomSizeForm";
 import IdleInterceptor from "./IdleInterceptor";
 import KsdEngineerViewer from "./KsdEngineerViewer";
@@ -22,14 +22,23 @@ import KsdEngineerViewer from "./KsdEngineerViewer";
 
 type CeilingType   = "stretch" | "gkl";
 type LengthKey     = 500 | 1000 | 1500 | 2000 | "custom";
-type HeightKey     = 85 | 105 | 125;
-type ConnectionKey = "flex75" | "flex90" | "rect204";
+type HeightKey     = 85 | 105 | 110 | 125 | 145 | 155 | 160 | 185 | 225;
+type ConnectionKey =
+  | "flex75"
+  | "flex90"
+  | "flex110"
+  | "flex125"
+  | "flex160"
+  | "flex200"
+  | "rect204"
+  | "rect100"
+  | "rect132";
 type TrackLightKey = "none" | "10cm" | "20cm" | "30cm";
 type ColorKey      = "black" | "white";
 type ExtColorKey   = "black" | "white" | "ral";
 type PaintTypeKey  = "matte" | "gloss" | "moire";
 type InDuctShape   = "round" | "rect";
-type OutDuctSize   = "75" | "90" | "204x60";
+type OutDuctSize   = "75" | "90" | "110" | "125" | "100x60" | "132x32" | "204x60";
 
 // ─── static data ───────────────────────────────────────────────────────────────
 
@@ -53,19 +62,70 @@ const LENGTH_OPTIONS: Array<{ id: Exclude<LengthKey, "custom">; label: string; p
     price: Math.round((mm / 1000) * PRICE_PER_METER_RUB),
   }));
 
-const HEIGHT_OPTIONS: Array<{ id: HeightKey; label: string; sublabel: string }> = [
-  { id: 85,  label: "85 мм",  sublabel: "Компактный"   },
-  { id: 105, label: "105 мм", sublabel: "Стандартный"  },
-  { id: 125, label: "125 мм", sublabel: "Максимальный" },
+const HEIGHT_OPTIONS: Array<{ id: HeightKey; label: string }> = [
+  { id: 85,  label: "85 мм" },
+  { id: 105, label: "105 мм" },
+  { id: 110, label: "110 мм" },
+  { id: 125, label: "125 мм" },
+  { id: 145, label: "145 мм" },
+  { id: 155, label: "155 мм" },
+  { id: 160, label: "160 мм" },
+  { id: 185, label: "185 мм" },
+  { id: 225, label: "225 мм" },
 ];
 
 const CONNECTION_OPTIONS: Array<{
   id: ConnectionKey; code: string; label: string; spec: string;
-  shape: "sm" | "lg" | "rect"; badge?: string;
+  shape: "sm" | "md" | "lg" | "rect" | "rect-sm" | "oval"; badge?: string;
+  description: string;
 }> = [
-  { id: "rect204", code: "П204", label: "Прямоугольный", spec: "204 × 60", shape: "rect", badge: "Стандарт" },
-  { id: "flex75",  code: "Г075", label: "Гибкий",        spec: "Ø 75 мм",  shape: "sm" },
-  { id: "flex90",  code: "Г090", label: "Гибкий",        spec: "Ø 90 мм",  shape: "lg" },
+  {
+    id: "rect204", code: "П204", label: "Прямоугольный", spec: "204 × 60",
+    shape: "rect", badge: "Стандарт",
+    description: "Плоский воздуховод Slim. Стандартное подключение КСД, высота сечения 60 мм.",
+  },
+  {
+    id: "rect100", code: "П100", label: "Прямоугольный", spec: "100 × 60",
+    shape: "rect-sm",
+    description: "Узкий прямоугольник для компактных трасс. Высота сечения 60 мм — как у 204×60.",
+  },
+  {
+    id: "rect132", code: "О132", label: "Овальный", spec: "132 × 32",
+    shape: "oval",
+    description: "Овальное сечение 132×32 мм — подходит для любой высоты КСД, удобно в плоских трассах.",
+  },
+  {
+    id: "flex75", code: "Г075", label: "Гибкий", spec: "Ø 75 мм", shape: "sm",
+    description: "Гибкий воздуховод DN 75 — для коротких отводов и сложной геометрии потолка.",
+  },
+  {
+    id: "flex90", code: "Г090", label: "Гибкий", spec: "Ø 90 мм", shape: "lg",
+    description: "Гибкий воздуховод DN 90 — повышенная пропускная способность при высоте КСД от 110 мм.",
+  },
+  {
+    id: "flex110", code: "Г110", label: "Гибкий", spec: "Ø 110 мм", shape: "md",
+    description: "Гибкий воздуховод DN 110 — доступен при высоте КСД от 145 мм.",
+  },
+  {
+    id: "flex125", code: "Г125", label: "Гибкий", spec: "Ø 125 мм", shape: "lg",
+    description: "Гибкий воздуховод DN 125 — только для КСД высотой 155 мм (максимальная конфигурация).",
+  },
+  {
+    id: "flex160",
+    code: "Г160",
+    label: "Гибкий",
+    spec: "Ø 160 мм",
+    shape: "lg",
+    description: "Гибкий воздуховод DN 160 — доступен для КСД высотой 185 мм и выше.",
+  },
+  {
+    id: "flex200",
+    code: "Г200",
+    label: "Гибкий",
+    spec: "Ø 200 мм",
+    shape: "lg",
+    description: "Гибкий воздуховод DN 200 — доступен только для КСД высотой 225 мм.",
+  },
 ];
 
 const TRACK_LIGHT_OPTIONS: Array<{ id: TrackLightKey; label: string; price: number }> = [
@@ -118,9 +178,52 @@ const RAL_COLORS = [
 // ─── height → available connections ────────────────────────────────────────────
 
 function getAvailableConnections(h: HeightKey | null): Set<ConnectionKey> {
-  if (h === 85)  return new Set<ConnectionKey>(["rect204"]);
-  if (h === 105) return new Set<ConnectionKey>(["rect204", "flex75"]);
-  return new Set<ConnectionKey>(["rect204", "flex75", "flex90"]);
+  const withOval = (keys: ConnectionKey[]) => new Set<ConnectionKey>([...keys, "rect132"]);
+  if (h === 85)  return withOval(["rect204", "rect100"]);
+  if (h === 105) return withOval(["rect204", "rect100", "flex75"]);
+  if (h === 110) return withOval(["rect204", "rect100", "flex75", "flex90"]);
+  if (h === 125) return withOval(["rect204", "rect100", "flex75", "flex90"]);
+  if (h === 145) return withOval(["rect204", "rect100", "flex75", "flex90", "flex110"]);
+  if (h === 155) return withOval(["rect204", "rect100", "flex75", "flex90", "flex110", "flex125"]);
+  if (h === 160 || h === 185) return withOval(["rect204", "rect100", "flex75", "flex90", "flex110", "flex125", "flex160"]);
+  if (h === 225) return withOval(["rect204", "rect100", "flex75", "flex90", "flex110", "flex125", "flex160", "flex200"]);
+  return withOval(["rect204", "rect100", "flex75", "flex90", "flex110", "flex125"]);
+}
+
+function getConnectionRestrictionHint(h: HeightKey): string | null {
+  switch (h) {
+    case 85:
+      return "Для высоты 85 мм доступны прямоугольные воздуховоды 204×60 и 100×60 (высота сечения 60 мм).";
+    case 105:
+      return "Для высоты 105 мм: прямоугольные 204×60, 100×60 и гибкий Ø 75 мм.";
+    case 110:
+      return "Для высоты 110 мм доступны гибкие Ø 75 и Ø 90 мм (максимум Ø 90).";
+    case 125:
+      return "Для высоты 125 мм: гибкие Ø 75 и Ø 90 мм. Овальное 132×32 — на любой высоте КСД.";
+    case 145:
+      return "Для высоты 145 мм доступны все сечения, кроме гибкого Ø 125 мм (нужна высота КСД 155 мм).";
+    case 155:
+      return null;
+    case 160:
+      return "Для высоты 160 мм: доступны все виды подключения, кроме гибкого Ø 200 мм.";
+    case 185:
+      return "Для высоты 185 мм: доступны все виды подключения, кроме гибкого Ø 200 мм.";
+    case 225:
+      return null;
+  }
+}
+
+function connectionSpecLabel(c: ConnectionKey | null): string {
+  if (c === "flex75") return "Ø 75 мм";
+  if (c === "flex90") return "Ø 90 мм";
+  if (c === "flex110") return "Ø 110 мм";
+  if (c === "flex125") return "Ø 125 мм";
+  if (c === "flex160") return "Ø 160 мм";
+  if (c === "flex200") return "Ø 200 мм";
+  if (c === "rect204") return "204×60 мм";
+  if (c === "rect100") return "100×60 мм";
+  if (c === "rect132") return "132×32 мм";
+  return "—";
 }
 
 // ─── SKU builder ───────────────────────────────────────────────────────────────
@@ -140,7 +243,7 @@ function buildSKU(
 
 // ─── SVG duct icons ─────────────────────────────────────────────────────────────
 
-function DuctIcon({ shape }: { shape: "sm" | "lg" | "rect" }) {
+function DuctIcon({ shape }: { shape: "sm" | "md" | "lg" | "rect" | "rect-sm" | "oval" }) {
   if (shape === "rect") {
     return (
       <svg width="48" height="22" viewBox="0 0 48 22" fill="none" aria-hidden="true">
@@ -150,11 +253,30 @@ function DuctIcon({ shape }: { shape: "sm" | "lg" | "rect" }) {
       </svg>
     );
   }
-  const inner = shape === "lg" ? 9 : 7;
+  if (shape === "rect-sm") {
+    return (
+      <svg width="36" height="22" viewBox="0 0 36 22" fill="none" aria-hidden="true">
+        <rect x="1" y="1" width="34" height="20" rx="3" stroke="currentColor" strokeWidth="1.5" />
+        <rect x="5" y="5" width="26" height="12" rx="1.5" stroke="currentColor"
+          strokeWidth="1" opacity="0.35" strokeDasharray="3 2" />
+      </svg>
+    );
+  }
+  if (shape === "oval") {
+    return (
+      <svg width="52" height="24" viewBox="0 0 52 24" fill="none" aria-hidden="true">
+        <ellipse cx="26" cy="12" rx="24" ry="10" stroke="currentColor" strokeWidth="1.5" />
+        <ellipse cx="26" cy="12" rx="17" ry="6" stroke="currentColor"
+          strokeWidth="1" opacity="0.35" strokeDasharray="3 2" />
+      </svg>
+    );
+  }
+  const inner = shape === "lg" ? 9 : shape === "md" ? 8 : 7;
+  const size = shape === "lg" ? 40 : shape === "md" ? 36 : 40;
   return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-      <circle cx="20" cy="20" r="17" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="20" cy="20" r={inner} stroke="currentColor"
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill="none" aria-hidden="true">
+      <circle cx={size / 2} cy={size / 2} r={size / 2 - 3} stroke="currentColor" strokeWidth="1.5" />
+      <circle cx={size / 2} cy={size / 2} r={inner} stroke="currentColor"
         strokeWidth="1" opacity="0.35" strokeDasharray="3 2" />
     </svg>
   );
@@ -421,11 +543,11 @@ function AnimatedPrice({ price, isCustom }: { price: number; isCustom: boolean }
 
 function PricePanelContent({
   sku, currentPrice, basePrice, lightPrice,
-  needsQuote, isComplete, added, onAdd, onOpenCustomForm,
+  needsQuote, isComplete, added, onAdd, onOpenCustomForm, componentsHref,
 }: {
   sku: string; currentPrice: number; basePrice: number; lightPrice: number;
   needsQuote: boolean; isComplete: boolean; added: boolean;
-  onAdd: () => void; onOpenCustomForm: () => void;
+  onAdd: () => void; onOpenCustomForm: () => void; componentsHref: string;
 }) {
   return (
     <div className="space-y-6">
@@ -512,6 +634,16 @@ function PricePanelContent({
         {!isComplete && !needsQuote && (
           <p className="text-zinc-700 text-xs text-center">Заполните все параметры</p>
         )}
+        <p className="text-zinc-600 text-[11px] leading-relaxed text-center pt-2">
+          *{" "}
+          <a
+            href={componentsHref}
+            className="text-cyan-400/80 hover:text-cyan-300 underline-offset-2 hover:underline"
+          >
+            перейти к подбору компонентов
+          </a>
+          *
+        </p>
       </div>
     </div>
   );
@@ -614,7 +746,7 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
 
   // ── step progress (for mobile sticky bar) ────────────────────────────────
 
-  const totalSteps = isCustomLength ? 2 : 6;
+  const totalSteps = isCustomLength ? 2 : 7;
   const doneSteps  = isCustomLength
     ? [ceiling !== null, length !== null].filter(Boolean).length
     : [
@@ -624,6 +756,7 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
         connection !== null,
         trackLight !== null,
         ksdColorDone,
+        lightColorDone,
       ].filter(Boolean).length;
   const currentStep = Math.min(doneSteps + 1, totalSteps);
 
@@ -632,9 +765,7 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
   const handleAddToCart = () => {
     if (!isComplete || needsQuote) return;
 
-    const connLabel =
-      connection === "flex75" ? "Ø 75 мм" :
-      connection === "flex90" ? "Ø 90 мм" : "204×60 мм";
+    const connLabel = connectionSpecLabel(connection);
 
     const lightOpt   = TRACK_LIGHT_OPTIONS.find((o) => o.id === trackLight);
     const lightLabel = trackLight === "none"
@@ -673,10 +804,7 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
   };
 
   const openQuoteForm = () => {
-    const connLabel =
-      connection === "flex75" ? "Ø 75 мм" :
-      connection === "flex90" ? "Ø 90 мм" :
-      connection === "rect204" ? "204×60 мм" : "—";
+    const connLabel = connectionSpecLabel(connection);
     const trackLabel = trackLight
       ? TRACK_LIGHT_OPTIONS.find((o) => o.id === trackLight)?.label ?? "—"
       : "—";
@@ -704,6 +832,14 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
       : "—";
     const collectorOutput = outDuctSize === "204x60"
       ? "204×60 мм"
+      : outDuctSize === "100x60"
+      ? "100×60 мм"
+      : outDuctSize === "132x32"
+      ? "132×32 мм"
+      : outDuctSize === "125"
+      ? "Ø 125 мм"
+      : outDuctSize === "110"
+      ? "Ø 110 мм"
       : outDuctSize === "90"
       ? "Ø 90 мм"
       : outDuctSize === "75"
@@ -893,14 +1029,11 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
                       {/* STEP 03 — Высота КСД */}
                       <div>
                         <StepLabel num="03" text="Высота КСД" done={height !== null} optional={isCustomLength} />
-                        <div className="grid grid-cols-3 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                           {HEIGHT_OPTIONS.map((opt) => (
                             <OptionTile key={opt.id} active={height === opt.id} onClick={() => handleSetHeight(opt.id)}>
                               <div className="py-5 px-4 text-center">
                                 <p className="text-white font-semibold text-base tracking-tight">{opt.label}</p>
-                                <p className="text-zinc-600 text-[10px] sm:text-xs mt-1.5 leading-tight break-words">
-                                  {opt.sublabel}
-                                </p>
                               </div>
                             </OptionTile>
                           ))}
@@ -911,7 +1044,7 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
                       <div>
                         <StepLabel num="04" text="Способ подключения" done={connection !== null} optional={isCustomLength} />
                         <AnimatePresence>
-                          {height !== null && height !== 125 && (
+                          {height !== null && getConnectionRestrictionHint(height) && (
                             <motion.div
                               initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}
                               exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }}
@@ -920,15 +1053,13 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
                               <div className="flex items-start gap-2.5 mb-4 px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-900/50">
                                 <Lock className="w-3.5 h-3.5 text-zinc-600 shrink-0 mt-0.5" strokeWidth={1.75} />
                                 <p className="text-zinc-500 text-xs leading-relaxed">
-                                  {height === 85
-                                    ? "Для высоты 85 мм доступен только прямоугольный воздуховод 204×60."
-                                    : "Для высоты 105 мм доступны: прямоугольный 204×60 и гибкий Ø 75 мм."}
+                                  {getConnectionRestrictionHint(height)}
                                 </p>
                               </div>
                             </motion.div>
                           )}
                         </AnimatePresence>
-                        <div className="grid grid-cols-3 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
                           {CONNECTION_OPTIONS.map((opt) => {
                             const isAvailable = availableConnections.has(opt.id);
                             return (
@@ -959,6 +1090,22 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
                             );
                           })}
                         </div>
+                        {height !== null && (
+                          <div className="mt-5 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 space-y-3">
+                            <p className="text-zinc-500 text-[11px] font-mono uppercase tracking-wider">
+                              Виды воздуховодов
+                            </p>
+                            <ul className="space-y-2.5">
+                              {CONNECTION_OPTIONS.filter((opt) => availableConnections.has(opt.id)).map((opt) => (
+                                <li key={opt.id} className="text-xs leading-relaxed">
+                                  <span className="text-zinc-300 font-medium">{opt.spec}</span>
+                                  <span className="text-zinc-600"> — </span>
+                                  <span className="text-zinc-500">{opt.description}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
 
                       {/* STEP 05 — Трековый светильник */}
@@ -1236,6 +1383,10 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
                                           <option value="" disabled>Выбрать…</option>
                                           <option value="75">Ø 75 мм</option>
                                           <option value="90">Ø 90 мм</option>
+                                          <option value="110">Ø 110 мм</option>
+                                          <option value="125">Ø 125 мм</option>
+                                          <option value="100x60">100 × 60 мм</option>
+                                          <option value="132x32">132 × 32 мм</option>
                                           <option value="204x60">204 × 60 мм</option>
                                         </select>
                                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-600 pointer-events-none" strokeWidth={2} />
@@ -1284,6 +1435,7 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
                     added={added}
                     onAdd={handleAddToCart}
                     onOpenCustomForm={openQuoteForm}
+                    componentsHref={PATHS.catalog}
                   />
                 </div>
               </div>
@@ -1301,7 +1453,7 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
         <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-zinc-800 bg-zinc-900/60">
           <Check className="w-4 h-4 text-emerald-400 shrink-0" strokeWidth={2.5} />
           <span className="text-zinc-300 text-sm font-medium tracking-wide">
-            Гарантия <span className="text-white font-bold">25 лет</span> на все изделия
+            Гарантия <span className="text-white font-bold">{WARRANTY_YEARS} лет</span> на все изделия
           </span>
         </div>
       </motion.div>
@@ -1353,6 +1505,16 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
                     <span className="text-zinc-700 text-xs">Выберите параметры</span>
                   )}
                 </AnimatePresence>
+                <p className="text-zinc-700 text-[10px] leading-tight mt-1.5">
+                  *{" "}
+                  <a
+                    href={PATHS.catalog}
+                    className="text-cyan-400/80 hover:text-cyan-300 underline-offset-2 hover:underline"
+                  >
+                    перейти к подбору компонентов
+                  </a>
+                  *
+                </p>
               </div>
 
               {/* Right side: CTA button */}

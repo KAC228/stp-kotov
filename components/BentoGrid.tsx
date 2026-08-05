@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { BadgeCheck, Lightbulb, Package, ShieldCheck } from "lucide-react";
-import { WARRANTY_YEARS } from "@/constants/brand";
+import { BRAND_NAME, PRICE_PER_METER_RUB, WARRANTY_YEARS } from "@/constants/brand";
 
 /** Как в TechFeatures: заголовок секции и карточки */
 const viewEase = "easeOut" as const;
@@ -122,7 +122,7 @@ export default function BentoGrid() {
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#00D2FF]/28 to-transparent" />
             <ShieldCheck className="w-5 h-5 text-cyan-400 shrink-0 relative z-10" strokeWidth={1.75} />
             <p className="bento-guarantee-text text-cyan-300 text-sm font-semibold relative z-10">
-              Гарантия <span className="text-white">{WARRANTY_YEARS} лет</span> на все изделия СТП-КОТОВ
+              Гарантия <span className="text-white">{WARRANTY_YEARS} лет</span> на все изделия {BRAND_NAME}
             </p>
           </motion.div>
 
@@ -130,7 +130,7 @@ export default function BentoGrid() {
             audience="Для заказчика"
             icon={BadgeCheck}
             title="Абсолютная прозрачность."
-            description="Единая цена 50 000 ₽ за метр. Тип потолка и врезки уже включены в стоимость — без скрытых доплат и сюрпризов на объекте."
+            description={`Единая цена ${PRICE_PER_METER_RUB.toLocaleString("ru-RU")} ₽ за метр. Тип потолка и врезки уже включены в стоимость — без скрытых доплат и сюрпризов на объекте.`}
             accent="from-transparent via-[#00D2FF]/28 to-transparent"
             watermark="50K"
             className="lg:col-span-2 min-h-[280px]"
@@ -175,11 +175,11 @@ export default function BentoGrid() {
                   Монтаж из коробки.
                 </h3>
                 <p className="text-zinc-500 text-[15px] leading-relaxed max-w-xl">
-                  Картонная разметка-шаблон, дроссельные заслонки и подготовленный каркас экономят часы работы на объекте. Открыл коробку — всё уже внутри.
+                  Дроссельные заслонки, подготовленный каркас и интуитивная система крепления экономят часы работы на объекте. Открыл коробку — всё уже внутри.
                 </p>
 
                 <div className="flex flex-wrap gap-2 mt-5">
-                  {["Шаблон разметки", "Дроссельные заслонки", "Готовый каркас", "Инструкция"].map((tag) => (
+                  {["Заводская разметка", "Дроссельные заслонки", "Готовый каркас", "Инструкция"].map((tag) => (
                     <span
                       key={tag}
                       className="px-3 py-1 bg-zinc-800 border border-zinc-700/60 rounded-full text-zinc-400 text-xs font-medium"

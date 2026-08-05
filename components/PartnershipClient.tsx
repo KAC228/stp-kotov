@@ -16,20 +16,9 @@ import {
   Check,
   Loader2,
 } from "lucide-react";
-import { PATHS } from "@/constants/brand";
+import { formatPhoneRu, isPhoneCompleteRu } from "@/lib/phone";
 import { submitTelegramJson } from "@/lib/submitTelegram";
-
-function formatPhoneRu(raw: string): string {
-  const digits = raw.replace(/\D/g, "");
-  const d = digits.startsWith("7") || digits.startsWith("8") ? digits.slice(1) : digits;
-  const p = d.slice(0, 10);
-  let result = "+7";
-  if (p.length > 0) result += ` (${p.slice(0, 3)}`;
-  if (p.length >= 4) result += `) ${p.slice(3, 6)}`;
-  if (p.length >= 7) result += `-${p.slice(6, 8)}`;
-  if (p.length >= 9) result += `-${p.slice(8, 10)}`;
-  return result;
-}
+import FormPrivacyNote from "@/components/FormPrivacyNote";
 
 const spring = { type: "spring" as const, damping: 28, stiffness: 130 };
 
@@ -75,13 +64,13 @@ const BUILDER_CARDS = [
   {
     icon: Package,
     title: "Полный монтажный набор",
-    desc: "Забудьте о поиске комплектующих — всё уже в комплекте. Каркас, заслонки, шаблон разметки, крепёж — открыл коробку и начал работу.",
+    desc: "Забудьте о поиске комплектующих — всё уже в комплекте. Каркас, заслонки, крепёж и инструкция — открыл коробку и начал работу.",
     num: "01",
   },
   {
     icon: Target,
     title: "Минимизация ошибок",
-    desc: "Картонная разметка-шаблон и интуитивная система крепления ускоряют монтаж в разы. Идеальная точность без сложных замеров.",
+    desc: "Заводская разметка на каркасе и интуитивная система крепления ускоряют монтаж в разы. Идеальная точность без сложных замеров.",
     num: "02",
   },
   {
@@ -166,6 +155,7 @@ function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isPhoneCompleteRu(form.phone)) return;
     setStatus("loading");
     try {
       const res = await submitTelegramJson({
@@ -258,12 +248,7 @@ function ContactForm() {
                 "Отправить заявку"
               )}
             </button>
-            <p className="text-zinc-700 text-xs leading-relaxed text-right">
-              Нажимая кнопку, вы соглашаетесь с{" "}
-              <Link href={PATHS.privacy} className="text-zinc-500 underline underline-offset-2 hover:text-zinc-300">
-                политикой конфиденциальности
-              </Link>
-            </p>
+            <FormPrivacyNote className="text-right w-full" />
           </div>
         </motion.form>
       )}
@@ -278,7 +263,7 @@ export default function PartnershipClient() {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
-    <div className="min-h-screen bg-zinc-950 pt-14">
+    <div className="min-h-screen bg-zinc-950 pt-24">
       <div className="max-w-4xl mx-auto py-24 px-6">
 
         <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ ...spring, delay: 0 }}>
@@ -408,7 +393,7 @@ export default function PartnershipClient() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-start">
             <motion.div {...inViewX(-24, 0)}>
               <p className="text-zinc-700 text-[11px] font-mono tracking-[0.26em] uppercase mb-5">
-                Дилерство
+                Партнёрство
               </p>
               <h2
                 className="text-white font-semibold tracking-tighter leading-tight mb-5"

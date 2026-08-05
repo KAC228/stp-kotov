@@ -10,7 +10,6 @@ import {
   CreditCard,
   QrCode,
   Building2,
-  Smartphone,
   User,
   Paperclip,
   FileText,
@@ -24,7 +23,14 @@ import {
 } from "@/types";
 import { PATHS, PRICE_PER_METER_RUB } from "@/constants/brand";
 import { formatPhoneRu, isPhoneCompleteRu } from "@/lib/phone";
-import { fileToAttachmentFields, submitTelegramJson } from "@/lib/submitTelegram";
+import {
+  fileToAttachmentFields,
+  MAX_ATTACHMENT_BYTES,
+  submitTelegramJson,
+  submitPayInit,
+  isAllowedTbankPaymentUrl,
+} from "@/lib/submitTelegram";
+import FormPrivacyNote from "@/components/FormPrivacyNote";
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
 
@@ -48,8 +54,7 @@ const INDIVIDUAL_PAYMENTS: Array<{
   sub: string;
 }> = [
   { id: "card", icon: CreditCard, label: "Банковская карта", sub: "Visa, Мир, Mastercard" },
-  { id: "sbp", icon: QrCode, label: "СБП / QR-код", sub: "Без комиссии, мгновенно" },
-  { id: "mirpay", icon: Smartphone, label: "Mir Pay / СБПэй", sub: "Бесконтактно с телефона" },
+  { id: "sbp", icon: QrCode, label: "СБП / QR-код", sub: "Без комиссии, мгновенно · от 10 ₽" },
 ];
 
 // ─── Reusable field components ────────────────────────────────────────────────
@@ -59,15 +64,20 @@ function FieldRow({
   required,
   children,
   first,
+  fieldId,
 }: {
   label: string;
   required?: boolean;
   children: React.ReactNode;
   first?: boolean;
+  fieldId?: string;
 }) {
   return (
     <div className={`ksd-field-row py-4 ${first ? "first" : ""}`}>
-      <label className="block text-zinc-600 text-[11px] font-mono tracking-[0.18em] uppercase mb-2">
+      <label
+        htmlFor={fieldId}
+        className="block text-zinc-600 text-[11px] font-mono tracking-[0.18em] uppercase mb-2"
+      >
         {label}
         {required && <span className="text-white ml-1">*</span>}
       </label>
@@ -97,6 +107,7 @@ function TextInput({
 }) {
   return (
     <input
+      id={name}
       type={type}
       name={name}
       value={value}
@@ -384,10 +395,16 @@ function LegalForm({
         <input
           ref={fileRef}
           type="file"
-          accept=".pdf,.doc,.docx,.xlsx,.jpg,.png"
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp"
           className="hidden"
           onChange={(e) => {
-            onFileChange(e.target.files?.[0] ?? null);
+            const next = e.target.files?.[0] ?? null;
+            if (next && next.size > MAX_ATTACHMENT_BYTES) {
+              alert("Файл слишком большой. Максимум 5 МБ.");
+              e.target.value = "";
+              return;
+            }
+            onFileChange(next);
           }}
         />
         <button
@@ -479,6 +496,7 @@ export default function OrderForm() {
   const [legal, setLegal] = useState<LegalFormData>(defaultLegal);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("Не удалось отправить заявку — попробуйте ещё раз.");
 
   const isIndividual = customerType === "individual";
   const isQuoteFlow = quoteDraft !== null;
@@ -512,6 +530,7 @@ export default function OrderForm() {
     e.preventDefault();
     if (!isValid) return;
     setStatus("loading");
+    setErrorMsg("Не удалось отправить заявку — попробуйте ещё раз.");
 
     // Flat items string so Telegram shows it inline
     const itemsStr = state.items
@@ -519,10 +538,21 @@ export default function OrderForm() {
         const unit = (item.product.basePrice ?? 0) + (item.selectedSize.priceModifier ?? 0);
         const name = item.product.shortName ?? item.product.name ?? "КСД";
         const dims = item.selectedSize.dimensions ?? "—";
-        const qty  = item.quantity ?? 1;
+        const qty = item.quantity ?? 1;
         return `${name} (${dims}) x${qty} = ${(unit * qty).toLocaleString("ru-RU")} руб.`;
       })
       .join("; ");
+
+    const cartLines = state.items.map((item) => {
+      const unit = (item.product.basePrice ?? 0) + (item.selectedSize.priceModifier ?? 0);
+      const skuMatch = item.product.shortName?.match(/арт\.\s*(.+)$/i);
+      return {
+        name: item.product.name ?? item.product.shortName ?? "Товар",
+        sku: skuMatch?.[1]?.trim() ?? item.product.id,
+        quantity: item.quantity ?? 1,
+        priceRub: unit,
+      };
+    });
 
     // Build flat payload — API reads every key dynamically
     const payload = isQuoteFlow
@@ -536,8 +566,9 @@ export default function OrderForm() {
           quoteDetails: Object.entries(quoteDraft.details)
             .map(([k, v]) => `${k}: ${v}`)
             .join("\n"),
+          items: itemsStr || "—",
           comment: individual.comment || "",
-          total: 0,
+          total: state.items.length > 0 ? totalPrice : 0,
         }
       : isIndividual
       ? {
@@ -568,6 +599,42 @@ export default function OrderForm() {
         };
 
     try {
+      const wantsOnlinePay =
+        !isQuoteFlow && isIndividual && (individual.paymentMethod === "card" || individual.paymentMethod === "sbp");
+
+      if (wantsOnlinePay) {
+        if (cartLines.length === 0 || totalPrice < 1) {
+          throw new Error("Empty cart");
+        }
+        if (individual.paymentMethod === "sbp" && totalPrice < 10) {
+          throw new Error("SBP_MIN_10");
+        }
+
+        const res = await submitPayInit({
+          name: individual.name,
+          phone: individual.phone,
+          email: individual.email,
+          address: individual.address || "",
+          comment: individual.comment || "",
+          paymentMethod: individual.paymentMethod,
+          items: cartLines,
+        });
+        const body = (await res.json().catch(() => null)) as {
+          success?: boolean;
+          paymentUrl?: string;
+          error?: string;
+        } | null;
+        if (!res.ok || !body?.success || !body.paymentUrl) {
+          throw new Error(body?.error || `HTTP ${res.status}`);
+        }
+        if (!isAllowedTbankPaymentUrl(body.paymentUrl)) {
+          throw new Error("Invalid payment URL");
+        }
+        // Корзину очищаем только после подтверждения банком на /success
+        window.location.assign(body.paymentUrl);
+        return;
+      }
+
       const body: Record<string, unknown> = { ...payload };
       if (uploadedFile && !isIndividual && !isQuoteFlow) {
         Object.assign(body, await fileToAttachmentFields(uploadedFile));
@@ -579,7 +646,12 @@ export default function OrderForm() {
       }
       setStatus("success");
       clearCart();
-    } catch {
+    } catch (err) {
+      if (err instanceof Error && err.message === "SBP_MIN_10") {
+        setErrorMsg("Для оплаты через СБП сумма заказа должна быть от 10 ₽ (лимит T‑Bank). Выберите карту или добавьте товары.");
+      } else {
+        setErrorMsg("Не удалось создать платёж или отправить заявку — попробуйте ещё раз.");
+      }
       setStatus("error");
     }
   };
@@ -590,6 +662,7 @@ export default function OrderForm() {
     closeOrderForm();
     setTimeout(() => {
       setStatus("idle");
+      setErrorMsg("Не удалось отправить заявку — попробуйте ещё раз.");
       setIndividual(defaultIndividual);
       setLegal(defaultLegal);
       setUploadedFile(null);
@@ -652,7 +725,9 @@ export default function OrderForm() {
                 </p>
               </div>
               <button
+                type="button"
                 onClick={handleClose}
+                aria-label="Закрыть форму заказа"
                 className="mt-0.5 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 text-zinc-500 hover:text-white transition-colors duration-200"
               >
                 <X className="w-3.5 h-3.5" strokeWidth={2} />
@@ -734,7 +809,7 @@ export default function OrderForm() {
                       <AnimatePresence mode="wait">
                         {isQuoteFlow ? (
                           <motion.div key="quote" {...slideIn}>
-                            <FieldRow label="Имя" required first>
+                            <FieldRow label="Имя" required first fieldId="name">
                               <TextInput
                                 name="name"
                                 value={individual.name}
@@ -743,7 +818,7 @@ export default function OrderForm() {
                                 required
                               />
                             </FieldRow>
-                            <FieldRow label="Телефон" required>
+                            <FieldRow label="Телефон" required fieldId="phone">
                               <TextInput
                                 name="phone"
                                 type="tel"
@@ -801,13 +876,14 @@ export default function OrderForm() {
                           exit={{ opacity: 0 }}
                           className="text-sm text-red-400 pt-2 pb-1"
                         >
-                          Не удалось отправить заявку — попробуйте ещё раз.
+                          {errorMsg}
                         </motion.p>
                       )}
                     </AnimatePresence>
 
                     {/* ── Submit ── */}
                     <div className="pt-4 border-t border-zinc-800 space-y-3 mt-1">
+                      <FormPrivacyNote />
                       <motion.button
                         type="submit"
                         disabled={!isValid || status === "loading"}
@@ -817,7 +893,11 @@ export default function OrderForm() {
                         {status === "loading" ? (
                           <>
                             <Loader2 className="w-4 h-4 animate-spin" />
-                            Отправка...
+                            {isIndividual &&
+                            !isQuoteFlow &&
+                            (individual.paymentMethod === "card" || individual.paymentMethod === "sbp")
+                              ? "Переход к оплате..."
+                              : "Отправка..."}
                           </>
                         ) : (
                           <AnimatePresence mode="wait">

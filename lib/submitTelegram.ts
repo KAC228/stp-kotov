@@ -1,3 +1,5 @@
+export const MAX_ATTACHMENT_BYTES = 5 * 1024 * 1024;
+
 function resolveSendUrl(): string {
   if (typeof window === "undefined") return "/send.php";
   const host = window.location.hostname;
@@ -11,8 +13,45 @@ export async function submitTelegramJson(
   return fetch(resolveSendUrl(), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    // Ловушка для простых ботов: настоящее приложение никогда не заполняет поле.
+    body: JSON.stringify({ ...payload, website: "" }),
   });
+}
+
+function resolvePayUrl(): string {
+  if (typeof window === "undefined") return "/pay.php";
+  return "/pay.php";
+}
+
+/** Init T‑Bank → PaymentURL (карта / СБП на форме банка). */
+export async function submitPayInit(
+  payload: Record<string, unknown>
+): Promise<Response> {
+  return fetch(resolvePayUrl(), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...payload, website: "" }),
+  });
+}
+
+/** Редирект только на хосты платёжной формы T‑Bank / Tinkoff. */
+export function isAllowedTbankPaymentUrl(url: string): boolean {
+  try {
+    const u = new URL(url);
+    if (u.protocol !== "https:") return false;
+    const host = u.hostname.toLowerCase();
+    if (
+      host === "securepay.tinkoff.ru" ||
+      host === "securepay.tbank.ru" ||
+      host === "www.tinkoff.ru" ||
+      host === "www.tbank.ru"
+    ) {
+      return true;
+    }
+    return /(^|\.)tinkoff\.ru$|(^|\.)tbank\.ru$/.test(host);
+  } catch {
+    return false;
+  }
 }
 
 /** Кодирует файл в base64 для передачи в JSON (PHP: send.php → sendDocument). */
@@ -21,6 +60,10 @@ export async function fileToAttachmentFields(file: File): Promise<{
   _fileName: string;
   _fileMime: string;
 }> {
+  if (file.size > MAX_ATTACHMENT_BYTES) {
+    throw new Error("FILE_TOO_LARGE");
+  }
+
   const buf = await file.arrayBuffer();
   const bytes = new Uint8Array(buf);
   let binary = "";

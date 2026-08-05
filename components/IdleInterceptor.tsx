@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Phone, Send, CheckCircle2, Wrench, Minus, MessageCircle } from "lucide-react";
 import { formatPhoneRu, isPhoneCompleteRu } from "@/lib/phone";
+import { submitTelegramJson } from "@/lib/submitTelegram";
+import FormPrivacyNote from "@/components/FormPrivacyNote";
 
 // ─── component ────────────────────────────────────────────────────────────────
 
@@ -20,6 +22,7 @@ export default function IdleInterceptor({
   const [isMinimized, setIsMinimized] = useState(false);
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorHint, setErrorHint] = useState("");
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dismissedRef = useRef(false);
@@ -79,18 +82,21 @@ export default function IdleInterceptor({
     e.preventDefault();
     if (!isPhoneCompleteRu(phone)) return;
     setStatus("loading");
+    setErrorHint("");
     try {
-      const res = await fetch("/send.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "Помощь инженера (конфигуратор)",
-          phone,
-          message:
-            "Пользователь затруднился с выбором в конфигураторе. Просит инженера перезвонить.",
-        }),
+      const res = await submitTelegramJson({
+        type: "Помощь инженера (конфигуратор)",
+        phone,
+        message:
+          "Пользователь затруднился с выбором в конфигураторе. Просит инженера перезвонить.",
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const data = (await res.json().catch(() => null)) as { error?: string } | null;
+        if (data?.error?.includes("Network error")) {
+          setErrorHint("Сервис Telegram недоступен с этого подключения. На сервере сайта обычно работает.");
+        }
+        throw new Error();
+      }
       setStatus("success");
     } catch {
       setStatus("error");
@@ -197,9 +203,11 @@ export default function IdleInterceptor({
 
                       {status === "error" && (
                         <p className="text-red-400 text-xs">
-                          Ошибка при отправке. Попробуйте ещё раз.
+                          {errorHint || "Ошибка при отправке. Попробуйте ещё раз."}
                         </p>
                       )}
+
+                      <FormPrivacyNote />
 
                       <button
                         type="submit"

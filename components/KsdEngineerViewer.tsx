@@ -74,10 +74,11 @@ export default function KsdEngineerViewer({
   onMountPointsChange,
 }: KsdEngineerViewerProps) {
   const [rotation, setRotation] = useState({ x: -18, y: 28 });
-  const maxMm = typeof lengthMm === "number" ? lengthMm : 1500;
+  const maxMm = typeof lengthMm === "number" ? lengthMm : null;
   const hMm = heightMm ?? 105;
 
   const addPoint = () => {
+    if (maxMm === null) return;
     const candidate = snapMm(maxMm / 2, maxMm);
     if (mountPoints.includes(candidate)) return;
     onMountPointsChange([...mountPoints, candidate].sort((a, b) => a - b));
@@ -95,8 +96,9 @@ export default function KsdEngineerViewer({
     }));
   };
 
-  const lengthScale = Math.min(1, 220 / maxMm);
-  const boxW = Math.max(120, maxMm * lengthScale * 0.14);
+  const displayLength = maxMm ?? 1500;
+  const lengthScale = Math.min(1, 220 / displayLength);
+  const boxW = Math.max(120, displayLength * lengthScale * 0.14);
   const boxH = Math.max(28, hMm * 0.38);
   const boxD = Math.max(18, depthMm * 0.35);
 
@@ -167,8 +169,8 @@ export default function KsdEngineerViewer({
               >
                 <span className="text-cyan-300/80 text-xl font-black font-mono">A</span>
                 <div className="absolute left-[10%] right-[10%] top-1/2 -translate-y-1/2 h-0.5 bg-cyan-400/40 rounded-full" />
-                {mountPoints.map((mm) => {
-                  const pct = (mm / maxMm) * 100;
+              {maxMm !== null && mountPoints.map((mm) => {
+                const pct = (mm / maxMm) * 100;
                   return (
                     <div
                       key={mm}

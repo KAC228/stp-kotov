@@ -18,22 +18,14 @@ import {
   Wrench,
   Truck,
   HeadphonesIcon,
+  Users,
 } from "lucide-react";
-import { CONTACTS, LEGAL } from "@/constants/brand";
+import { CONTACTS, LEGAL, SOCIAL } from "@/constants/brand";
+import { formatPhoneRu, isPhoneCompleteRu } from "@/lib/phone";
+import { submitTelegramJson } from "@/lib/submitTelegram";
+import FormPrivacyNote from "@/components/FormPrivacyNote";
 
 const sp = { type: "spring" as const, damping: 28, stiffness: 130 };
-
-function formatPhoneRu(raw: string): string {
-  const digits = raw.replace(/\D/g, "");
-  const d = digits.startsWith("7") || digits.startsWith("8") ? digits.slice(1) : digits;
-  const p = d.slice(0, 10);
-  let result = "+7";
-  if (p.length > 0) result += ` (${p.slice(0, 3)}`;
-  if (p.length >= 4) result += `) ${p.slice(3, 6)}`;
-  if (p.length >= 7) result += `-${p.slice(6, 8)}`;
-  if (p.length >= 9) result += `-${p.slice(8, 10)}`;
-  return result;
-}
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 28 },
@@ -79,6 +71,16 @@ const REQUISITES = [
     href: `mailto:${CONTACTS.email}`,
   },
   {
+    icon: Users,
+    label: "ВКонтакте",
+    value: "vk.com/stp_kotov",
+    sub: "Группа СТП-КОТОВ",
+    accent: "rgba(59,130,246,0.15)",
+    border: "rgba(59,130,246,0.35)",
+    iconColor: "text-blue-400",
+    href: SOCIAL.vk,
+  },
+  {
     icon: FileText,
     label: "Реквизиты",
     value: `ИНН ${LEGAL.inn} / ${LEGAL.ogrnLabel} ${LEGAL.ogrn}`,
@@ -106,7 +108,7 @@ const STAGES = [
     icon: Wrench,
     num: "03",
     title: "Сопровождение монтажа",
-    desc: "Консультируем монтажников прямо на объекте: по телефону, в мессенджере или видеосвязи. Шаблон разметки уже в коробке.",
+    desc: "Консультируем монтажников прямо на объекте: по телефону, в мессенджере или видеосвязи. Полный монтажный комплект уже в коробке.",
   },
   {
     icon: HeadphonesIcon,
@@ -132,18 +134,15 @@ function EngineerForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isPhoneCompleteRu(form.phone)) return;
     setStatus("loading");
     try {
-      const res = await fetch("/send.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "Вопрос инженеру",
-          name: form.name || "Не указано",
-          phone: form.phone || "Не указан",
-          role: form.role || "не указана",
-          question: form.question || "",
-        }),
+      const res = await submitTelegramJson({
+        type: "Вопрос инженеру",
+        name: form.name || "Не указано",
+        phone: form.phone || "Не указан",
+        role: form.role || "не указана",
+        question: form.question || "",
       });
       if (!res.ok) throw new Error();
       setStatus("success");
@@ -239,10 +238,8 @@ function EngineerForm() {
               Не удалось отправить вопрос — попробуйте ещё раз или позвоните нам.
             </p>
           )}
-          <div className="flex items-center justify-between gap-4 pt-1">
-            <p className="text-zinc-700 text-xs leading-relaxed max-w-[220px]">
-              Данные передаются по защищённому каналу и не передаются третьим лицам.
-            </p>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-end justify-between gap-4 pt-1">
+            <FormPrivacyNote className="max-w-[280px]" />
             <button
               type="submit"
               disabled={status === "loading"}
@@ -263,7 +260,7 @@ function EngineerForm() {
 
 export default function ContactsClient() {
   return (
-    <div className="min-h-screen bg-zinc-950 pt-14">
+    <div className="min-h-screen bg-zinc-950 pt-24">
       <div className="max-w-4xl mx-auto py-24 px-6">
 
         <motion.div {...fadeIn(0)}>
@@ -320,14 +317,23 @@ export default function ContactsClient() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-zinc-600 text-[10px] font-mono tracking-[0.2em] uppercase mb-1">{r.label}</p>
-                  <p className="text-white text-[15px] font-medium leading-snug truncate">{r.value}</p>
+                  <p className="text-white text-[15px] font-medium leading-snug break-words sm:truncate">{r.value}</p>
                   {r.sub && <p className="text-zinc-600 text-xs mt-0.5">{r.sub}</p>}
                 </div>
               </motion.div>
             );
 
             return "href" in r ? (
-              <a key={r.label} href={r.href} className="block">{content}</a>
+              <a
+                key={r.label}
+                href={r.href}
+                className="block"
+                {...(r.href.startsWith("http")
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+              >
+                {content}
+              </a>
             ) : (
               <div key={r.label}>{content}</div>
             );
@@ -467,7 +473,7 @@ export default function ContactsClient() {
           className="mt-20 pt-12 border-t border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center gap-4"
         >
           <div className="flex-1">
-            <p className="text-zinc-500 text-sm leading-relaxed">Хотите стать партнёром или дилером?</p>
+            <p className="text-zinc-500 text-sm leading-relaxed">Хотите стать партнёром?</p>
           </div>
           <Link
             href="/partnership"

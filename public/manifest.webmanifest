@@ -1,0 +1,27 @@
+{
+  "name": "СТП-КОТОВ",
+  "short_name": "СТП-КОТОВ",
+  "description": "Камеры статического давления и подбор компонентов вентиляции Fliben.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "lang": "ru",
+  "dir": "ltr",
+  "categories": ["business", "shopping"],
+  "icons": [
+    {
+      "src": "/images/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/og-image.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

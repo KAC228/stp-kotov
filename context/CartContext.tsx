@@ -110,7 +110,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case "CLOSE_ORDER_FORM":
       return { ...state, isOrderFormOpen: false };
     case "CLEAR_CART":
-      return { ...state, items: [] };
+      return { ...state, items: [], quoteDraft: null };
     case "SET_QUOTE_DRAFT":
       return { ...state, quoteDraft: action.payload };
     default:

@@ -1,13 +1,14 @@
-import type { Metadata } from "next";
 import { BRAND_NAME } from "@/constants/brand";
 import PartnershipClient from "@/components/PartnershipClient";
 import Footer from "@/components/Footer";
+import { buildPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: `Партнёрство и дилерство | ${BRAND_NAME}`,
+export const metadata = buildPageMetadata({
+  title: `Партнёрство | ${BRAND_NAME}`,
   description:
-    "Станьте официальным партнёром или дилером СТП-КОТОВ. Эксклюзивная территория продаж, маркетинговая поддержка и приоритетная техподдержка.",
-};
+    "Станьте официальным партнёром СТП-КОТОВ. Эксклюзивная территория продаж, маркетинговая поддержка и приоритетная техподдержка.",
+  path: "/partnership",
+});
 
 export default function PartnershipPage() {
   return (

@@ -16,6 +16,9 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Crosshair,
+  Blocks,
+  Plug,
 } from "lucide-react";
 
 // ─── data ──────────────────────────────────────────────────────────────────────
@@ -45,7 +48,7 @@ const FEATURES = [
     num: "03",
     icon: Cpu,
     title: "Запатентованная система крепежа",
-    desc: "Собственное производство гарантирует высокое качество и уникальность каждого элемента. Каждая камера комплектуется заранее подготовленным каркасом с крепежом и подшипниками по бокам каждого стыка с рельсой КСД.",
+    desc: "Данный модуль кардинально упрощает процесс монтажа камеры, делая его быстрым и безошибочным. Не нужно производить замеры. Достаточно отмерять по готовому шаблону необходимое место для положения теневого диффузора, не трогая саму камеру — это гарантирует идеальное позиционирование и исключает перекосы.",
     accent: CYAN_ACCENT,
     border: CYAN_BORDER,
   },
@@ -85,7 +88,7 @@ const FEATURES = [
     num: "08",
     icon: Shield,
     title: "Идеальная геометрия на корпусе",
-    desc: "Степень защиты IP44 — изделие защищено от влаги и пыли. Отсутствие сварных швов — идеальная геометрия и герметичность достигаются за счёт клепочного соединения, что исключает температурные деформации.",
+    desc: "Степень защиты IP44 — изделие защищено от влаги и пыли. Отсутствие сварных швов — идеальная геометрия и герметичность достигаются за счёт болтового соединения, что исключает температурные деформации.",
     accent: CYAN_ACCENT,
     border: CYAN_BORDER,
   },
@@ -94,6 +97,30 @@ const FEATURES = [
     icon: Package,
     title: "Защита IP44 и точная геометрия",
     desc: "Степень защиты IP44 — изделие защищено от влаги и пыли. Точная геометрия нашей камеры гарантирует стабильные аэродинамические характеристики и предсказуемую работу системы вентиляции.",
+    accent: CYAN_ACCENT,
+    border: CYAN_BORDER,
+  },
+  {
+    num: "10",
+    icon: Crosshair,
+    title: "Встроенный уровень нивелира",
+    desc: "Нижняя часть камеры оснащена встроенным жидкостным уровнем нивелира. Это позволяет визуально контролировать горизонтальное положение камеры непосредственно во время установки.",
+    accent: CYAN_ACCENT,
+    border: CYAN_BORDER,
+  },
+  {
+    num: "11",
+    icon: Blocks,
+    title: "Интуитивно понятная система крепления",
+    desc: "Крепежный каркас камеры имеет заводскую разметку под установку анкеров. Отверстия на каркасе полностью продублированы и соосны с отверстиями на теневом диффузоре. Это решение превращает сложную процедуру в простую и быструю сборку по принципу «конструктора».",
+    accent: CYAN_ACCENT,
+    border: CYAN_BORDER,
+  },
+  {
+    num: "12",
+    icon: Plug,
+    title: "Продуманный кабель-менеджмент",
+    desc: "Этот модуль обеспечивает не только аккуратный внешний вид, но и безопасность, а также удобство обслуживания системы. Это значительно упрощает как первичный монтаж, так и последующее сервисное обслуживание.",
     accent: CYAN_ACCENT,
     border: CYAN_BORDER,
   },
@@ -165,9 +192,8 @@ function Lightbox({
         animate={{ scale: 1,    opacity: 1 }}
         exit={{    scale: 0.96, opacity: 0 }}
         transition={{ type: "spring", damping: 28, stiffness: 200 }}
-        className="relative w-full max-w-3xl aspect-video rounded-2xl border flex flex-col items-center justify-center gap-4 overflow-hidden"
+        className="relative w-full max-w-3xl aspect-video rounded-2xl border flex flex-col items-center justify-center gap-4 overflow-hidden tech-feature-lightbox"
         style={{
-          background: `linear-gradient(135deg, ${item.accent} 0%, rgba(24,24,27,0.98) 65%)`,
           borderColor: item.border,
         }}
         onClick={(e) => e.stopPropagation()}
@@ -278,7 +304,7 @@ function CardPhotoSlider({
   };
 
   return (
-    <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden ring-1 ring-zinc-700/60">
+    <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden ring-1 ring-zinc-700/60 tech-feature-photo-ring">
       {/* Clickable photo area */}
       <button
         type="button"
@@ -286,33 +312,24 @@ function CardPhotoSlider({
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
-        className="absolute inset-0 flex flex-col items-center justify-center cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60"
+        className="tech-feature-photo absolute inset-0 flex flex-col items-center justify-center cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60"
         aria-label={`Открыть фото ${idx + 1}: ${feature.title}`}
-        style={{
-          background: `linear-gradient(135deg, ${feature.accent} 0%, rgba(24,24,27,0.96) 70%)`,
-        }}
       >
         {/* Grid texture */}
         <div
           aria-hidden
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.5) 1px,transparent 1px)",
-            backgroundSize: "20px 20px",
-          }}
+          className="tech-feature-photo-grid absolute inset-0 opacity-[0.03]"
         />
-        <ImageIcon className="w-6 h-6 text-zinc-700 relative z-10" strokeWidth={1.5} />
-        <p className="text-zinc-600 text-[9px] font-mono tracking-[0.2em] uppercase relative z-10 mt-1.5">
+        <ImageIcon className="tech-feature-photo-icon w-6 h-6 text-zinc-700 relative z-10" strokeWidth={1.5} />
+        <p className="tech-feature-photo-label text-zinc-600 text-[9px] font-mono tracking-[0.2em] uppercase relative z-10 mt-1.5">
           Фото {idx + 1} / {PHOTOS_PER_CARD}
         </p>
         {/* Watermark */}
         <span
           aria-hidden
-          className="absolute bottom-1 right-2 font-black select-none leading-none pointer-events-none"
+          className="tech-feature-photo-num absolute bottom-1 right-2 font-black select-none leading-none pointer-events-none"
           style={{
             fontSize: "2.4rem",
-            color: "rgba(63,63,70,0.38)",
             fontFamily: "var(--font-brand)",
           }}
         >
@@ -325,7 +342,7 @@ function CardPhotoSlider({
         type="button"
         onClick={prev}
         aria-label="Предыдущее фото"
-        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-950/80 border border-zinc-600/60 text-zinc-300 opacity-80 hover:opacity-100 hover:text-cyan-400 hover:border-cyan-400/50 hover:shadow-[0_0_14px_rgba(0,210,255,0.55)] will-change-[box-shadow,opacity] transition-all duration-200"
+        className="tech-feature-slider-nav absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-950/80 border border-zinc-600/60 text-zinc-300 opacity-80 hover:opacity-100 hover:text-cyan-400 hover:border-cyan-400/50 hover:shadow-[0_0_14px_rgba(0,210,255,0.55)] will-change-[box-shadow,opacity] transition-all duration-200"
       >
         <ChevronLeft className="w-4 h-4" strokeWidth={2.25} />
       </button>
@@ -335,7 +352,7 @@ function CardPhotoSlider({
         type="button"
         onClick={next}
         aria-label="Следующее фото"
-        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-950/80 border border-zinc-600/60 text-zinc-300 opacity-80 hover:opacity-100 hover:text-cyan-400 hover:border-cyan-400/50 hover:shadow-[0_0_14px_rgba(0,210,255,0.55)] will-change-[box-shadow,opacity] transition-all duration-200"
+        className="tech-feature-slider-nav absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-950/80 border border-zinc-600/60 text-zinc-300 opacity-80 hover:opacity-100 hover:text-cyan-400 hover:border-cyan-400/50 hover:shadow-[0_0_14px_rgba(0,210,255,0.55)] will-change-[box-shadow,opacity] transition-all duration-200"
       >
         <ChevronRight className="w-4 h-4" strokeWidth={2.25} />
       </button>
@@ -420,7 +437,7 @@ export default function TechFeatures() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: viewDuration, ease: viewEase, delay: (index % 3) * 0.08 }}
-              className="w-full flex flex-col bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden relative isolate group hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(0,210,255,0.22)] transition-[box-shadow,border-color,z-index] duration-300 z-0 hover:z-10"
+              className="tech-feature-card w-full flex flex-col bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden relative isolate group hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(0,210,255,0.22)] transition-[box-shadow,border-color,z-index] duration-300 z-0 hover:z-10"
             >
               {/* Glow overlay — identical pattern to InstallationClient cards */}
               <div
@@ -448,7 +465,7 @@ export default function TechFeatures() {
                     <Icon className="w-3.5 h-3.5 text-zinc-300" strokeWidth={1.75} />
                   </div>
                   <span className="text-zinc-700 text-[9px] font-mono tracking-[0.2em] uppercase">
-                    {f.num} / 09
+                    {f.num} / 12
                   </span>
                 </div>
 

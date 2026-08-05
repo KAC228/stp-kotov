@@ -3,25 +3,43 @@
 Options -Indexes
 DirectoryIndex index.html
 
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  # CSP: Metrika + T‑Bank payment form + self. Без unsafe-eval.
+  Header set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://securepay.tinkoff.ru https://*.tbank.ru; script-src 'self' 'unsafe-inline' https://mc.yandex.ru https://mc.yandex.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://mc.yandex.ru https://mc.yandex.com https://securepay.tinkoff.ru; frame-src 'self' https://securepay.tinkoff.ru https://*.tbank.ru; worker-src 'self' blob:"
+</IfModule>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # HTTPS (раскомментируйте, если SSL уже включён в панели reg.ru)
-  # RewriteCond %{HTTPS} !=on
-  # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # HTTPS
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # Next.js export создаёт папки (partnership/) без index.html → 403.
-  # Если есть одноимённый .html — отдаём его.
+  # Канонический каталог: старый URL партнёра → /catalog
+  RewriteRule ^our-partners/fliben/catalog/?$ /catalog [R=301,L]
+
+  # Next.js export: папка без index.html → одноимённый .html
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteCond %{REQUEST_URI} ^/(.+?)/?$
   RewriteCond %{DOCUMENT_ROOT}/%1.html -f
   RewriteRule ^(.+?)/?$ $1.html [L]
 
-  # /partnership → partnership.html (нет файла и папки с index)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME}.html -f
   RewriteRule ^(.+?)/?$ $1.html [L]
+
+  # Next.js App Router (static export): dotted RSC paths → папки в out/
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^(.+)/__next\.(.+)\.__PAGE__\.txt$ $1/__next.$2/__PAGE__.txt [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^(.+)/__next\.(.+)\.txt$ $1/__next.$2.txt [L]
 </IfModule>
 
 ErrorDocument 404 /404.html
@@ -38,9 +56,22 @@ ErrorDocument 404 /404.html
   ExpiresByType image/svg+xml "access plus 30 days"
 </IfModule>
 
-# send.php должен выполняться — не отдавать как текст
 <Files "send.php">
   <IfModule mod_headers.c>
     Header set Cache-Control "no-store"
   </IfModule>
 </Files>
+
+<FilesMatch "^(pay|pay-status|tbank-notify)\.php$">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-store"
+  </IfModule>
+</FilesMatch>
+
+<FilesMatch "^(send|pay)\.config\.php$">
+  Require all denied
+</FilesMatch>
+
+<FilesMatch "\.(config\.php\.example|php\.example)$">
+  Require all denied
+</FilesMatch>

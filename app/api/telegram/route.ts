@@ -70,8 +70,31 @@ function isTooFrequent(ip: string): boolean {
 }
 
 export async function POST(req: Request) {
+  // На статическом хостинге этот route не деплоится; защита на случай Node-сервера.
+  if (process.env.NODE_ENV === "production" && process.env.ALLOW_NEXT_TELEGRAM_API !== "1") {
+    return NextResponse.json({ error: "Not available" }, { status: 404 });
+  }
+
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const chatId   = process.env.TELEGRAM_CHAT_ID;
+  const devMock  = process.env.TELEGRAM_DEV_MOCK === "true";
+
+  const origin = req.headers.get("origin") ?? "";
+  const allowedOrigins = new Set(
+    (process.env.TELEGRAM_ALLOWED_ORIGINS ?? "http://localhost:3000,http://127.0.0.1:3000")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+  );
+  // Пустой Origin (same-origin) ок; чужой Origin — нет
+  if (origin && !allowedOrigins.has(origin)) {
+    return NextResponse.json({ error: "Origin not allowed" }, { status: 403 });
+  }
+
+  if (devMock && process.env.NODE_ENV === "development") {
+    console.info("[telegram] TELEGRAM_DEV_MOCK=true — заявка не отправлена в Telegram");
+    return NextResponse.json({ success: true, mock: true });
+  }
 
   if (!botToken || !chatId) {
     console.error("[telegram] Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID");
@@ -104,6 +127,20 @@ export async function POST(req: Request) {
     data = {};
     for (const [key, val] of fd.entries()) {
       if (val instanceof File && val.size > 0) {
+        if (val.size > 5 * 1024 * 1024) {
+          return NextResponse.json({ error: "File too large" }, { status: 413 });
+        }
+        const allowed = new Set([
+          "application/pdf",
+          "image/jpeg",
+          "image/png",
+          "image/webp",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ]);
+        if (val.type && !allowed.has(val.type)) {
+          return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
+        }
         attachedFile = val;
       } else {
         data[key] = val;
@@ -116,6 +153,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
   }
+
+  if (data.website) {
+    return NextResponse.json({ error: "Invalid form submission" }, { status: 400 });
+  }
+  delete data.website;
 
   const name  = esc(data.name ?? data.username ?? data.fio ?? data.contactName ?? "Не указано");
   const phone = esc(data.phone ?? data.tel ?? data.telephone ?? data.phone_number ?? "Не указан");
@@ -142,7 +184,7 @@ export async function POST(req: Request) {
     if (key === "paymentMethod")    value = esc(PAYMENT_LABELS[String(raw)] ?? raw);
     else if (key === "customerType") value = esc(CUSTOMER_LABELS[String(raw)] ?? raw);
     else if (key === "total")        value = `${Number(raw).toLocaleString("ru-RU")} ₽`;
-    else                             value = esc(raw);
+    else                             value = esc(String(raw).slice(0, 4000));
 
     details += `• <b>${esc(label)}:</b> ${value}\n`;
   }
@@ -162,17 +204,16 @@ export async function POST(req: Request) {
         parse_mode: "HTML",
       }),
     });
-  } catch (networkErr) {
+  } catch {
     return NextResponse.json(
-      { error: "Network error reaching Telegram", detail: String(networkErr) },
+      { error: "Network error reaching Telegram" },
       { status: 502 }
     );
   }
 
   if (!tgRes.ok) {
-    const body = await tgRes.text().catch(() => "");
     return NextResponse.json(
-      { error: "Telegram rejected the message", status: tgRes.status, detail: body },
+      { error: "Telegram rejected the message" },
       { status: 502 }
     );
   }

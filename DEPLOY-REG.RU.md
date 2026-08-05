@@ -29,8 +29,13 @@ powershell -ExecutionPolicy Bypass -File .\scripts\prepare-deploy.ps1
 | `partnership.html`, `contacts.html`, … | Страницы |
 | `_next/` | Скрипты и стили (обязательно целиком) |
 | `send.php` | Формы → Telegram |
+| `send.config.php.example` | Шаблон конфигурации (токены — на сервере) |
+| `pay.php` | Init оплаты T‑Bank → PaymentURL |
+| `tbank-notify.php` | Webhook статусов оплаты (NotificationURL) |
+| `pay.config.php.example` | Шаблон TerminalKey / Password (секреты — на сервере) |
+| `lib/tbank.php` | Подпись Token и вызов Init |
 | `.htaccess` | Чистые URL и 404 |
-| `images/` | Картинки и логотип |
+| `images/` | Картинки, логотип, `og-image.jpg` (1200×630 для соцсетей) |
 | `robots.txt`, `sitemap.xml` | SEO |
 
 **На сервер НЕ заливать:** `node_modules`, `.env.local`, исходники `app/`, `components/`, папку `out` как вложенную папку.
@@ -67,7 +72,10 @@ powershell -ExecutionPolicy Bypass -File .\scripts\prepare-deploy.ps1
 | 3 | Залить **все `.html`** из `out` (перезаписать): `index.html`, `partnership.html`, `contacts.html`, … |
 | 4 | Залить `404.html`, `robots.txt`, `sitemap.xml`, `.htaccess`. |
 | 5 | Залить папку **`images`** (перезаписать при изменениях). |
-| 6 | **`send.php`**: перезаписать из `out` **или** оставить серверный, если там актуальные токены. |
+| 6 | **`send.php`**: перезаписать из `out`. |
+| 7 | **`send.config.php`**: на сервере создать из `send.config.php.example`, указать токен бота и chat_id (файл **не** в git и **не** в zip-архиве). |
+| 8 | **`pay.php`**, **`tbank-notify.php`**, **`lib/tbank.php`**: залить из `out`. |
+| 9 | **`pay.config.php`**: на сервере создать из `pay.config.php.example` — TerminalKey, Password, Success/Fail/Notification URL. |
 
 ### Чего не делать
 
@@ -112,7 +120,9 @@ powershell -ExecutionPolicy Bypass -File .\scripts\prepare-deploy.ps1
 |---------|---------|
 | Белая страница, ошибки в консоли про `.js` | Удалить старую `_next`, залить новую целиком |
 | `/partnership` — 404 | Залить `.htaccess` и `partnership.html` |
-| Формы не отправляются | Проверить `send.php` в корне, PHP включён на тарифе |
+| Формы не отправляются | Проверить `send.php` и `send.config.php` в корне, PHP включён на тарифе |
+| Оплата не открывается | Проверить `pay.php`, `pay.config.php`, Origin домена, TerminalKey/Password |
+| Нет webhook об оплате | NotificationURL в ЛК = `/tbank-notify.php`, файл залит, ответ `OK` |
 | Старая версия сайта | Ctrl+F5 или очистить кэш CDN в панели reg.ru |
 | Кракозябры | Кодировка файлов UTF-8 без BOM |
 
@@ -127,7 +137,25 @@ npm run build
 → удалить _next на сервере
 → залить всё из out (содержимое, не папку out)
 → сохранить/проверить send.php
+→ создать send.config.php на сервере (из send.config.php.example)
+→ создать pay.config.php на сервере (из pay.config.php.example)
+→ в ЛК T‑Bank NotificationURL = https://<домен>/tbank-notify.php
 → проверить сайт в инкогнито
 ```
 
-Токены Telegram хранятся в `public/send.php` — **не выкладывайте** этот файл в открытый GitHub без защиты.
+Токены Telegram хранятся в **`send.config.php` на сервере** — файл в `.gitignore`, не коммитить и не класть в публичные архивы. При утечке токена — перевыпустить в @BotFather.
+
+Ключи эквайринга T‑Bank — в **`pay.config.php` на сервере** (тоже не в git / не в zip). Чек-лист теста оплаты: [`docs/PAYMENT-TBANK-TEST.md`](docs/PAYMENT-TBANK-TEST.md).
+
+Подтверждение оплаты: только **Notification (Token)** и **GetState** (`pay-status.php`). Страница `/success` без `PaymentId` / без ответа банка «оплачено» не считается успехом.
+
+---
+
+## 8. Оплата T‑Bank (карта + СБП)
+
+1. В ЛК интернет-эквайринга: терминал, способы **карта** и **СБП**, онлайн-касса для автоматических чеков.
+2. На сервере: `pay.config.php` с `terminal_key`, `password`, `taxation` / `tax` под вашу систему налогообложения.
+3. `notification_url` в конфиге и в ЛК: `https://стп-котов.рф/tbank-notify.php` (или ваш домен).
+4. Физлицо в форме заказа с картой/СБП уходит на `PaymentURL` банка (**без** заявки в Telegram). Юрлицо / счёт — по-прежнему заявка в Telegram.
+5. Тестовый товар **1 ₽** в каталоге — см. `docs/PAYMENT-TBANK-TEST.md` (СБП от 10 ₽).
+6. `pay.config.php` заливать на сервер **вручную** (не в zip): TerminalKey + Password.

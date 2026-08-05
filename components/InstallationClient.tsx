@@ -15,7 +15,7 @@ import {
   FileSignature,
   ScrollText,
 } from "lucide-react";
-import { PATHS, CONTACTS } from "@/constants/brand";
+import { PATHS, CONTACTS, WARRANTY_YEARS } from "@/constants/brand";
 
 const spring = { type: "spring" as const, damping: 28, stiffness: 130 };
 
@@ -37,7 +37,7 @@ const CARDS = [
   {
     icon: Ruler,
     title: "Запатентованная система крепежа",
-    body: "Идеальная геометрия и возможность лёгкой корректировки по высоте с помощью встроенной линейки. Монтируем на заранее подготовленный каркас с подшипниками и рельсами.",
+    body: "Данный модуль кардинально упрощает процесс монтажа камеры, делая его быстрым и безошибочным. Не нужно производить замеры — достаточно отмерять по готовому шаблону место для теневого диффузора, не трогая саму камеру.",
   },
   {
     icon: Cable,
@@ -71,7 +71,7 @@ const BENEFITS = [
 
 export default function InstallationClient() {
   return (
-    <div className="min-h-screen bg-zinc-950 pt-14">
+    <div className="min-h-screen bg-zinc-950 pt-24">
       <div className="max-w-4xl mx-auto py-24 px-6">
 
         <motion.div {...fadeUp(0)}>
@@ -193,7 +193,7 @@ export default function InstallationClient() {
             </div>
 
             <p className="text-zinc-300 text-base sm:text-lg leading-relaxed mb-10 max-w-2xl">
-              Гарантия 25 лет на камеры статического давления — это
+              Гарантия {WARRANTY_YEARS} лет на камеры статического давления — это
               обязательство, которое мы подтверждаем реальным делом.
             </p>
 
@@ -225,7 +225,7 @@ export default function InstallationClient() {
                   <span className="text-zinc-200 font-medium">официальными актами и отчётами</span>.
                   Эти документы служат неоспоримым доказательством соблюдения правил эксплуатации
                   и необходимы для реализации вашего права на гарантийный ремонт или замену
-                  оборудования в течение любого из 25 лет.
+                  оборудования в течение любого из {WARRANTY_YEARS} лет.
                 </p>
               </div>
 
@@ -253,7 +253,7 @@ export default function InstallationClient() {
               <p className="text-base leading-snug">
                 <span className="text-zinc-400">Главная цель: </span>
                 <span className="text-white font-semibold">
-                  Гарантировать вам 25 лет бесперебойной, эффективной и безопасной работы наших систем.
+                  Гарантировать вам {WARRANTY_YEARS} лет бесперебойной, эффективной и безопасной работы наших систем.
                 </span>
               </p>
             </div>

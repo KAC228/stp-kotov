@@ -1,0 +1,28 @@
+<?php
+/**
+ * Скопируйте в send.config.php и укажите реальные значения.
+ * send.config.php не коммитится в git.
+ */
+return [
+    'telegram_bot_token' => 'YOUR_TELEGRAM_BOT_TOKEN',
+    'telegram_chat_id'   => 'YOUR_TELEGRAM_CHAT_ID',
+    /** По умолчанию api.telegram.org; при блокировке — URL Worker (см. scripts/telegram-relay-worker.js) */
+    'telegram_api_base'  => 'https://api.telegram.org',
+    /** Обязателен, если telegram_api_base — не api.telegram.org (тот же секрет, что RELAY_SECRET у Worker) */
+    'telegram_relay_secret' => '',
+    /** Доп. хосты для SSRF-allowlist (hostname без схемы), если свой прокси */
+    // 'telegram_api_hosts' => ['your-worker.workers.dev'],
+    /** Резервная почта, если Telegram с сервера недоступен */
+    'notification_email' => 'info@stp-kotov.ru',
+    'allowed_origins'    => [
+        'https://стп-котов.рф',
+        'https://www.стп-котов.рф',
+        'https://xn----dtbxqacnie.xn--p1ai',
+        'https://www.xn----dtbxqacnie.xn--p1ai',
+    ],
+    'rate_limit_window_sec' => 15,
+    'rate_limit_max'        => 5,
+    /** ≥ max_file после base64 (~4/3) + JSON-поля */
+    'max_body_bytes'        => 8388608,
+    'max_file_bytes'        => 5242880,
+];

@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── Glow design-token ──────────────────────────────────────────────────────────
    Registers shadow-glow and shadow-glow-strong as Tailwind utility classes.
    In dark mode: full cyan intensity.
@@ -97,6 +105,38 @@ html.light [data-hero-vignette] {
   display: none;
 }
 
+html.light .wind-field {
+  opacity: 1;
+}
+
+/* ── Wind field (hero) ─────────────────────────────────────────────────────── */
+.wind-field {
+  z-index: 0;
+  background: radial-gradient(ellipse at 30% 20%, rgba(0, 210, 255, 0.06) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 80%, rgba(56, 189, 248, 0.04) 0%, transparent 50%),
+    linear-gradient(180deg, #0a0b10 0%, #090a0f 100%);
+}
+
+html.light .wind-field {
+  background: radial-gradient(ellipse at 25% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 85%, rgba(100, 116, 139, 0.06) 0%, transparent 50%),
+    linear-gradient(180deg, #fafafa 0%, #f4f4f5 100%);
+}
+
+.wind-field-canvas {
+  opacity: 0.9;
+}
+
+html.light .wind-field-canvas {
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wind-field-canvas {
+    opacity: 0.5;
+  }
+}
+
 /* ── Light mode grid — только Hero + блок «9 технологий» (см. .light-mesh-top на секциях) */
 html.light section.light-mesh-top {
   background-image:
@@ -107,17 +147,250 @@ html.light section.light-mesh-top {
   background-attachment: fixed, fixed;
 }
 
-/* Вторая CTA на Hero — чёрная кнопка (в светлой теме тоже) */
-html.light a.hero-cta-partnership {
-  background-color: #09090b !important;
-  color: #fafafa !important;
-  border-color: #27272a !important;
+/* ── Hero CTA ─────────────────────────────────────────────────────────────── */
+.hero-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.25rem;
+  border-radius: 9999px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  background-color: #ffffff;
+  color: #09090b;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-html.light a.hero-cta-partnership:hover {
-  background-color: #18181b !important;
-  border-color: #3f3f46 !important;
-  color: #ffffff !important;
-  box-shadow: 0 0 22px rgba(0, 210, 255, 0.22);
+.hero-cta-primary:hover {
+  background-color: #f4f4f5;
+  box-shadow: 0 0 36px rgba(0, 210, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.hero-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 0.4rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(63, 63, 70, 0.85);
+  background: rgba(24, 24, 27, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  gap: 0.15rem;
+}
+
+.hero-cta-secondary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #a1a1aa;
+  white-space: nowrap;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.hero-cta-secondary-link:hover {
+  color: #fafafa;
+  background-color: rgba(39, 39, 42, 0.9);
+}
+
+.hero-cta-secondary-sep {
+  width: 1px;
+  height: 1.25rem;
+  background: rgba(82, 82, 91, 0.9);
+  flex-shrink: 0;
+}
+
+/* Stacked — на узком экране отдельные кнопки, без вложенной «таблетки» */
+.hero-cta-stacked {
+  width: 100%;
+  max-width: 19rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+.hero-cta-stacked-primary {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .hero-cta-stacked {
+    max-width: none;
+    padding-inline: 0;
+  }
+
+  .hero-cta-stacked .hero-cta-secondary-link {
+    padding: 0.7rem 1.35rem;
+  }
+
+  .hero-cta-stacked .hero-cta-secondary-link:hover {
+    color: #fafafa;
+    background-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(0, 210, 255, 0.75));
+  }
+}
+
+@media (max-width: 639px) {
+  .hero-cta-stacked-primary .hero-cta-primary {
+    width: 100%;
+  }
+
+  .hero-cta-secondary {
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    gap: 0.625rem;
+  }
+
+  .hero-cta-secondary-sep {
+    display: none;
+  }
+
+  .hero-cta-secondary-link {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(63, 63, 70, 0.85);
+    background: rgba(24, 24, 27, 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    white-space: normal;
+    text-align: center;
+    line-height: 1.35;
+  }
+
+  .hero-cta-secondary-link:hover {
+    background-color: rgba(39, 39, 42, 0.9);
+    filter: none;
+  }
+}
+
+html.light .hero-cta-primary {
+  background-color: #09090b;
+  color: #fafafa;
+}
+html.light .hero-cta-primary:hover {
+  background-color: #18181b;
+  box-shadow: 0 0 28px rgba(0, 210, 255, 0.28);
+}
+
+html.light .hero-cta-secondary {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: #d4d4d8;
+}
+html.light .hero-cta-secondary-link {
+  color: #52525b;
+}
+html.light .hero-cta-secondary-link:hover {
+  color: #09090b;
+  background-color: #f4f4f5;
+}
+html.light .hero-cta-secondary-sep {
+  background: #d4d4d8;
+}
+
+@media (max-width: 639px) {
+  html.light .hero-cta-secondary-link {
+    border-color: #d4d4d8;
+    background: rgba(255, 255, 255, 0.82);
+  }
+
+  html.light .hero-cta-secondary-link:hover {
+    background-color: #f4f4f5;
+    filter: none;
+  }
+}
+
+@media (min-width: 640px) {
+  html.light .hero-cta-stacked .hero-cta-secondary-link:hover {
+    color: #09090b;
+    background-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(0, 210, 255, 0.55));
+  }
+}
+
+/* Вариант row — одна линия, outline-кнопки */
+.hero-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.hero-cta-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.75rem;
+  border-radius: 9999px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  border: 1px solid #52525b;
+  background: rgba(9, 9, 11, 0.35);
+  color: #e4e4e7;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.hero-cta-outline:hover {
+  border-color: #a1a1aa;
+  color: #ffffff;
+  background: rgba(39, 39, 42, 0.65);
+  box-shadow: 0 0 24px rgba(0, 210, 255, 0.12);
+}
+
+@media (max-width: 640px) {
+  .hero-cta-row {
+    flex-direction: column;
+    width: 100%;
+    max-width: 20rem;
+  }
+  .hero-cta-row .hero-cta-primary,
+  .hero-cta-row .hero-cta-outline {
+    width: 100%;
+  }
+}
+
+html.light .hero-cta-outline {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: #d4d4d8;
+  color: #3f3f46;
+}
+html.light .hero-cta-outline:hover {
+  border-color: #a1a1aa;
+  color: #09090b;
+  background: #ffffff;
+}
+
+/* Вариант minimal — текстовые ссылки */
+.hero-cta-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 14px;
+  font-weight: 500;
+  color: #a1a1aa;
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+.hero-cta-text-link:hover {
+  color: #67e8f9;
+  gap: 0.55rem;
+}
+html.light .hero-cta-text-link {
+  color: #71717a;
+}
+html.light .hero-cta-text-link:hover {
+  color: #0e7490;
 }
 
 /* Hero: явные цвета без invert; точки едва заметны, fixed как у тёмной сетки */
@@ -184,6 +457,200 @@ html.theme-ready body {
 html.light .ksd-input:focus {
   border-color: rgba(0, 210, 255, 0.40) !important;
   box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.08), var(--shadow-glow);
+}
+
+/* ── Единые тени для фото (каталог + блоки) ───────────────────────────────── */
+.site-photo-frame--product {
+  position: relative;
+  background-color: #09090b;
+  overflow: hidden;
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.28);
+}
+
+.site-photo--product {
+  /* без filter:drop-shadow — цвет продукта даёт цветную «тень» (зелёная у GREEN LINE) */
+  transition: transform 0.3s ease;
+}
+
+.group:hover .site-photo--product,
+.site-photo-frame--product:hover .site-photo--product {
+  transform: scale(1.02);
+}
+
+.group:hover .site-photo-frame--product,
+.site-photo-frame--product:hover {
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.48),
+    0 4px 12px rgba(0, 0, 0, 0.32);
+}
+
+.site-photo-frame--cover {
+  background-color: var(--color-zinc-900, #18181b);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.site-photo-frame--cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  box-shadow:
+    inset 0 -28px 36px -16px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.site-photo--cover {
+  filter:
+    drop-shadow(0 6px 14px rgba(0, 0, 0, 0.35))
+    drop-shadow(0 16px 32px rgba(0, 0, 0, 0.4));
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.group:hover .site-photo--cover {
+  filter:
+    drop-shadow(0 8px 18px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 22px 40px rgba(0, 0, 0, 0.48));
+}
+
+html.light .site-photo-frame--product {
+  background-color: #ffffff;
+  box-shadow:
+    0 8px 22px rgba(15, 23, 42, 0.1),
+    0 2px 6px rgba(15, 23, 42, 0.06);
+}
+
+html.light .group:hover .site-photo-frame--product,
+html.light .site-photo-frame--product:hover {
+  box-shadow:
+    0 12px 28px rgba(15, 23, 42, 0.14),
+    0 4px 10px rgba(15, 23, 42, 0.08);
+}
+
+/* Миниатюры каталога наследуют фон темы */
+.site-photo-thumb {
+  background-color: #09090b;
+}
+html.light .site-photo-thumb {
+  background-color: #ffffff;
+}
+
+/* Cookie-баннер: читаемый текст в светлой теме */
+html.light .ksd-cookie-banner .ksd-cookie-panel {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(212, 212, 216, 0.9) !important;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.12) !important;
+}
+html.light .ksd-cookie-banner .ksd-cookie-text {
+  color: #52525b !important;
+}
+html.light .ksd-cookie-banner .ksd-cookie-link {
+  color: #18181b !important;
+}
+
+html.light .site-photo-frame--cover {
+  box-shadow:
+    0 8px 22px rgba(15, 23, 42, 0.12),
+    0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+html.light .site-photo--cover {
+  filter:
+    drop-shadow(0 4px 12px rgba(15, 23, 42, 0.16))
+    drop-shadow(0 12px 24px rgba(15, 23, 42, 0.22));
+}
+
+html.light .group:hover .site-photo--cover {
+  filter:
+    drop-shadow(0 6px 16px rgba(15, 23, 42, 0.2))
+    drop-shadow(0 16px 28px rgba(15, 23, 42, 0.28));
+}
+
+html.light .site-photo-frame--cover::after {
+  box-shadow:
+    inset 0 -24px 32px -14px rgba(15, 23, 42, 0.18),
+    inset 0 0 0 1px rgba(15, 23, 42, 0.06);
+}
+
+/* ── Fliben product HTML (описание с fliben.ru) ───────────────────────────── */
+.fliben-product-html p {
+  margin: 0 0 1em;
+}
+.fliben-product-html p:last-child {
+  margin-bottom: 0;
+}
+.fliben-product-html ul,
+.fliben-product-html ol {
+  margin: 0 0 1em 1.25em;
+  padding: 0;
+}
+.fliben-product-html li {
+  margin-bottom: 0.35em;
+}
+.fliben-product-html strong {
+  color: var(--color-zinc-300, #d4d4d8);
+  font-weight: 600;
+}
+.fliben-product-html a {
+  color: rgba(0, 210, 255, 0.85);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── TechFeatures («Инженерная точность в каждом узле») — light theme ─────── */
+.tech-feature-photo {
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.15) 0%, rgba(24, 24, 27, 0.96) 70%);
+}
+.tech-feature-photo-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+.tech-feature-photo-num {
+  color: rgba(63, 63, 70, 0.38);
+}
+.tech-feature-lightbox {
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.15) 0%, rgba(24, 24, 27, 0.98) 65%);
+}
+
+html.light .tech-feature-card {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+html.light .tech-feature-photo-ring {
+  --tw-ring-color: var(--color-zinc-700);
+}
+html.light .tech-feature-photo {
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.12) 0%, rgba(245, 245, 247, 0.98) 70%);
+}
+html.light .tech-feature-photo-grid {
+  opacity: 0.08;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+}
+html.light .tech-feature-photo-icon,
+html.light .tech-feature-photo-label {
+  color: var(--color-zinc-600);
+}
+html.light .tech-feature-photo-num {
+  color: rgba(0, 0, 0, 0.06);
+}
+html.light .tech-feature-slider-nav {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: var(--color-zinc-700);
+  color: var(--color-zinc-500);
+}
+html.light .tech-feature-lightbox {
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.10) 0%, rgba(255, 255, 255, 0.98) 65%);
+}
+html.light .tech-feature-lightbox .text-zinc-500,
+html.light .tech-feature-lightbox .text-zinc-400 {
+  color: var(--color-zinc-600);
 }
 
 /* ── FieldRow focus-within highlight (OrderForm) ────────────────────────────

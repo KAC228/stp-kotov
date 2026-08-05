@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { BRAND_NAME, SLOGAN, PATHS } from "@/constants/brand";
+import HeroCtaSection from "@/components/HeroCtaSection";
 
 const titleContainer = {
   hidden: {},
@@ -70,42 +72,7 @@ export default function DarkHeroContent() {
         Камеры статического давления нового поколения
       </motion.p>
 
-      <div className="flex flex-wrap items-center justify-center gap-3">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.65,
-            delay: 0.8,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          style={{ willChange: "transform, opacity" }}
-        >
-          <a
-            href="#configurator"
-            className="inline-flex items-center px-8 py-4 bg-white text-zinc-950 rounded-full text-[15px] font-semibold hover:bg-zinc-100 hover:shadow-[0_0_30px_rgba(0,210,255,0.55)] will-change-[box-shadow] transition-all duration-200"
-          >
-            Собрать конфигурацию
-          </a>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.65,
-            delay: 1.0,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          style={{ willChange: "transform, opacity" }}
-        >
-          <a
-            href={PATHS.partnership}
-            className="hero-cta-partnership inline-flex items-center gap-2 px-8 py-4 bg-black text-white rounded-full text-[15px] font-semibold border border-zinc-800 hover:bg-zinc-900 hover:border-zinc-600 hover:shadow-[0_0_22px_rgba(0,210,255,0.25)] will-change-[box-shadow] transition-all duration-200"
-          >
-            Партнёрская программа
-          </a>
-        </motion.div>
-      </div>
+      <HeroCtaSection />
 
       <motion.nav
         {...fadeUp(AFTER_TITLE + 0.2)}
@@ -121,6 +88,9 @@ export default function DarkHeroContent() {
         <a href="#configurator" className="hover:text-cyan-400/90 transition-colors">
           ↓ Собрать конфигурацию
         </a>
+        <Link href={PATHS.catalog} className="hover:text-cyan-400/90 transition-colors">
+          ↓ Каталог
+        </Link>
       </motion.nav>
     </div>
   );

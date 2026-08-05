@@ -1,33 +1,23 @@
 import DarkHeroContent from "@/components/DarkHeroContent";
 import DarkHeroEffects from "@/components/DarkHeroEffects";
-
-const gridFixed = { backgroundAttachment: "fixed" as const };
+import WindBackground from "@/components/WindBackground";
 
 export default function DarkHero() {
   return (
     <section className="light-mesh-top relative min-h-screen flex flex-col items-center justify-center text-center px-6 bg-zinc-950 overflow-hidden">
+      <WindBackground />
+
+      {/* Лёгкая сетка поверх звёзд — почти незаметная */}
       <div
         data-hero-grid
-        className="hero-grid-lines absolute inset-0 opacity-[0.07]"
+        className="hero-grid-lines absolute inset-0 opacity-[0.035] z-[1]"
         style={{
-          ...gridFixed,
           backgroundImage: `
             linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)
           `,
           backgroundSize: "72px 72px",
-        }}
-      />
-
-      <div
-        data-hero-grid
-        className="hero-grid-dots absolute inset-0 opacity-[0.04]"
-        style={{
-          ...gridFixed,
-          backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,1) 1.5px, transparent 1.5px)",
-          backgroundSize: "72px 72px",
-          backgroundPosition: "0 0",
+          backgroundAttachment: "fixed",
         }}
       />
 
@@ -35,12 +25,12 @@ export default function DarkHero() {
 
       <div
         data-hero-vignette
-        className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,transparent_0%,rgba(9,9,11,0.78)_100%)]"
+        className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,transparent_0%,rgba(9,10,15,0.72)_100%)]"
       />
 
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2"
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 z-[1]"
         style={{
           width: "90%",
           height: "2px",
@@ -50,7 +40,9 @@ export default function DarkHero() {
         }}
       />
 
-      <DarkHeroContent />
+      <div className="relative z-10 w-full">
+        <DarkHeroContent />
+      </div>
     </section>
   );
 }

@@ -4,11 +4,9 @@ import {
   createContext,
   useContext,
   useEffect,
-  useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
-
-// ─── types ─────────────────────────────────────────────────────────────────────
 
 export type Theme = "dark" | "light";
 
@@ -17,41 +15,48 @@ interface ThemeContextValue {
   toggleTheme: () => void;
 }
 
-// ─── context ───────────────────────────────────────────────────────────────────
-
 const ThemeContext = createContext<ThemeContextValue>({
   theme: "dark",
   toggleTheme: () => {},
 });
-
-// ─── helpers ───────────────────────────────────────────────────────────────────
 
 function applyTheme(t: Theme) {
   document.documentElement.classList.toggle("light", t === "light");
 }
 
 const STORAGE_KEY = "ksd-theme";
+const THEME_EVENT = "ksd-theme-change";
 
-// ─── provider ─────────────────────────────────────────────────────────────────
+function getThemeSnapshot(): Theme {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  return stored === "light" ? "light" : "dark";
+}
+
+function subscribeTheme(onStoreChange: () => void) {
+  window.addEventListener(THEME_EVENT, onStoreChange);
+  window.addEventListener("storage", onStoreChange);
+  return () => {
+    window.removeEventListener(THEME_EVENT, onStoreChange);
+    window.removeEventListener("storage", onStoreChange);
+  };
+}
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  // Default to "dark" for SSR — actual value is read from localStorage on mount
-  const [theme, setTheme] = useState<Theme>("dark");
+  const theme = useSyncExternalStore(
+    subscribeTheme,
+    getThemeSnapshot,
+    () => "dark" as Theme
+  );
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-    const initial: Theme = stored === "light" ? "light" : "dark";
-    setTheme(initial);
-    applyTheme(initial);
-  }, []);
+    applyTheme(theme);
+  }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((current) => {
-      const next: Theme = current === "dark" ? "light" : "dark";
-      localStorage.setItem(STORAGE_KEY, next);
-      applyTheme(next);
-      return next;
-    });
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    localStorage.setItem(STORAGE_KEY, next);
+    applyTheme(next);
+    window.dispatchEvent(new Event(THEME_EVENT));
   };
 
   return (
@@ -60,7 +65,5 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     </ThemeContext.Provider>
   );
 }
-
-// ─── hook ─────────────────────────────────────────────────────────────────────
 
 export const useTheme = () => useContext(ThemeContext);

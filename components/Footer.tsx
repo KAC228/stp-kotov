@@ -7,6 +7,7 @@ import { useTheme } from "@/context/ThemeContext";
 import {
   BRAND_NAME,
   CONTACTS,
+  PRICE_PER_METER_RUB,
   LEGAL,
   MAIN_NAV,
   PATHS,
@@ -46,10 +47,21 @@ export default function Footer() {
             </Link>
             <p className="text-[15px] leading-relaxed mb-8 max-w-md text-zinc-400">
               Камеры статического давления нового поколения. Единая цена{" "}
-              <span className="text-zinc-300">50 000 ₽ за метр</span> — тип потолка и
+              <span className="text-zinc-300">
+                {PRICE_PER_METER_RUB.toLocaleString("ru-RU")} ₽ за метр
+              </span>{" "}
+              — тип потолка и
               врезки включены в стоимость.
             </p>
             <div className="flex flex-wrap gap-3">
+              <a
+                href={SOCIAL.vk}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-full border border-zinc-700 text-sm text-zinc-400 hover:border-zinc-500 hover:text-white transition-colors duration-200"
+              >
+                ВКонтакте
+              </a>
               <a
                 href={SOCIAL.telegram}
                 target="_blank"
@@ -76,12 +88,21 @@ export default function Footer() {
             <ul className="space-y-3 text-[15px]">
               {MAIN_NAV.map(({ href, label }) => (
                 <li key={href + label}>
-                  <Link
-                    href={href}
-                    className="text-zinc-400 hover:text-white transition-colors duration-200"
-                  >
-                    {label}
-                  </Link>
+                  {href === PATHS.installation ? (
+                    <a
+                      href={href}
+                      className="text-zinc-400 hover:text-white transition-colors duration-200"
+                    >
+                      {label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={href}
+                      className="text-zinc-400 hover:text-white transition-colors duration-200"
+                    >
+                      {label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
