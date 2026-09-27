@@ -83,7 +83,11 @@ export default function OurPartnersClient() {
                 className="rounded-2xl border border-zinc-800 bg-zinc-900/70 overflow-hidden hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(0,210,255,0.14)] transition-[box-shadow,border-color] duration-300"
               >
                 <div className="px-6 py-5 border-b border-zinc-800 bg-zinc-900/90 flex items-center justify-between gap-4">
-                  <div className="min-h-12 flex items-center rounded-lg bg-white px-4 py-2.5 shadow-sm">
+                  {/* #fff: не bg-white — в light-теме --color-white инвертируется в почти чёрный */}
+                  <div
+                    className="partner-logo-plate min-h-12 flex items-center rounded-lg px-4 py-2.5 shadow-sm"
+                    style={{ backgroundColor: "#ffffff" }}
+                  >
                     <Image
                       src={partner.logo}
                       alt={`Логотип ${partner.name}`}
@@ -114,14 +118,16 @@ export default function OurPartnersClient() {
                     </p>
                   </div>
 
-                  {partner.catalogPage && (
-                    <Link
-                      href={partner.catalogPage}
+                  {partner.catalogUrl && (
+                    <a
+                      href={partner.catalogUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-zinc-950 text-sm font-semibold hover:bg-zinc-100 transition-colors w-fit"
                     >
-                      Открыть каталог
-                      <ArrowRight className="w-4 h-4" strokeWidth={2} />
-                    </Link>
+                      Каталог на сайте партнёра
+                      <ExternalLink className="w-4 h-4" strokeWidth={2} />
+                    </a>
                   )}
                   {partner.services && partner.services.length > 0 && (
                     <div className="flex flex-wrap gap-2">

@@ -21,9 +21,9 @@ import {
   Users,
 } from "lucide-react";
 import { CONTACTS, LEGAL, SOCIAL } from "@/constants/brand";
-import { formatPhoneRu, isPhoneCompleteRu } from "@/lib/phone";
-import { submitTelegramJson } from "@/lib/submitTelegram";
-import FormPrivacyNote from "@/components/FormPrivacyNote";
+import { formatPhoneRuInput, isPhoneCompleteRu } from "@/lib/phone";
+import { submitLeadJson } from "@/lib/submitLead";
+import FormConsent from "@/components/FormConsent";
 
 const sp = { type: "spring" as const, damping: 28, stiffness: 130 };
 
@@ -126,6 +126,7 @@ const ROLES = ["Дизайнер / Архитектор", "Монтажная к
 function EngineerForm() {
   const [form, setForm] = useState<FormData>({ name: "", phone: "", role: "", question: "" });
   const [status, setStatus] = useState<Status>("idle");
+  const [pdConsent, setPdConsent] = useState(false);
 
   const set =
     (key: keyof FormData) =>
@@ -134,10 +135,10 @@ function EngineerForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isPhoneCompleteRu(form.phone)) return;
+    if (!isPhoneCompleteRu(form.phone) || !pdConsent) return;
     setStatus("loading");
     try {
-      const res = await submitTelegramJson({
+      const res = await submitLeadJson({
         type: "Вопрос инженеру",
         name: form.name || "Не указано",
         phone: form.phone || "Не указан",
@@ -201,7 +202,10 @@ function EngineerForm() {
               value={form.phone}
               onChange={(e) => {
                 const raw = e.target.value;
-                setForm((f) => ({ ...f, phone: raw === "" ? "" : formatPhoneRu(raw) }));
+                setForm((f) => ({
+                  ...f,
+                  phone: formatPhoneRuInput(f.phone, raw),
+                }));
               }}
               onFocus={() => { if (!form.phone) setForm((f) => ({ ...f, phone: "+7 " })); }}
               placeholder="+7 (___) ___-__-__"
@@ -239,10 +243,14 @@ function EngineerForm() {
             </p>
           )}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-end justify-between gap-4 pt-1">
-            <FormPrivacyNote className="max-w-[280px]" />
+            <FormConsent
+              pdConsent={pdConsent}
+              onPdConsentChange={setPdConsent}
+              className="max-w-[320px]"
+            />
             <button
               type="submit"
-              disabled={status === "loading"}
+              disabled={status === "loading" || !pdConsent}
               className="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 bg-white text-zinc-950 rounded-full text-[15px] font-semibold hover:bg-zinc-100 disabled:opacity-60 transition-all duration-200"
             >
               {status === "loading" ? (

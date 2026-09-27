@@ -8,6 +8,7 @@ import { useState, useEffect, useSyncExternalStore, useRef, useCallback, CSSProp
 import { motion, AnimatePresence } from "framer-motion";
 import BrandLogo from "@/components/BrandLogo";
 import AirflowAnimation from "@/components/AirflowAnimation";
+import PaymentTicker from "@/components/PaymentTicker";
 import { BRAND_NAME, CONTACTS, HEADER_NAV, MAIN_NAV } from "@/constants/brand";
 
 /** На static export (nginx/reg.ru) client-side переход через next/link ломается — полная загрузка страницы. */
@@ -251,6 +252,7 @@ export default function Header() {
       className="ksd-header fixed top-0 left-0 right-0 z-50 transition-[background,box-shadow,backdrop-filter] duration-400"
       style={headerStyle}
     >
+      <PaymentTicker />
       {/* Top-edge sheen — "light hitting the upper rim" */}
       <div
         aria-hidden="true"

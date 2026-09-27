@@ -15,7 +15,7 @@ npm run dev
 
 См. [DEPLOY-REG.RU.md](./DEPLOY-REG.RU.md)
 
-Перед первым деплоем: скопируйте `public/send.php.example` → `public/send.php` и укажите токен Telegram.
+Перед первым деплоем: скопируйте `public/send.config.php.example` → `public/send.config.php` и укажите ключ сообщества ВК (`vk_access_token`, `vk_notify_user_ids`).
 
 ## Сборка
 

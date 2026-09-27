@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Layers, Sparkles, ShieldCheck, Wind, Package } from "lucide-react";
 import {
@@ -89,13 +88,15 @@ export default function SystemSolutionsSection() {
                       <p className="text-zinc-600 text-xs sm:text-sm leading-relaxed mb-6">
                         {system.partnerNote}
                       </p>
-                      <Link
+                      <a
                         className="inline-flex items-center justify-center gap-2 shrink-0 px-5 py-2.5 rounded-full border border-zinc-700 text-zinc-300 text-sm hover:border-cyan-400/40 hover:text-white transition-colors"
                         href={catalogHrefForCategory(system.catalogCategory)}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
-                        Перейти в каталог
+                        Каталог на fliben.ru
                         <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
-                      </Link>
+                      </a>
                     </div>
                   </div>
                 </div>

@@ -11,7 +11,7 @@ import {
 } from "@/constants/fliben-catalog";
 import { FLIBEN_PARTNER_NOTE } from "@/constants/fliben-docs";
 import { getSystemForCategory } from "@/constants/fliben-systems";
-import { PATHS } from "@/constants/brand";
+import { PATHS, FLIBEN_CATALOG_URL } from "@/constants/brand";
 import FlibenAddToCartButton from "@/components/FlibenAddToCartButton";
 import { CatalogProductPhoto } from "@/components/SitePhoto";
 
@@ -97,7 +97,7 @@ export default function FlibenProductClient({ product }: { product: FlibenProduc
     <div className="min-h-screen bg-zinc-950 pt-24">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-10 lg:py-14">
         <Link
-          href={PATHS.catalog}
+          href={FLIBEN_CATALOG_URL}
           className="inline-flex items-center gap-2 text-zinc-500 text-sm hover:text-white transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" strokeWidth={1.75} />

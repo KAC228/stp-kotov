@@ -5,10 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Trash2, Plus, Minus, ArrowRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { PATHS, PRICE_PER_METER_RUB } from "@/constants/brand";
-import { formatRub } from "@/constants/fliben-catalog";
-import type { FlibenProduct } from "@/constants/fliben-catalog";
-import { getCartRecommendations } from "@/lib/cart-recommendations";
-import { flibenToCartProduct, flibenToCartSize } from "@/lib/fliben-cart";
 
 const spring = { type: "spring" as const, damping: 32, stiffness: 280 };
 
@@ -30,11 +26,6 @@ export default function CartSlider() {
 
   const itemCount = state.items.reduce((s, i) => s + i.quantity, 0);
   const hasKsdItems = state.items.some((i) => !i.product.id.startsWith("fliben-"));
-  const recommendations = getCartRecommendations(state.items);
-
-  const addRecommendation = (product: FlibenProduct) => {
-    addItem(flibenToCartProduct(product), flibenToCartSize(product));
-  };
 
   return (
     <AnimatePresence>
@@ -88,14 +79,14 @@ export default function CartSlider() {
                       Корзина пуста
                     </p>
                     <p className="text-[#86868b] text-sm mb-8">
-                      Добавьте товары из каталога
+                      Соберите конфигурацию КСД на главной странице
                     </p>
                     <Link
-                      href={PATHS.catalog}
+                      href={PATHS.configurator}
                       onClick={closeCart}
                       className="inline-block px-6 py-2.5 bg-[#f5f5f7] text-[#1d1d1f] rounded-full text-sm font-medium hover:bg-[#e8e8ed] transition-colors duration-200"
                     >
-                      Перейти в каталог
+                      Открыть конфигуратор
                     </Link>
                   </motion.div>
                 ) : (
@@ -185,47 +176,6 @@ export default function CartSlider() {
 
             {state.items.length > 0 && (
               <div className="border-t border-[#d2d2d7] px-8 py-6 space-y-4">
-                {recommendations.products.length > 0 && (
-                  <div className="rounded-2xl border border-[#d2d2d7] bg-white p-4">
-                    <p className="text-[#1d1d1f] text-sm font-medium">Рекомендуем добавить</p>
-                    <p className="text-[#86868b] text-[11px] mt-0.5 mb-3">{recommendations.subtitle}</p>
-                    <ul className="space-y-2.5">
-                      {recommendations.products.map((rec) => (
-                        <li
-                          key={rec.sku}
-                          className="flex items-start justify-between gap-3 rounded-xl border border-[#e8e8ed] bg-[#fbfbfd] px-3 py-2.5"
-                        >
-                          <div className="flex items-start gap-2.5 min-w-0">
-                            <div className="relative w-11 h-11 rounded-lg overflow-hidden site-photo-thumb border border-[#e8e8ed] shrink-0">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                src={rec.image}
-                                alt=""
-                                className="absolute inset-0 w-full h-full object-contain p-1"
-                              />
-                            </div>
-                            <div className="min-w-0">
-                              <p className="text-[#1d1d1f] text-[13px] font-medium leading-tight line-clamp-2">
-                                {rec.title}
-                              </p>
-                              <p className="text-[#86868b] text-[11px] mt-0.5">арт. {rec.sku}</p>
-                              <p className="text-[#1d1d1f] text-xs mt-1">{formatRub(rec.priceRub)}</p>
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => addRecommendation(rec)}
-                            className="shrink-0 w-8 h-8 rounded-full border border-[#d2d2d7] bg-white text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
-                            aria-label={`Добавить ${rec.title}`}
-                          >
-                            <Plus className="w-3.5 h-3.5 mx-auto" strokeWidth={2} />
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
                 <div className="flex items-center justify-between">
                   <span className="text-[#86868b] text-sm">
                     Итого ({itemCount} шт.)

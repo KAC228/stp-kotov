@@ -70,23 +70,48 @@ function tbank_api_post(string $url, array $body): array
         return ['ok' => false, 'http' => 0, 'data' => null, 'raw' => ''];
     }
 
-    $ctx = stream_context_create([
-        'http' => [
-            'method' => 'POST',
-            'header' => "Content-Type: application/json\r\nAccept: application/json\r\n",
-            'content' => $json,
-            'timeout' => 30,
-            'ignore_errors' => true,
-        ],
-    ]);
-
-    $raw = @file_get_contents($url, false, $ctx);
+    $raw = false;
     $http = 0;
-    if (isset($http_response_header) && is_array($http_response_header)) {
-        foreach ($http_response_header as $line) {
-            if (preg_match('#^HTTP/\S+\s+(\d{3})#', $line, $m)) {
-                $http = (int)$m[1];
-                break;
+
+    // На shared-хостинге (reg.ru) allow_url_fopen часто выключен — curl надёжнее.
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $json,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Accept: application/json',
+            ],
+            CURLOPT_CONNECTTIMEOUT => 8,
+            CURLOPT_TIMEOUT => 15,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+        ]);
+        $raw = curl_exec($ch);
+        $http = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if ($raw === false) {
+            $raw = 'curl_error:' . curl_error($ch);
+        }
+        curl_close($ch);
+    } else {
+        $ctx = stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => "Content-Type: application/json\r\nAccept: application/json\r\n",
+                'content' => $json,
+                'timeout' => 30,
+                'ignore_errors' => true,
+            ],
+        ]);
+        $raw = @file_get_contents($url, false, $ctx);
+        if (isset($http_response_header) && is_array($http_response_header)) {
+            foreach ($http_response_header as $line) {
+                if (preg_match('#^HTTP/\S+\s+(\d{3})#', $line, $m)) {
+                    $http = (int)$m[1];
+                    break;
+                }
             }
         }
     }
@@ -155,9 +180,21 @@ function tbank_init(array $opts): array
 
     $res = tbank_api_post($apiUrl . '/Init', $payload);
     if (!$res['ok'] || !is_array($res['data'])) {
-        $msg = is_array($res['data'])
-            ? (string)($res['data']['Message'] ?? $res['data']['Details'] ?? 'Init failed')
-            : 'Init failed';
+        $msg = 'Init failed';
+        if (is_array($res['data'])) {
+            $parts = array_filter([
+                (string)($res['data']['Message'] ?? ''),
+                (string)($res['data']['Details'] ?? ''),
+                isset($res['data']['ErrorCode']) ? ('code ' . $res['data']['ErrorCode']) : '',
+            ]);
+            if ($parts !== []) {
+                $msg = implode(' · ', $parts);
+            }
+        } elseif ($res['raw'] !== '' && str_starts_with($res['raw'], 'curl_error:')) {
+            $msg = 'Network error reaching T-Bank';
+        } elseif ($res['http'] === 0 && $res['raw'] === '') {
+            $msg = 'Network error reaching T-Bank (enable curl / allow_url_fopen)';
+        }
         return ['ok' => false, 'error' => $msg, 'raw' => $res['data']];
     }
 

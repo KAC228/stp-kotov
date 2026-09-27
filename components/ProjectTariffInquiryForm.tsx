@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { Check, Loader2 } from "lucide-react";
-import { formatPhoneRu, isPhoneCompleteRu } from "@/lib/phone";
-import { submitTelegramJson } from "@/lib/submitTelegram";
-import FormPrivacyNote from "@/components/FormPrivacyNote";
+import { formatPhoneRuInput, isPhoneCompleteRu } from "@/lib/phone";
+import { submitLeadJson } from "@/lib/submitLead";
+import FormConsent from "@/components/FormConsent";
 import { formatRub } from "@/lib/fliben-content";
 
 type Status = "idle" | "loading" | "success" | "error";
@@ -24,16 +24,17 @@ export default function ProjectTariffInquiryForm({
   const [phone, setPhone] = useState("");
   const [comment, setComment] = useState("");
   const [status, setStatus] = useState<Status>("idle");
+  const [pdConsent, setPdConsent] = useState(false);
 
   const inputClass =
     "w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm placeholder-zinc-600 focus:outline-none focus:border-zinc-500";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isPhoneCompleteRu(phone)) return;
+    if (!isPhoneCompleteRu(phone) || !pdConsent) return;
     setStatus("loading");
     try {
-      const res = await submitTelegramJson({
+      const res = await submitLeadJson({
         type: "Заявка на типовой проект",
         project: projectTitle,
         area: `${areaSqm} м²`,
@@ -73,7 +74,7 @@ export default function ProjectTariffInquiryForm({
         type="tel"
         placeholder="+7 (___) ___-__-__"
         value={phone}
-        onChange={(e) => setPhone(formatPhoneRu(e.target.value))}
+        onChange={(e) => setPhone(formatPhoneRuInput(phone, e.target.value))}
         className={inputClass}
         required
       />
@@ -89,12 +90,12 @@ export default function ProjectTariffInquiryForm({
       )}
       <button
         type="submit"
-        disabled={status === "loading"}
+        disabled={status === "loading" || !pdConsent}
         className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-100 text-sm font-medium hover:bg-cyan-500/25 transition-colors disabled:opacity-60"
       >
         {status === "loading" ? <Loader2 className="w-4 h-4 animate-spin" /> : "Отправить заявку"}
       </button>
-      <FormPrivacyNote />
+      <FormConsent pdConsent={pdConsent} onPdConsentChange={setPdConsent} />
     </form>
   );
 }

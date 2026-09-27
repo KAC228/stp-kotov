@@ -411,10 +411,9 @@ html.light [data-hero-grid].hero-grid-dots {
   pointer-events: none;
 }
 
-/* Make cards/inputs stand out over the grey background */
-html.light .bg-zinc-900,
-html.light [class*="bg-zinc-900/"] {
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+/* Каталог: рамка карточки заметнее на светлом фоне (не «белая кайма») */
+html.light .border-zinc-800 {
+  border-color: rgba(15, 23, 42, 0.12);
 }
 
 /* Ensure guarantee green strip remains readable in light mode */
@@ -518,10 +517,12 @@ html.light .ksd-input:focus {
 }
 
 html.light .site-photo-frame--product {
-  background-color: #ffffff;
+  /* Не чисто белый — иначе на светлой теме «белая рамка» вокруг фото */
+  background-color: #eef0f3;
   box-shadow:
-    0 8px 22px rgba(15, 23, 42, 0.1),
-    0 2px 6px rgba(15, 23, 42, 0.06);
+    0 8px 22px rgba(15, 23, 42, 0.08),
+    0 2px 6px rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.06);
 }
 
 html.light .group:hover .site-photo-frame--product,
@@ -536,7 +537,7 @@ html.light .site-photo-frame--product:hover {
   background-color: #09090b;
 }
 html.light .site-photo-thumb {
-  background-color: #ffffff;
+  background-color: #eef0f3;
 }
 
 /* Cookie-баннер: читаемый текст в светлой теме */
@@ -735,4 +736,39 @@ html.light .tech-feature-lightbox .text-zinc-400 {
 
 .ksd-cookie-banner {
   animation: ksd-cookie-banner-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Payment ticker (бегущая строка про онлайн-оплату) ── */
+:root {
+  --ksd-ticker-h: 2.25rem;
+}
+
+@keyframes ksd-payment-ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ksd-payment-ticker-track {
+  animation: ksd-payment-ticker-scroll 42s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ksd-payment-ticker-track {
+    animation: none;
+    width: 100%;
+    justify-content: center;
+    white-space: normal;
+  }
+
+  .ksd-payment-ticker-track span:last-child {
+    display: none;
+  }
+}
+
+body:has(.ksd-payment-ticker) .pt-24 {
+  padding-top: calc(6rem + var(--ksd-ticker-h));
 }

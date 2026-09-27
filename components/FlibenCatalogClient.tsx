@@ -17,7 +17,7 @@ import {
   type FlibenProduct,
 } from "@/constants/fliben-catalog";
 import { filterFlibenProducts } from "@/lib/fliben-products";
-import { PATHS } from "@/constants/brand";
+import { PATHS, FLIBEN_CATALOG_URL } from "@/constants/brand";
 import FlibenAddToCartButton from "@/components/FlibenAddToCartButton";
 import { CatalogProductPhoto } from "@/components/SitePhoto";
 
@@ -254,7 +254,7 @@ export default function FlibenCatalogClient({
                 className="group rounded-2xl border border-zinc-800 bg-zinc-900/60 overflow-hidden shadow-[0_12px_32px_rgba(0,0,0,0.35)] hover:border-cyan-400/30 hover:shadow-[0_16px_40px_rgba(0,0,0,0.45),0_0_24px_rgba(0,210,255,0.08)] transition-[box-shadow,border-color] duration-300 flex flex-col"
               >
                 <Link
-                  href={`${PATHS.catalog}/${product.slug}`}
+                  href={FLIBEN_CATALOG_URL}
                   className="block relative overflow-hidden"
                 >
                   <CatalogProductPhoto
@@ -279,7 +279,7 @@ export default function FlibenCatalogClient({
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2">
                     <Link
-                      href={`${PATHS.catalog}/${product.slug}`}
+                      href={FLIBEN_CATALOG_URL}
                       className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-zinc-700 text-zinc-300 text-sm hover:border-zinc-500 hover:text-white transition-colors"
                     >
                       Подробнее

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -6,6 +6,10 @@ import { useSearchParams } from "next/navigation";
 import { CheckCircle, Loader2, XCircle, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
+import {
+  clearRememberedTbankPayment,
+  readRememberedTbankPaymentId,
+} from "@/lib/tbank-session";
 
 const spring = { type: "spring" as const, damping: 24, stiffness: 160 };
 
@@ -16,17 +20,56 @@ type VerifyState =
   | { kind: "unpaid"; status?: string | null }
   | { kind: "error" };
 
+function pickPaymentId(search: URLSearchParams): string {
+  const fromUrl = (
+    search.get("PaymentId") ||
+    search.get("paymentId") ||
+    search.get("Paymentid") ||
+    ""
+  ).trim();
+  if (/^\d{1,20}$/.test(fromUrl)) return fromUrl;
+  return readRememberedTbankPaymentId();
+}
+
+async function fetchPayStatus(paymentId: string, attempt = 0): Promise<{
+  ok: boolean;
+  paid?: boolean;
+  status?: string;
+  orderId?: string;
+  amountRub?: number;
+}> {
+  const res = await fetch(
+    `/pay-status.php?PaymentId=${encodeURIComponent(paymentId)}`,
+    { cache: "no-store" },
+  );
+  // 502/504/сеть — короткие ретраи (банк иногда отвечает медленно)
+  if ((res.status >= 500 || res.status === 429) && attempt < 3) {
+    await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+    return fetchPayStatus(paymentId, attempt + 1);
+  }
+  const data = (await res.json().catch(() => null)) as {
+    ok?: boolean;
+    paid?: boolean;
+    status?: string;
+    orderId?: string;
+    amountRub?: number;
+  } | null;
+  if (!res.ok || !data) {
+    return { ok: false };
+  }
+  return {
+    ok: Boolean(data.ok),
+    paid: data.paid,
+    status: data.status,
+    orderId: data.orderId,
+    amountRub: data.amountRub,
+  };
+}
+
 export default function SuccessPageClient() {
   const { clearCart } = useCart();
   const search = useSearchParams();
-  const paymentId = useMemo(() => {
-    const raw =
-      search.get("PaymentId") ||
-      search.get("paymentId") ||
-      search.get("Paymentid") ||
-      "";
-    return raw.trim();
-  }, [search]);
+  const paymentId = useMemo(() => pickPaymentId(search), [search]);
 
   const [state, setState] = useState<VerifyState>({ kind: "loading" });
 
@@ -40,27 +83,29 @@ export default function SuccessPageClient() {
       return;
     }
 
+    // Подтянуть PaymentId в адресную строку, если пришли только из sessionStorage
+    try {
+      const url = new URL(window.location.href);
+      if (!url.searchParams.get("PaymentId")) {
+        url.searchParams.set("PaymentId", paymentId);
+        window.history.replaceState({}, "", url.toString());
+      }
+    } catch {
+      /* ignore */
+    }
+
     let cancelled = false;
     const run = async () => {
       try {
-        const res = await fetch(
-          `/pay-status.php?PaymentId=${encodeURIComponent(paymentId)}`,
-          { cache: "no-store" },
-        );
-        const data = (await res.json().catch(() => null)) as {
-          ok?: boolean;
-          paid?: boolean;
-          status?: string;
-          orderId?: string;
-          amountRub?: number;
-        } | null;
+        const data = await fetchPayStatus(paymentId);
         if (cancelled) return;
-        if (!res.ok || !data?.ok) {
+        if (!data.ok) {
           setState({ kind: "error" });
           return;
         }
         if (data.paid) {
           clearCart();
+          clearRememberedTbankPayment();
           setState({
             kind: "paid",
             orderId: data.orderId,
@@ -149,7 +194,16 @@ export default function SuccessPageClient() {
           {state.status ? ` (статус: ${state.status})` : ""}. Если списание прошло — подождите минуту и обновите
           страницу.
         </p>
-        <HomeLink />
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-zinc-950 text-sm font-semibold hover:bg-zinc-100 active:scale-95 transition-all duration-200 mb-4"
+        >
+          Обновить статус
+        </button>
+        <div>
+          <HomeLink />
+        </div>
       </Shell>
     );
   }
@@ -160,8 +214,8 @@ export default function SuccessPageClient() {
         <XCircle className="w-16 h-16 text-zinc-600 mx-auto mb-6" strokeWidth={1.5} />
         <h1 className="text-white text-2xl font-semibold tracking-tight mb-3">Нет данных платежа</h1>
         <p className="text-zinc-400 text-sm leading-relaxed mb-8 max-w-sm mx-auto">
-          Страница успеха открывается только после оплаты через T‑Bank. Самостоятельный переход сюда оплату не
-          подтверждает.
+          Не удалось получить номер платежа после возврата из банка. Если деньги списались — чек придёт на email, а
+          заказ мы увидим по уведомлению банка. Напишите нам в контакты, если чека нет.
         </p>
         <HomeLink />
       </Shell>
@@ -172,8 +226,20 @@ export default function SuccessPageClient() {
     <Shell>
       <XCircle className="w-16 h-16 text-red-400 mx-auto mb-6" strokeWidth={1.5} />
       <h1 className="text-white text-2xl font-semibold tracking-tight mb-3">Не удалось проверить оплату</h1>
-      <p className="text-zinc-400 text-sm mb-8">Попробуйте обновить страницу или напишите нам в контакты.</p>
-      <HomeLink />
+      <p className="text-zinc-400 text-sm mb-8">
+        Связь с банком временно недоступна (иногда бывает 504). Подождите и нажмите «Обновить статус» — если деньги
+        списались, статус станет «подтверждена».
+      </p>
+      <button
+        type="button"
+        onClick={() => window.location.reload()}
+        className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-zinc-950 text-sm font-semibold hover:bg-zinc-100 active:scale-95 transition-all duration-200 mb-4"
+      >
+        Обновить статус
+      </button>
+      <div>
+        <HomeLink />
+      </div>
     </Shell>
   );
 }

@@ -6,10 +6,10 @@ import { Upload, Phone, Send, CheckCircle2, Ruler, X } from "lucide-react";
 import {
   fileToAttachmentFields,
   MAX_ATTACHMENT_BYTES,
-  submitTelegramJson,
-} from "@/lib/submitTelegram";
-import { formatPhoneRu, isPhoneCompleteRu } from "@/lib/phone";
-import FormPrivacyNote from "@/components/FormPrivacyNote";
+  submitLeadJson,
+} from "@/lib/submitLead";
+import { formatPhoneRuInput, isPhoneCompleteRu } from "@/lib/phone";
+import FormConsent from "@/components/FormConsent";
 
 interface CustomSizeFormProps {
   onClose?: () => void;
@@ -20,15 +20,11 @@ export default function CustomSizeForm({ onClose }: CustomSizeFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [pdConsent, setPdConsent] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    if (raw === "") {
-      setPhone("");
-      return;
-    }
-    setPhone(formatPhoneRu(raw));
+    setPhone(formatPhoneRuInput(phone, e.target.value));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +40,7 @@ export default function CustomSizeForm({ onClose }: CustomSizeFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isPhoneCompleteRu(phone)) return;
+    if (!isPhoneCompleteRu(phone) || !pdConsent) return;
 
     setStatus("loading");
 
@@ -55,7 +51,7 @@ export default function CustomSizeForm({ onClose }: CustomSizeFormProps) {
       };
       if (file) Object.assign(body, await fileToAttachmentFields(file));
 
-      const res = await submitTelegramJson(body);
+      const res = await submitLeadJson(body);
       if (!res.ok) throw new Error("Server error");
       setStatus("success");
     } catch {
@@ -157,15 +153,15 @@ export default function CustomSizeForm({ onClose }: CustomSizeFormProps) {
             )}
 
             <div className="space-y-3 pt-1">
+              <FormConsent pdConsent={pdConsent} onPdConsentChange={setPdConsent} />
               <button
                 type="submit"
-                disabled={status === "loading" || !isPhoneCompleteRu(phone)}
+                disabled={status === "loading" || !isPhoneCompleteRu(phone) || !pdConsent}
                 className="w-full flex items-center justify-center gap-2 py-3.5 bg-white text-zinc-950 rounded-xl text-[15px] font-semibold hover:bg-zinc-100 disabled:opacity-50 transition-colors"
               >
                 <Send className="w-4 h-4" strokeWidth={2} />
                 {status === "loading" ? "Отправляем…" : "Отправить на расчёт"}
               </button>
-              <FormPrivacyNote />
             </div>
           </motion.form>
         )}

@@ -227,10 +227,15 @@ $receipt = [
     'Items' => $receiptItems,
 ];
 $phoneDigits = preg_replace('/\D+/', '', $phone) ?? '';
-if (strlen($phoneDigits) >= 10) {
-    $receipt['Phone'] = '+' . (str_starts_with($phoneDigits, '8')
-        ? ('7' . substr($phoneDigits, 1))
-        : $phoneDigits);
+// Только нормальный RU-мобильный в чек; иначе банк может отклонить Receipt
+if (preg_match('/^(?:7|8)?9\d{9}$/', $phoneDigits)) {
+    $norm = $phoneDigits;
+    if (str_starts_with($norm, '8')) {
+        $norm = '7' . substr($norm, 1);
+    } elseif (strlen($norm) === 10) {
+        $norm = '7' . $norm;
+    }
+    $receipt['Phone'] = '+' . $norm;
 }
 
 $init = tbank_init([
@@ -249,9 +254,15 @@ $init = tbank_init([
 
 if (!$init['ok']) {
     http_response_code(502);
+    $bankError = trim((string)($init['error'] ?? 'Payment init failed'));
+    // Клиенту — кратко; без паролей/токенов. ErrorCode/Message от банка безопасны.
+    $safe = mb_substr($bankError, 0, 180);
+    if ($safe === '' || $safe === 'Init failed') {
+        $safe = 'Payment init failed';
+    }
     echo json_encode([
         'success' => false,
-        'error' => 'Payment init failed',
+        'error' => $safe,
     ]);
     exit;
 }
@@ -284,6 +295,8 @@ function pay_is_allowed_payment_url(string $url): bool
     $allowed = [
         'securepay.tinkoff.ru',
         'securepay.tbank.ru',
+        'pay.tbank.ru',
+        'pay.tinkoff.ru',
         'www.tinkoff.ru',
         'www.tbank.ru',
     ];

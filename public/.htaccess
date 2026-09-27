@@ -21,19 +21,20 @@ DirectoryIndex index.html
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # Канонический каталог: старый URL партнёра → /catalog
-  RewriteRule ^our-partners/fliben/catalog/?$ /catalog [R=301,L]
+  # Каталог снят — старые URL → раздел партнёров
+  RewriteRule ^catalog(/.*)?$ /our-partners [R=301,L]
+  RewriteRule ^our-partners/fliben/catalog/?$ /our-partners [R=301,L]
 
-  # Next.js export: папка без index.html → одноимённый .html
+  # Next.js export: папка без index.html → одноимённый .html (QSA — не терять ?PaymentId=…)
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteCond %{REQUEST_URI} ^/(.+?)/?$
   RewriteCond %{DOCUMENT_ROOT}/%1.html -f
-  RewriteRule ^(.+?)/?$ $1.html [L]
+  RewriteRule ^(.+?)/?$ $1.html [L,QSA]
 
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME}.html -f
-  RewriteRule ^(.+?)/?$ $1.html [L]
+  RewriteRule ^(.+?)/?$ $1.html [L,QSA]
 
   # Next.js App Router (static export): dotted RSC paths → папки в out/
   RewriteCond %{REQUEST_FILENAME} !-f

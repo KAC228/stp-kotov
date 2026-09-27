@@ -3,11 +3,12 @@ export const MAX_ATTACHMENT_BYTES = 5 * 1024 * 1024;
 function resolveSendUrl(): string {
   if (typeof window === "undefined") return "/send.php";
   const host = window.location.hostname;
-  if (host === "localhost" || host === "127.0.0.1") return "/api/telegram";
+  if (host === "localhost" || host === "127.0.0.1") return "/api/vk";
   return "/send.php";
 }
 
-export async function submitTelegramJson(
+/** Отправка заявки: localhost → /api/vk, прод → /send.php (ВК). */
+export async function submitLeadJson(
   payload: Record<string, unknown>
 ): Promise<Response> {
   return fetch(resolveSendUrl(), {
@@ -43,6 +44,8 @@ export function isAllowedTbankPaymentUrl(url: string): boolean {
     if (
       host === "securepay.tinkoff.ru" ||
       host === "securepay.tbank.ru" ||
+      host === "pay.tbank.ru" ||
+      host === "pay.tinkoff.ru" ||
       host === "www.tinkoff.ru" ||
       host === "www.tbank.ru"
     ) {
@@ -54,7 +57,7 @@ export function isAllowedTbankPaymentUrl(url: string): boolean {
   }
 }
 
-/** Кодирует файл в base64 для передачи в JSON (PHP: send.php → sendDocument). */
+/** Кодирует файл в base64 для передачи в JSON (PHP: send.php → вложение ВК). */
 export async function fileToAttachmentFields(file: File): Promise<{
   _fileBase64: string;
   _fileName: string;

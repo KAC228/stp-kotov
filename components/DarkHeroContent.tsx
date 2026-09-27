@@ -88,8 +88,8 @@ export default function DarkHeroContent() {
         <a href="#configurator" className="hover:text-cyan-400/90 transition-colors">
           ↓ Собрать конфигурацию
         </a>
-        <Link href={PATHS.catalog} className="hover:text-cyan-400/90 transition-colors">
-          ↓ Каталог
+        <Link href={PATHS.ourPartners} className="hover:text-cyan-400/90 transition-colors">
+          ↓ Наши партнёры
         </Link>
       </motion.nav>
     </div>

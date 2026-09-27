@@ -1,4 +1,3 @@
-import { PATHS } from "@/constants/brand";
 import type { FlibenCategoryId } from "@/constants/fliben-catalog";
 
 export type HomepageSystemSolution = {
@@ -89,6 +88,6 @@ export const HOMEPAGE_SYSTEM_SOLUTIONS: readonly HomepageSystemSolution[] = [
   },
 ] as const;
 
-export function catalogHrefForCategory(category: FlibenCategoryId): string {
-  return `${PATHS.catalog}?cat=${category}`;
+export function catalogHrefForCategory(_category: FlibenCategoryId): string {
+  return "https://fliben.ru/catalog";
 }

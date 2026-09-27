@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { ConfiguratorQuotePayload, Product } from "@/types";
-import { PATHS, PRICE_PER_METER_RUB, WARRANTY_YEARS } from "@/constants/brand";
+import { PATHS, PRICE_PER_METER_RUB, WARRANTY_YEARS, FLIBEN_CATALOG_URL } from "@/constants/brand";
 import CustomSizeForm from "./CustomSizeForm";
 import IdleInterceptor from "./IdleInterceptor";
 import KsdEngineerViewer from "./KsdEngineerViewer";
@@ -638,9 +638,11 @@ function PricePanelContent({
           *{" "}
           <a
             href={componentsHref}
+            target={componentsHref.startsWith("http") ? "_blank" : undefined}
+            rel={componentsHref.startsWith("http") ? "noopener noreferrer" : undefined}
             className="text-cyan-400/80 hover:text-cyan-300 underline-offset-2 hover:underline"
           >
-            перейти к подбору компонентов
+            подбор компонентов Fliben
           </a>
           *
         </p>
@@ -1435,7 +1437,7 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
                     added={added}
                     onAdd={handleAddToCart}
                     onOpenCustomForm={openQuoteForm}
-                    componentsHref={PATHS.catalog}
+                    componentsHref={FLIBEN_CATALOG_URL}
                   />
                 </div>
               </div>
@@ -1508,10 +1510,12 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
                 <p className="text-zinc-700 text-[10px] leading-tight mt-1.5">
                   *{" "}
                   <a
-                    href={PATHS.catalog}
+                    href={FLIBEN_CATALOG_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-cyan-400/80 hover:text-cyan-300 underline-offset-2 hover:underline"
                   >
-                    перейти к подбору компонентов
+                    подбор компонентов Fliben
                   </a>
                   *
                 </p>

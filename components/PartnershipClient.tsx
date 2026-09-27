@@ -16,9 +16,9 @@ import {
   Check,
   Loader2,
 } from "lucide-react";
-import { formatPhoneRu, isPhoneCompleteRu } from "@/lib/phone";
-import { submitTelegramJson } from "@/lib/submitTelegram";
-import FormPrivacyNote from "@/components/FormPrivacyNote";
+import { formatPhoneRuInput, isPhoneCompleteRu } from "@/lib/phone";
+import { submitLeadJson } from "@/lib/submitLead";
+import FormConsent from "@/components/FormConsent";
 
 const spring = { type: "spring" as const, damping: 28, stiffness: 130 };
 
@@ -147,6 +147,7 @@ type Status = "idle" | "loading" | "success" | "error";
 function ContactForm() {
   const [form, setForm] = useState<FormState>({ name: "", phone: "", company: "", message: "" });
   const [status, setStatus] = useState<Status>("idle");
+  const [pdConsent, setPdConsent] = useState(false);
 
   const set =
     (key: keyof FormState) =>
@@ -155,10 +156,10 @@ function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isPhoneCompleteRu(form.phone)) return;
+    if (!isPhoneCompleteRu(form.phone) || !pdConsent) return;
     setStatus("loading");
     try {
-      const res = await submitTelegramJson({
+      const res = await submitLeadJson({
         type: "Заявка на партнёрство",
         name: form.name || "Не указано",
         phone: form.phone || "Не указан",
@@ -168,6 +169,7 @@ function ContactForm() {
       if (!res.ok) throw new Error();
       setStatus("success");
       setForm({ name: "", phone: "", company: "", message: "" });
+      setPdConsent(false);
     } catch {
       setStatus("error");
     }
@@ -215,7 +217,10 @@ function ContactForm() {
               value={form.phone}
               onChange={(e) => {
                 const raw = e.target.value;
-                setForm((f) => ({ ...f, phone: raw === "" ? "" : formatPhoneRu(raw) }));
+                setForm((f) => ({
+                  ...f,
+                  phone: formatPhoneRuInput(f.phone, raw),
+                }));
               }}
               onFocus={() => { if (!form.phone) setForm((f) => ({ ...f, phone: "+7 " })); }}
               placeholder="+7 (___) ___-__-__"
@@ -237,9 +242,14 @@ function ContactForm() {
                 Не удалось отправить заявку — попробуйте ещё раз или позвоните нам.
               </p>
             )}
+            <FormConsent
+              pdConsent={pdConsent}
+              onPdConsentChange={setPdConsent}
+              className="w-full text-left"
+            />
             <button
               type="submit"
-              disabled={status === "loading"}
+              disabled={status === "loading" || !pdConsent}
               className="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-zinc-950 rounded-full text-[15px] font-semibold hover:bg-zinc-100 disabled:opacity-60 transition-all duration-200"
             >
               {status === "loading" ? (
@@ -248,7 +258,6 @@ function ContactForm() {
                 "Отправить заявку"
               )}
             </button>
-            <FormPrivacyNote className="text-right w-full" />
           </div>
         </motion.form>
       )}

@@ -41,20 +41,20 @@ export const SITE_URL = "https://стп-котов.рф" as const;
 
 export const SOCIAL = {
   vk: "https://vk.com/stp_kotov",
-  telegram: "https://t.me/stp_kotov",
   whatsapp: "https://wa.me/78005550000",
 } as const;
+
+/** Каталог Fliben на сайте производителя */
+export const FLIBEN_CATALOG_URL = "https://fliben.ru/catalog" as const;
 
 export const PATHS = {
   home: "/",
   configurator: "/#configurator",
-  catalog: "/catalog",
   contactsEngineer: "/contacts#engineer",
   installation: "/installation",
   systemSolutions: "/#systems",
   partnership: "/partnership",
   ourPartners: "/our-partners",
-  flibenCatalog: "/catalog",
   delivery: "/delivery-payment",
   team: "/team",
   contacts: "/contacts",
@@ -70,7 +70,6 @@ export type NavItem = { href: string; label: string; external?: boolean };
 /** Компактное меню в шапке — без переполнения на ноутбуках */
 export const HEADER_NAV: NavItem[] = [
   { href: PATHS.configurator, label: "Конфигуратор" },
-  { href: PATHS.catalog, label: "Каталог" },
   { href: PATHS.articles, label: "Статьи" },
   { href: PATHS.projects, label: "Типовые проекты" },
   { href: PATHS.systemSolutions, label: "Системные решения" },
@@ -85,7 +84,6 @@ export const HEADER_NAV: NavItem[] = [
 /** Полное меню — мобильная шторка и подвал */
 export const MAIN_NAV: NavItem[] = [
   { href: PATHS.configurator, label: "Конфигуратор" },
-  { href: PATHS.catalog, label: "Каталог" },
   { href: PATHS.articles, label: "Статьи" },
   { href: PATHS.projects, label: "Типовые проекты" },
   { href: PATHS.systemSolutions, label: "Системные решения" },

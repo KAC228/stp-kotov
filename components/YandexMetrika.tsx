@@ -15,7 +15,8 @@ function subscribeConsent(onStoreChange: () => void) {
 }
 
 function getConsentSnapshot() {
-  return localStorage.getItem(CONSENT_KEY) === "true";
+  const v = localStorage.getItem(CONSENT_KEY);
+  return v === "accepted" || v === "true";
 }
 
 function getConsentServerSnapshot() {

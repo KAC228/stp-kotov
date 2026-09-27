@@ -28,7 +28,7 @@ export default function FlibenDocsClient() {
     <div className="min-h-screen bg-zinc-950 pt-24">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-10 lg:py-14">
         <Link
-          href={PATHS.catalog}
+          href={PATHS.ourPartners}
           className="inline-flex items-center gap-2 text-zinc-500 text-sm hover:text-white transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" strokeWidth={1.75} />

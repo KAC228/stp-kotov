@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Phone, Send, CheckCircle2, Wrench, Minus, MessageCircle } from "lucide-react";
-import { formatPhoneRu, isPhoneCompleteRu } from "@/lib/phone";
-import { submitTelegramJson } from "@/lib/submitTelegram";
-import FormPrivacyNote from "@/components/FormPrivacyNote";
+import { formatPhoneRuInput, isPhoneCompleteRu } from "@/lib/phone";
+import { submitLeadJson } from "@/lib/submitLead";
+import FormConsent from "@/components/FormConsent";
 
 // ─── component ────────────────────────────────────────────────────────────────
 
@@ -23,6 +23,7 @@ export default function IdleInterceptor({
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorHint, setErrorHint] = useState("");
+  const [pdConsent, setPdConsent] = useState(false);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dismissedRef = useRef(false);
@@ -80,11 +81,11 @@ export default function IdleInterceptor({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isPhoneCompleteRu(phone)) return;
+    if (!isPhoneCompleteRu(phone) || !pdConsent) return;
     setStatus("loading");
     setErrorHint("");
     try {
-      const res = await submitTelegramJson({
+      const res = await submitLeadJson({
         type: "Помощь инженера (конфигуратор)",
         phone,
         message:
@@ -92,8 +93,8 @@ export default function IdleInterceptor({
       });
       if (!res.ok) {
         const data = (await res.json().catch(() => null)) as { error?: string } | null;
-        if (data?.error?.includes("Network error")) {
-          setErrorHint("Сервис Telegram недоступен с этого подключения. На сервере сайта обычно работает.");
+        if (data?.error?.includes("Network error") || data?.error?.includes("VK")) {
+          setErrorHint("Сервис заявок недоступен с этого подключения. На сервере сайта обычно работает.");
         }
         throw new Error();
       }
@@ -192,9 +193,7 @@ export default function IdleInterceptor({
                           type="tel"
                           value={phone}
                           onChange={(e) => {
-                            const raw = e.target.value;
-                            if (raw === "") { setPhone(""); return; }
-                            setPhone(formatPhoneRu(raw));
+                            setPhone(formatPhoneRuInput(phone, e.target.value));
                           }}
                           placeholder="+7 (___) ___-__-__"
                           className="w-full bg-zinc-800 border border-zinc-700 rounded-xl pl-10 pr-4 py-3 text-white text-sm placeholder-zinc-700 outline-none transition-all duration-200 focus:border-zinc-600"
@@ -207,13 +206,13 @@ export default function IdleInterceptor({
                         </p>
                       )}
 
-                      <FormPrivacyNote />
+                      <FormConsent pdConsent={pdConsent} onPdConsentChange={setPdConsent} />
 
                       <button
                         type="submit"
-                        disabled={!isPhoneCompleteRu(phone) || status === "loading"}
+                        disabled={!isPhoneCompleteRu(phone) || !pdConsent || status === "loading"}
                         className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all duration-200 will-change-[box-shadow] ${
-                          isPhoneCompleteRu(phone)
+                          isPhoneCompleteRu(phone) && pdConsent
                             ? "bg-white text-zinc-950 hover:bg-zinc-100 hover:shadow-glow-strong"
                             : "bg-zinc-800 text-zinc-600 cursor-not-allowed border border-zinc-700"
                         }`}

@@ -87,6 +87,10 @@ if ($origin !== '') {
 } elseif ($referer !== '') {
     $rh = strtolower((string)(parse_url($referer, PHP_URL_HOST) ?? ''));
     $okBrowser = $sameSiteHost($rh, $host);
+} else {
+    // same-origin fetch без Origin/Referer (редко) — пускаем только GET с валидным PaymentId ниже
+    $secFetchSite = strtolower((string)($_SERVER['HTTP_SEC_FETCH_SITE'] ?? ''));
+    $okBrowser = $secFetchSite === 'same-origin' || $secFetchSite === 'same-site' || $secFetchSite === '';
 }
 if (!$okBrowser) {
     http_response_code(403);

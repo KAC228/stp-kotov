@@ -12,8 +12,8 @@ export type Partner = {
   services?: readonly string[];
   /** Ссылки на каталог, BIM, сертификаты и т.п. */
   resources?: readonly { label: string; href: string }[];
-  /** Внутренняя страница каталога на сайте СТП-КОТОВ */
-  catalogPage?: string;
+  /** Внешняя ссылка на каталог партнёра */
+  catalogUrl?: string;
 };
 
 export const PARTNERS: readonly Partner[] = [
@@ -55,11 +55,10 @@ export const PARTNERS: readonly Partner[] = [
       "Приточно-вытяжные установки",
       "Проектирование и консалтинг",
     ],
-    catalogPage: "/catalog",
+    catalogUrl: "https://fliben.ru/catalog",
     resources: [
-      { label: "Каталог на сайте СТП-КОТОВ", href: "/catalog" },
+      { label: "Каталог на fliben.ru", href: "https://fliben.ru/catalog" },
       { label: "Сертификаты", href: "/certificates" },
-      { label: "Полный каталог на fliben.ru", href: "https://fliben.ru/catalog" },
       { label: "Партнёрская программа", href: "https://fliben.ru/partnership" },
     ],
   },

@@ -22,15 +22,15 @@ import {
   PaymentMethod,
 } from "@/types";
 import { PATHS, PRICE_PER_METER_RUB } from "@/constants/brand";
-import { formatPhoneRu, isPhoneCompleteRu } from "@/lib/phone";
+import { formatPhoneRuInput, isPhoneCompleteRu } from "@/lib/phone";
 import {
   fileToAttachmentFields,
   MAX_ATTACHMENT_BYTES,
-  submitTelegramJson,
+  submitLeadJson,
   submitPayInit,
   isAllowedTbankPaymentUrl,
-} from "@/lib/submitTelegram";
-import FormPrivacyNote from "@/components/FormPrivacyNote";
+} from "@/lib/submitLead";
+import FormConsent from "@/components/FormConsent";
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
 
@@ -252,7 +252,7 @@ function IndividualForm({
           name="phone"
           type="tel"
           value={data.phone}
-          onChange={(e) => onChange("phone", formatPhoneRu(e.target.value))}
+          onChange={(e) => onChange("phone", formatPhoneRuInput(data.phone, e.target.value))}
           onFocus={() => {
             if (!data.phone) onChange("phone", "+7 ");
           }}
@@ -378,7 +378,7 @@ function LegalForm({
           name="phone"
           type="tel"
           value={data.phone}
-          onChange={(e) => onChange("phone", formatPhoneRu(e.target.value))}
+          onChange={(e) => onChange("phone", formatPhoneRuInput(data.phone, e.target.value))}
           onFocus={() => {
             if (!data.phone) onChange("phone", "+7 ");
           }}
@@ -497,6 +497,8 @@ export default function OrderForm() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("Не удалось отправить заявку — попробуйте ещё раз.");
+  const [pdConsent, setPdConsent] = useState(false);
+  const [offerConsent, setOfferConsent] = useState(false);
 
   const isIndividual = customerType === "individual";
   const isQuoteFlow = quoteDraft !== null;
@@ -513,7 +515,7 @@ export default function OrderForm() {
 
   // --- validation ---
 
-  const isValid = isQuoteFlow
+  const fieldsValid = isQuoteFlow
     ? individual.name.trim().length > 0 && isPhoneCompleteRu(individual.phone)
     : isIndividual
     ? individual.name.trim().length > 0 && isPhoneCompleteRu(individual.phone) && individual.email.trim().length > 0
@@ -524,6 +526,8 @@ export default function OrderForm() {
       legal.email.trim().length > 0 &&
       (!legal.phone || isPhoneCompleteRu(legal.phone));
 
+  const isValid = fieldsValid && pdConsent && (isQuoteFlow || offerConsent);
+
   // --- submit ---
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -532,7 +536,7 @@ export default function OrderForm() {
     setStatus("loading");
     setErrorMsg("Не удалось отправить заявку — попробуйте ещё раз.");
 
-    // Flat items string so Telegram shows it inline
+    // Flat items string so VK message shows it inline
     const itemsStr = state.items
       .map((item) => {
         const unit = (item.product.basePrice ?? 0) + (item.selectedSize.priceModifier ?? 0);
@@ -546,9 +550,12 @@ export default function OrderForm() {
     const cartLines = state.items.map((item) => {
       const unit = (item.product.basePrice ?? 0) + (item.selectedSize.priceModifier ?? 0);
       const skuMatch = item.product.shortName?.match(/арт\.\s*(.+)$/i);
+      const fromFlibenId = item.product.id.startsWith("fliben-")
+        ? item.product.id.slice("fliben-".length)
+        : null;
       return {
         name: item.product.name ?? item.product.shortName ?? "Товар",
-        sku: skuMatch?.[1]?.trim() ?? item.product.id,
+        sku: skuMatch?.[1]?.trim() ?? fromFlibenId ?? item.product.id,
         quantity: item.quantity ?? 1,
         priceRub: unit,
       };
@@ -622,13 +629,21 @@ export default function OrderForm() {
         const body = (await res.json().catch(() => null)) as {
           success?: boolean;
           paymentUrl?: string;
+          paymentId?: string;
+          orderId?: string;
           error?: string;
         } | null;
         if (!res.ok || !body?.success || !body.paymentUrl) {
-          throw new Error(body?.error || `HTTP ${res.status}`);
+          const detail = body?.error?.trim();
+          throw new Error(detail ? `PAY:${detail}` : `HTTP ${res.status}`);
         }
         if (!isAllowedTbankPaymentUrl(body.paymentUrl)) {
           throw new Error("Invalid payment URL");
+        }
+        // PaymentId до редиректа: банк/моб. «Готово» иногда открывает /success без query
+        if (body.paymentId) {
+          const { rememberTbankPayment } = await import("@/lib/tbank-session");
+          rememberTbankPayment(String(body.paymentId), body.orderId ?? null);
         }
         // Корзину очищаем только после подтверждения банком на /success
         window.location.assign(body.paymentUrl);
@@ -639,7 +654,7 @@ export default function OrderForm() {
       if (uploadedFile && !isIndividual && !isQuoteFlow) {
         Object.assign(body, await fileToAttachmentFields(uploadedFile));
       }
-      const res = await submitTelegramJson(body);
+      const res = await submitLeadJson(body);
       if (!res.ok) {
         const errBody = await res.text().catch(() => "нет ответа");
         throw new Error(`HTTP ${res.status}: ${errBody}`);
@@ -649,6 +664,17 @@ export default function OrderForm() {
     } catch (err) {
       if (err instanceof Error && err.message === "SBP_MIN_10") {
         setErrorMsg("Для оплаты через СБП сумма заказа должна быть от 10 ₽ (лимит T‑Bank). Выберите карту или добавьте товары.");
+      } else if (err instanceof Error && err.message.startsWith("PAY:")) {
+        const detail = err.message.slice(4);
+        if (detail.includes("misconfigured") || detail.includes("pay.config")) {
+          setErrorMsg("Оплата не настроена на сервере: загрузите pay.config.php рядом с pay.php.");
+        } else if (detail.includes("Unknown product") || detail.includes("Price mismatch")) {
+          setErrorMsg("Товар не найден в прайсе оплаты. Обновите каталог на хостинге (data/catalog-prices.json).");
+        } else if (detail.includes("Origin")) {
+          setErrorMsg("Домен не разрешён для оплаты. Проверьте allowed_origins в pay.config.php.");
+        } else {
+          setErrorMsg(`Не удалось создать платёж: ${detail}`);
+        }
       } else {
         setErrorMsg("Не удалось создать платёж или отправить заявку — попробуйте ещё раз.");
       }
@@ -667,6 +693,8 @@ export default function OrderForm() {
       setLegal(defaultLegal);
       setUploadedFile(null);
       setCustomerType("individual");
+      setPdConsent(false);
+      setOfferConsent(false);
     }, 400);
   };
 
@@ -823,7 +851,12 @@ export default function OrderForm() {
                                 name="phone"
                                 type="tel"
                                 value={individual.phone}
-                                onChange={(e) => handleIndividualChange("phone", formatPhoneRu(e.target.value))}
+                                onChange={(e) =>
+                                  handleIndividualChange(
+                                    "phone",
+                                    formatPhoneRuInput(individual.phone, e.target.value),
+                                  )
+                                }
                                 onFocus={() => {
                                   if (!individual.phone) handleIndividualChange("phone", "+7 ");
                                 }}
@@ -883,7 +916,13 @@ export default function OrderForm() {
 
                     {/* ── Submit ── */}
                     <div className="pt-4 border-t border-zinc-800 space-y-3 mt-1">
-                      <FormPrivacyNote />
+                      <FormConsent
+                        pdConsent={pdConsent}
+                        onPdConsentChange={setPdConsent}
+                        requireOffer={!isQuoteFlow}
+                        offerConsent={offerConsent}
+                        onOfferConsentChange={setOfferConsent}
+                      />
                       <motion.button
                         type="submit"
                         disabled={!isValid || status === "loading"}

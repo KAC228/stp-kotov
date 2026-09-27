@@ -18,8 +18,10 @@ import {
   Lock,
   Receipt,
   CheckCircle2,
+  RotateCcw,
+  Scale,
 } from "lucide-react";
-import { CONTACTS, PATHS, PRICE_PER_METER_RUB } from "@/constants/brand";
+import { CONTACTS, PATHS, PRICE_PER_METER_RUB, WARRANTY_YEARS } from "@/constants/brand";
 
 const sp = { type: "spring" as const, damping: 28, stiffness: 130 };
 
@@ -469,6 +471,62 @@ function PaymentSection() {
   );
 }
 
+function ReturnsSection() {
+  return (
+    <motion.div
+      {...fadeUp(0.05)}
+      className="mt-16 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 sm:p-8 space-y-5"
+    >
+      <div className="flex items-center gap-3 mb-1">
+        <div className="w-10 h-10 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center">
+          <RotateCcw className="w-4 h-4 text-zinc-400" strokeWidth={1.75} />
+        </div>
+        <div>
+          <p className="text-zinc-600 text-[10px] font-mono tracking-[0.2em] uppercase">ЗоЗПП</p>
+          <h3 className="text-white font-semibold tracking-tight text-lg">Возврат и обмен</h3>
+        </div>
+      </div>
+      <ul className="space-y-3 text-zinc-400 text-[14px] leading-relaxed">
+        <li className="flex gap-2.5">
+          <Scale className="w-4 h-4 text-zinc-600 shrink-0 mt-0.5" strokeWidth={1.75} />
+          <span>
+            Стандартные складские позиции надлежащего качества можно вернуть в течение{" "}
+            <span className="text-zinc-200 font-medium">14 дней</span> с момента получения при
+            сохранении товарного вида, упаковки и чека.
+          </span>
+        </li>
+        <li className="flex gap-2.5">
+          <Scale className="w-4 h-4 text-amber-600/80 shrink-0 mt-0.5" strokeWidth={1.75} />
+          <span>
+            Изделия по индивидуальному заказу (конфигуратор КСД) надлежащего качества{" "}
+            <span className="text-amber-200/90 font-medium">не подлежат отказу</span> по п. 4 ст. 26.1
+            Закона «О защите прав потребителей» — товар с индивидуально-определёнными свойствами.
+          </span>
+        </li>
+        <li className="flex gap-2.5">
+          <Scale className="w-4 h-4 text-zinc-600 shrink-0 mt-0.5" strokeWidth={1.75} />
+          <span>
+            Возврат денег — на тот же платёжный инструмент в течение{" "}
+            <span className="text-zinc-200 font-medium">10 рабочих дней</span> после получения
+            товара продавцом. Гарантия на КСД — {WARRANTY_YEARS} лет.
+          </span>
+        </li>
+      </ul>
+      <p className="text-zinc-600 text-xs leading-relaxed pt-1">
+        Полные условия — в{" "}
+        <Link href={PATHS.terms} className="text-zinc-400 underline underline-offset-2 hover:text-zinc-200">
+          публичной оферте
+        </Link>
+        . Обработка персональных данных — в{" "}
+        <Link href={PATHS.privacy} className="text-zinc-400 underline underline-offset-2 hover:text-zinc-200">
+          политике конфиденциальности
+        </Link>
+        .
+      </p>
+    </motion.div>
+  );
+}
+
 function TabBtn({
   active,
   onClick,
@@ -568,6 +626,8 @@ export default function DeliveryPaymentClient() {
             <PaymentSection key="payment" />
           )}
         </AnimatePresence>
+
+        <ReturnsSection />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
