@@ -18,6 +18,7 @@ import {
 } from "@/constants/fliben-catalog";
 import { filterFlibenProducts } from "@/lib/fliben-products";
 import { PATHS, FLIBEN_CATALOG_URL } from "@/constants/brand";
+import { sitePath } from "@/lib/site-path";
 import FlibenAddToCartButton from "@/components/FlibenAddToCartButton";
 import { CatalogProductPhoto } from "@/components/SitePhoto";
 
@@ -185,7 +186,7 @@ export default function FlibenCatalogClient({
         <p className="text-zinc-600 text-xs mt-2 leading-relaxed">
           *{" "}
           <a
-            href={PATHS.configurator}
+            href={sitePath(PATHS.configurator)}
             className="text-cyan-400/80 hover:text-cyan-300 underline-offset-2 hover:underline"
           >
             перейти к выбору КСД

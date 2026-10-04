@@ -21,6 +21,7 @@ import {
   Users,
 } from "lucide-react";
 import { CONTACTS, LEGAL, SOCIAL } from "@/constants/brand";
+import { sitePath } from "@/lib/site-path";
 import { formatPhoneRuInput, isPhoneCompleteRu } from "@/lib/phone";
 import { submitLeadJson } from "@/lib/submitLead";
 import FormConsent from "@/components/FormConsent";
@@ -354,7 +355,7 @@ export default function ContactsClient() {
         >
           <div className="px-6 py-4 border-b border-zinc-800 flex items-center gap-4">
             <Image
-              src="/images/logo.svg"
+              src={sitePath("/images/logo.svg")}
               alt="Логотип СТП-КОТОВ"
               width={747}
               height={684}

@@ -4,6 +4,9 @@ import { getAllArticleSlugs } from "@/lib/fliben-content";
 
 export const dynamic = "force-static";
 
+/** Совпадает с canonical в HTML: Next отдаёт хост в punycode. */
+const SITE_ORIGIN = new URL(SITE_URL).origin;
+
 /** Основные разделы — без дублей и служебных страниц */
 const STATIC_PAGES: Array<{
   path: string;
@@ -14,6 +17,7 @@ const STATIC_PAGES: Array<{
   { path: "/projects", changeFrequency: "weekly", priority: 0.85 },
   { path: "/articles", changeFrequency: "weekly", priority: 0.8 },
   { path: "/installation", changeFrequency: "monthly", priority: 0.75 },
+  { path: "/foreman", changeFrequency: "monthly", priority: 0.8 },
   { path: "/partnership", changeFrequency: "monthly", priority: 0.7 },
   { path: "/our-partners", changeFrequency: "monthly", priority: 0.65 },
   { path: "/certificates", changeFrequency: "monthly", priority: 0.65 },
@@ -25,18 +29,19 @@ const STATIC_PAGES: Array<{
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  // Только YYYY-MM-DD. Google отклоняет lastmod с миллисекундами (…T08:18:57.094Z).
+  const lastModified = new Date().toISOString().slice(0, 10);
 
   const staticPages = STATIC_PAGES.map(({ path, changeFrequency, priority }) => ({
-    url: path === "" ? SITE_URL : `${SITE_URL}${path}`,
-    lastModified: now,
+    url: path === "" ? SITE_ORIGIN : `${SITE_ORIGIN}${path}`,
+    lastModified,
     changeFrequency,
     priority,
   }));
 
   const articlePages = getAllArticleSlugs().map((slug) => ({
-    url: `${SITE_URL}/articles/${slug}`,
-    lastModified: now,
+    url: `${SITE_ORIGIN}/articles/${slug}`,
+    lastModified,
     changeFrequency: "monthly" as const,
     priority: 0.65,
   }));

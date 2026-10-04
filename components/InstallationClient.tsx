@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
+  ArrowRight,
   Layers,
   Ruler,
   Cable,
@@ -16,6 +17,7 @@ import {
   ScrollText,
 } from "lucide-react";
 import { PATHS, CONTACTS, WARRANTY_YEARS } from "@/constants/brand";
+import { sitePath } from "@/lib/site-path";
 
 const spring = { type: "spring" as const, damping: 28, stiffness: 130 };
 
@@ -114,6 +116,16 @@ export default function InstallationClient() {
           Мы убеждены, что даже самый инновационный продукт раскрывает
           свой потенциал только при профессиональном монтаже.
         </motion.p>
+
+        <motion.div {...fadeUp(0.18)} className="mt-8">
+          <a
+            href={sitePath(PATHS.foreman)}
+            className="inline-flex items-center gap-2 rounded-2xl border border-cyan-400/35 bg-cyan-400/10 px-5 py-3 text-sm font-medium text-cyan-400 hover:bg-cyan-400/15"
+          >
+            Спросить прораба на объекте
+            <ArrowRight className="h-4 w-4" strokeWidth={1.75} />
+          </a>
+        </motion.div>
 
         <motion.div
           initial={{ scaleX: 0, opacity: 0 }}

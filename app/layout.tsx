@@ -8,6 +8,7 @@ import AppShellOverlays from "@/components/AppShellOverlays";
 import CookieBanner from "@/components/CookieBanner";
 import YandexMetrika from "@/components/YandexMetrika";
 import { BRAND_NAME, PRICE_PER_METER_RUB, SITE_URL, WARRANTY_YEARS } from "@/constants/brand";
+import { sitePath } from "@/lib/site-path";
 import { OG_IMAGE } from "@/lib/metadata";
 import { siteJsonLd } from "@/lib/jsonld";
 import JsonLd from "@/components/JsonLd";
@@ -36,11 +37,11 @@ export const metadata: Metadata = {
     address: true,
   },
   icons: {
-    icon: [{ url: "/images/logo.svg", type: "image/svg+xml" }],
-    apple: "/images/logo.svg",
-    shortcut: "/images/logo.svg",
+    icon: [{ url: sitePath("/images/logo.svg"), type: "image/svg+xml" }],
+    apple: sitePath("/images/logo.svg"),
+    shortcut: sitePath("/images/logo.svg"),
   },
-  manifest: "/manifest.webmanifest",
+  manifest: sitePath("/manifest.webmanifest"),
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

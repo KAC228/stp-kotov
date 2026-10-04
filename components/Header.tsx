@@ -10,6 +10,7 @@ import BrandLogo from "@/components/BrandLogo";
 import AirflowAnimation from "@/components/AirflowAnimation";
 import PaymentTicker from "@/components/PaymentTicker";
 import { BRAND_NAME, CONTACTS, HEADER_NAV, MAIN_NAV } from "@/constants/brand";
+import { sitePath } from "@/lib/site-path";
 
 /** На static export (nginx/reg.ru) client-side переход через next/link ломается — полная загрузка страницы. */
 function HeaderNavLink({
@@ -32,7 +33,7 @@ function HeaderNavLink({
     );
   }
   return (
-    <a href={href} className={className} onClick={onClick}>
+    <a href={sitePath(href)} className={className} onClick={onClick}>
       {children}
     </a>
   );

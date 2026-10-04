@@ -10,6 +10,7 @@ import {
   type FlibenDocCategory,
 } from "@/constants/fliben-docs";
 import { PATHS } from "@/constants/brand";
+import { sitePath } from "@/lib/site-path";
 
 export default function FlibenDocsClient() {
   const [category, setCategory] = useState<FlibenDocCategory | "all">("all");
@@ -105,7 +106,7 @@ export default function FlibenDocsClient() {
                   <p className="text-zinc-500 text-sm mt-1">{activeDoc.description}</p>
                 </div>
                 <a
-                  href={activeDoc.file}
+                  href={sitePath(activeDoc.file ?? "")}
                   download
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-700 text-zinc-300 text-sm hover:text-white hover:border-zinc-500 transition-colors"
                 >

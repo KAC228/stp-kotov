@@ -9,6 +9,7 @@ import {
   type FlibenDoc,
 } from "@/constants/fliben-docs";
 import { PATHS } from "@/constants/brand";
+import { sitePath } from "@/lib/site-path";
 
 function CertificatePreview({ doc }: { doc: FlibenDoc }) {
   const hasPdf = Boolean(doc.file);
@@ -24,7 +25,7 @@ function CertificatePreview({ doc }: { doc: FlibenDoc }) {
         {hasPdf && (
           <div className="flex flex-wrap items-center gap-2 shrink-0">
             <a
-              href={doc.file}
+              href={sitePath(doc.file ?? "")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-700 text-zinc-300 text-sm hover:text-white hover:border-zinc-500 transition-colors"
@@ -33,7 +34,7 @@ function CertificatePreview({ doc }: { doc: FlibenDoc }) {
               Открыть PDF
             </a>
             <a
-              href={doc.file}
+              href={sitePath(doc.file ?? "")}
               download
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-700 text-zinc-300 text-sm hover:text-white hover:border-cyan-400/40 transition-colors"
             >
@@ -47,7 +48,7 @@ function CertificatePreview({ doc }: { doc: FlibenDoc }) {
       {hasPdf && (
         <iframe
           title={doc.title}
-          src={`${doc.file}#view=FitH&toolbar=1`}
+          src={`${sitePath(doc.file ?? "")}#view=FitH&toolbar=1`}
           className="w-full h-[min(78vh,900px)] bg-zinc-800"
         />
       )}
@@ -58,7 +59,7 @@ function CertificatePreview({ doc }: { doc: FlibenDoc }) {
             // eslint-disable-next-line @next/next/no-img-element -- локальные сканы сертификатов
             <img
               key={src}
-              src={src}
+              src={sitePath(src)}
               alt={`${doc.title} — страница ${index + 1}`}
               className="w-full rounded-xl border border-zinc-800 bg-white"
               loading={index === 0 ? "eager" : "lazy"}

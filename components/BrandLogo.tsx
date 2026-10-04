@@ -4,6 +4,7 @@
  * Автоматически инвертируется на тёмном фоне (dark=true по умолчанию).
  */
 import Image from "next/image";
+import { sitePath } from "@/lib/site-path";
 
 interface BrandLogoProps {
   className?: string;
@@ -24,7 +25,7 @@ export default function BrandLogo({
   const w = width ?? height;
   return (
     <Image
-      src="/images/logo.svg"
+      src={sitePath("/images/logo.svg")}
       alt="Логотип СТП-КОТОВ"
       width={w}
       height={height}

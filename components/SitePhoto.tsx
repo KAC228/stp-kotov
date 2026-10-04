@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { flibenCardImage } from "@/constants/fliben-catalog";
+import { sitePath } from "@/lib/site-path";
 
 /** Единые классы теней для всех фото на сайте (каталог + блоки). */
 export const SITE_PHOTO_PRODUCT_IMG = "site-photo site-photo--product";
@@ -37,7 +38,7 @@ export function CatalogProductPhoto({
     <div className={`${SITE_PHOTO_FRAME_PRODUCT} ${frameClassName}`.trim()}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={url}
+        src={sitePath(url)}
         alt={alt}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
@@ -68,7 +69,7 @@ export function CoverPhoto({
   return (
     <div className={`${SITE_PHOTO_FRAME_COVER} relative overflow-hidden ${aspectClass} ${frameClassName}`.trim()}>
       <Image
-        src={src}
+        src={sitePath(src)}
         alt={alt}
         fill
         priority={priority}
@@ -96,7 +97,7 @@ export function BackdropCoverPhoto({
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={src}
+        src={sitePath(src)}
         alt={alt}
         loading="lazy"
         decoding="async"

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, ExternalLink, FileText, Globe, Mail, MapPin, Phone } from "lucide-react";
 import { PARTNERS } from "@/constants/partners";
+import { sitePath } from "@/lib/site-path";
 
 function isInternalHref(href: string): boolean {
   return href.startsWith("/");
@@ -89,7 +90,7 @@ export default function OurPartnersClient() {
                     style={{ backgroundColor: "#ffffff" }}
                   >
                     <Image
-                      src={partner.logo}
+                      src={sitePath(partner.logo)}
                       alt={`Логотип ${partner.name}`}
                       width={567}
                       height={142}

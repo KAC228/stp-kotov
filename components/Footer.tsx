@@ -13,6 +13,7 @@ import {
   PATHS,
   SOCIAL,
 } from "@/constants/brand";
+import { sitePath } from "@/lib/site-path";
 
 const spring = { type: "spring" as const, damping: 30, stiffness: 150 };
 
@@ -82,7 +83,7 @@ export default function Footer() {
                 <li key={href + label}>
                   {href === PATHS.installation ? (
                     <a
-                      href={href}
+                      href={sitePath(href)}
                       className="text-zinc-400 hover:text-white transition-colors duration-200"
                     >
                       {label}
