@@ -4,10 +4,9 @@ import WindBackground from "@/components/WindBackground";
 
 export default function DarkHero() {
   return (
-    <section className="light-mesh-top relative min-h-screen flex flex-col items-center justify-center text-center px-6 bg-zinc-950 overflow-hidden">
+    <section className="light-mesh-top relative min-h-svh flex flex-col items-center justify-center text-center px-5 sm:px-6 bg-zinc-950 overflow-x-clip pt-28 pb-16 sm:pt-32 sm:pb-20">
       <WindBackground />
 
-      {/* Лёгкая сетка поверх звёзд — почти незаметная */}
       <div
         data-hero-grid
         className="hero-grid-lines absolute inset-0 opacity-[0.035] z-[1]"
@@ -17,7 +16,6 @@ export default function DarkHero() {
             linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)
           `,
           backgroundSize: "72px 72px",
-          backgroundAttachment: "fixed",
         }}
       />
 

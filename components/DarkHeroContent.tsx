@@ -7,9 +7,9 @@ import { SLOGAN, HERO_TAGLINE, PATHS } from "@/constants/brand";
 import HeroCtaSection from "@/components/HeroCtaSection";
 
 const fadeUp = (delay: number) => ({
-  initial: { opacity: 0, y: 22, filter: "blur(6px)" },
-  animate: { opacity: 1, y: 0, filter: "blur(0px)" },
-  transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as const, delay },
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] as const, delay },
 });
 
 export default function DarkHeroContent() {
@@ -17,19 +17,19 @@ export default function DarkHeroContent() {
     <div className="relative z-10 max-w-6xl mx-auto w-full">
       <motion.p
         {...fadeUp(0.06)}
-        className="text-zinc-500 text-sm sm:text-base tracking-[0.22em] uppercase font-mono mb-8"
+        className="text-zinc-500 text-xs sm:text-sm tracking-[0.22em] uppercase font-mono mb-4 sm:mb-8"
       >
         Скрытые теневые потоки
       </motion.p>
 
       {/* Серебристый wordmark на фото/атмосфере героя */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.94, filter: "blur(12px)" }}
-        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-        transition={{ duration: 1.15, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
-        className="flex justify-center mb-8 sm:mb-10"
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+        className="flex justify-center mb-5 sm:mb-10"
       >
-        <div className="ksd-logo-shimmer relative mx-auto w-[min(92vw,40rem)]">
+        <div className="ksd-logo-shimmer relative mx-auto w-[min(88vw,36rem)]">
           <BrandLogo
             dark
             fluid
@@ -40,15 +40,15 @@ export default function DarkHeroContent() {
       </motion.div>
 
       <motion.p
-        {...fadeUp(0.55)}
+        {...fadeUp(0.4)}
         style={{ fontFamily: "var(--font-slogan)" }}
-        className="text-zinc-400 text-lg sm:text-xl lg:text-2xl font-light tracking-wide mb-4 max-w-3xl mx-auto leading-relaxed"
+        className="text-zinc-400 text-base sm:text-xl lg:text-2xl font-light tracking-wide mb-3 sm:mb-4 max-w-3xl mx-auto leading-relaxed"
       >
         {HERO_TAGLINE}
       </motion.p>
       <motion.p
-        {...fadeUp(0.62)}
-        className="text-zinc-600 text-sm mb-10 max-w-2xl mx-auto"
+        {...fadeUp(0.48)}
+        className="text-zinc-600 text-xs sm:text-sm mb-7 sm:mb-10 max-w-2xl mx-auto"
       >
         {SLOGAN}
       </motion.p>
@@ -56,9 +56,9 @@ export default function DarkHeroContent() {
       <HeroCtaSection />
 
       <motion.nav
-        {...fadeUp(0.85)}
+        {...fadeUp(0.7)}
         aria-label="Быстрые ссылки"
-        className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8 text-zinc-600 text-xs font-mono tracking-[0.12em] uppercase"
+        className="mt-7 sm:mt-10 grid grid-cols-2 sm:flex sm:flex-row items-center justify-center gap-x-3 gap-y-2.5 sm:gap-8 text-zinc-600 text-[10px] sm:text-xs font-mono tracking-[0.10em] uppercase"
       >
         <a href="#about-asa" className="hover:text-cyan-400/90 transition-colors">
           ↓ О материале ASA

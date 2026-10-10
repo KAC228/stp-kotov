@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, Menu, X, Sun, Moon, ChevronLeft, ChevronRight } from "lucide-react";
+import { ShoppingBag, Menu, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { useTheme } from "@/context/ThemeContext";
-import { useState, useEffect, useSyncExternalStore, useRef, useCallback, CSSProperties, type ReactNode } from "react";
+import { useState, useEffect, useRef, useCallback, CSSProperties, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import BrandLogo from "@/components/BrandLogo";
 import AirflowAnimation from "@/components/AirflowAnimation";
@@ -49,55 +48,9 @@ const DARK_BG_SCROLLED =
 const DARK_BG_TOP =
   "linear-gradient(to bottom, rgba(24,24,27,0.82) 0%, rgba(13,13,15,0.90) 100%)";
 
-const LIGHT_BG_SCROLLED =
-  "linear-gradient(to bottom, #f8f8f9 0%, #e8e8eb 40%, #d8d8db 100%)";
-const LIGHT_BG_TOP =
-  "linear-gradient(to bottom, rgba(248,248,249,0.88) 0%, rgba(232,232,235,0.93) 40%, rgba(216,216,219,0.96) 100%)";
-
-// ─── theme toggle ─────────────────────────────────────────────────────────────
-
-function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
-  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
-
-  const isDark = theme === "dark";
-  const btnCls = isDark
-    ? "border-zinc-700 bg-zinc-800/70 text-zinc-400 hover:border-cyan-400/50 hover:text-white"
-    : "border-zinc-400 bg-white/60 text-zinc-600 hover:border-cyan-400/60 hover:text-zinc-900";
-
-  return (
-    <button
-      onClick={toggleTheme}
-      aria-label={isDark ? "Включить светлую тему" : "Включить тёмную тему"}
-      className={`relative flex items-center justify-center w-8 h-8 rounded-xl border will-change-[box-shadow] hover:shadow-[0_0_18px_rgba(255,90,120,0.55)] transition-all duration-200 ${btnCls}`}
-    >
-      <AnimatePresence mode="wait" initial={false}>
-        {mounted ? (
-          <motion.div
-            key={theme}
-            initial={{ opacity: 0, rotate: -60, scale: 0.4 }}
-            animate={{ opacity: 1, rotate: 0,   scale: 1   }}
-            exit={{    opacity: 0, rotate:  60, scale: 0.4 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-          >
-            {isDark
-              ? <Sun  className="w-[15px] h-[15px]" strokeWidth={1.75} />
-              : <Moon className="w-[15px] h-[15px]" strokeWidth={1.75} />
-            }
-          </motion.div>
-        ) : (
-          <motion.div key="placeholder" initial={{ opacity: 0 }} animate={{ opacity: 0 }}>
-            <Sun className="w-[15px] h-[15px]" strokeWidth={1.75} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </button>
-  );
-}
-
 // ─── scrollable desktop nav ───────────────────────────────────────────────────
 
-function DesktopNav({ navLinkCls, isDark }: { navLinkCls: string; isDark: boolean }) {
+function DesktopNav({ navLinkCls }: { navLinkCls: string }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [hasOverflow, setHasOverflow] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -130,13 +83,10 @@ function DesktopNav({ navLinkCls, isDark }: { navLinkCls: string; isDark: boolea
     scrollRef.current?.scrollBy({ left: dir * 180, behavior: "smooth" });
   };
 
-  const arrowEnabledCls = isDark
-    ? "border-cyan-300/85 bg-cyan-300/24 text-cyan-100 shadow-[0_0_22px_rgba(255,90,120,0.65)] hover:bg-cyan-300/34 hover:border-cyan-300/95 hover:text-white hover:shadow-[0_0_32px_rgba(255,90,120,0.82)]"
-    : "border-cyan-500/75 bg-cyan-500/20 text-cyan-700 shadow-[0_0_18px_rgba(255,90,120,0.35)] hover:bg-cyan-500/28 hover:border-cyan-600/90 hover:text-cyan-900 hover:shadow-[0_0_26px_rgba(255,90,120,0.55)]";
+  const arrowEnabledCls =
+    "border-cyan-300/85 bg-cyan-300/24 text-cyan-100 shadow-[0_0_22px_rgba(255,90,120,0.65)] hover:bg-cyan-300/34 hover:border-cyan-300/95 hover:text-white hover:shadow-[0_0_32px_rgba(255,90,120,0.82)]";
 
-  const arrowIdleCls = isDark
-    ? "border-zinc-600/70 bg-zinc-900/60 text-zinc-600 opacity-50"
-    : "border-zinc-400/70 bg-white/50 text-zinc-500 opacity-50";
+  const arrowIdleCls = "border-zinc-600/70 bg-zinc-900/60 text-zinc-600 opacity-50";
 
   const arrowHiddenCls = "opacity-0 pointer-events-none w-0 min-w-0 px-0 border-0 overflow-hidden";
 
@@ -190,11 +140,8 @@ function DesktopNav({ navLinkCls, isDark }: { navLinkCls: string; isDark: boolea
 
 export default function Header() {
   const { totalItems, openCart } = useCart();
-  const { theme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled]     = useState(false);
-
-  const isDark = theme === "dark";
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -202,76 +149,40 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // ── inline style — surface varies by theme + scroll ────────────────────────
-
   const headerStyle: CSSProperties = {
-    background: isDark
-      ? (scrolled ? DARK_BG_SCROLLED  : DARK_BG_TOP)
-      : (scrolled ? LIGHT_BG_SCROLLED : LIGHT_BG_TOP),
-
-    // Slot gap: solid line + deep inset shadow = physical depth illusion
-    borderBottom: isDark ? "8px solid #000000" : "8px solid #71717a",
-    boxShadow: isDark
-      ? (scrolled
-          ? "inset 0 -15px 30px rgba(0,0,0,0.80), inset 0 1px 0 rgba(255,255,255,0.04)"
-          : "inset 0 -10px 22px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.03)")
-      : (scrolled
-          ? "inset 0 -15px 30px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.92)"
-          : "inset 0 -10px 22px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.80)"),
-
-    backdropFilter:       scrolled ? "blur(24px) saturate(200%)" : "blur(10px) saturate(150%)",
+    background: scrolled ? DARK_BG_SCROLLED : DARK_BG_TOP,
+    borderBottom: "8px solid #000000",
+    boxShadow: scrolled
+      ? "inset 0 -15px 30px rgba(0,0,0,0.80), inset 0 1px 0 rgba(255,255,255,0.04)"
+      : "inset 0 -10px 22px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.03)",
+    backdropFilter: scrolled ? "blur(24px) saturate(200%)" : "blur(10px) saturate(150%)",
     WebkitBackdropFilter: scrolled ? "blur(24px) saturate(200%)" : "blur(10px) saturate(150%)",
   };
 
-  // ── per-theme text / icon colour strings ────────────────────────────────────
-  const navLinkCls = isDark
-    ? "text-zinc-400 text-sm xl:text-[15px] font-medium tracking-wide whitespace-nowrap hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,90,120,0.85)] transition-all duration-200"
-    : "text-zinc-700 text-sm xl:text-[15px] font-semibold tracking-wide whitespace-nowrap hover:text-zinc-950 hover:drop-shadow-[0_0_8px_rgba(255,90,120,0.85)] transition-all duration-200";
+  const navLinkCls =
+    "text-zinc-400 text-sm xl:text-[15px] font-medium tracking-wide whitespace-nowrap hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,90,120,0.85)] transition-all duration-200";
 
-  const iconCls = isDark
-    ? "relative text-zinc-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,90,120,0.85)] transition-all duration-200"
-    : "relative text-zinc-600 hover:text-zinc-950 hover:drop-shadow-[0_0_8px_rgba(255,90,120,0.85)] transition-all duration-200";
+  const iconCls =
+    "relative text-zinc-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,90,120,0.85)] transition-all duration-200";
 
-
-  // ── top-edge sheen ──────────────────────────────────────────────────────────
-  const sheenBg = isDark
-    ? "linear-gradient(to right, transparent 0%, rgba(255,255,255,0.04) 30%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 70%, transparent 100%)"
-    : "linear-gradient(to right, transparent 0%, rgba(255,255,255,0.60) 20%, rgba(255,255,255,0.96) 50%, rgba(255,255,255,0.60) 80%, transparent 100%)";
+  const sheenBg =
+    "linear-gradient(to right, transparent 0%, rgba(255,255,255,0.04) 30%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 70%, transparent 100%)";
 
   return (
-    // ksd-header overrides all --color-zinc-* to dark-mode values, ensuring
-    // that text classes like text-zinc-700 produce readable dark text on the
-    // silver surface in light mode (a no-op in dark mode).
     <header
       className="ksd-header fixed top-0 left-0 right-0 z-50 transition-[background,box-shadow,backdrop-filter] duration-400"
       style={headerStyle}
     >
       <PaymentTicker />
-      {/* Top-edge sheen — "light hitting the upper rim" */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute top-0 left-0 right-0 h-[2px]"
         style={{ background: sheenBg }}
       />
 
-      {/* Brushed-metal texture lines — light mode only */}
-      {!isDark && (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(to bottom,transparent,transparent 3px,rgba(0,0,0,0.025) 3px,rgba(0,0,0,0.025) 4px)",
-            opacity: 0.55,
-          }}
-        />
-      )}
-
-      {/* pt-3/pb-4 balance: top edge sheen + bottom slot shadow */}
       <div className="max-w-[92rem] mx-auto px-5 sm:px-7 lg:px-9 xl:px-10 pt-2.5 pb-3 relative z-20">
         <div className="flex items-center justify-between min-h-[3rem] lg:min-h-[3.25rem] lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-x-8 xl:gap-x-12 2xl:gap-x-14">
 
-          {/* Logo — серебристый wordmark */}
           <Link
             href="/"
             className="flex items-center group shrink-0 min-w-0 max-w-[48vw] sm:max-w-[14rem] lg:max-w-[16rem] mr-3 lg:mr-0"
@@ -279,19 +190,14 @@ export default function Header() {
           >
             <BrandLogo
               height={22}
-              dark={isDark}
+              dark
               className="opacity-95 group-hover:opacity-100 transition-opacity duration-200"
             />
           </Link>
 
-          {/* Desktop nav — горизонтальная прокрутка со стрелками */}
-          <DesktopNav navLinkCls={navLinkCls} isDark={isDark} />
+          <DesktopNav navLinkCls={navLinkCls} />
 
-          {/* Right-side controls */}
           <div className="flex items-center justify-end gap-3.5 sm:gap-5 shrink-0 pl-3">
-            <ThemeToggle />
-
-            {/* Cart */}
             <button onClick={openCart} className={iconCls} aria-label="Корзина">
               <ShoppingBag className="w-[18px] h-[18px]" strokeWidth={1.75} />
               <AnimatePresence>

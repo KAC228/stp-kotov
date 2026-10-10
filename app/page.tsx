@@ -10,7 +10,6 @@ import ConfiguratorSection from "@/components/ConfiguratorSection";
 import SystemSolutionsSection from "@/components/SystemSolutionsSection";
 import ReadySolutionsSection from "@/components/ReadySolutionsSection";
 import Footer from "@/components/Footer";
-import SectionReveal from "@/components/SectionReveal";
 
 export const metadata: Metadata = buildPageMetadata({
   title: `${BRAND_NAME} — Камеры статического давления нового поколения`,
@@ -28,32 +27,18 @@ export default function Home() {
   return (
     <div className="bg-zinc-950">
       <DarkHero />
-      <SectionReveal>
-        <AsaAdvantagesSection />
-      </SectionReveal>
+      <AsaAdvantagesSection />
       {sectionDivider}
-      <SectionReveal delay={0.04}>
-        <TechFeatures />
-      </SectionReveal>
+      <TechFeatures />
       {sectionDivider}
-      <SectionReveal delay={0.04}>
-        <BentoGrid />
-      </SectionReveal>
-      <SectionReveal>
-        <QualityGuarantee />
-      </SectionReveal>
+      <BentoGrid />
+      <QualityGuarantee />
       {sectionDivider}
-      <SectionReveal>
-        <ReadySolutionsSection />
-      </SectionReveal>
+      <ReadySolutionsSection />
       {sectionDivider}
-      <SectionReveal>
-        <SystemSolutionsSection />
-      </SectionReveal>
+      <SystemSolutionsSection />
       {sectionDivider}
-      <SectionReveal>
-        <ConfiguratorSection />
-      </SectionReveal>
+      <ConfiguratorSection />
       <Footer />
     </div>
   );

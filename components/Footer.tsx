@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import BrandLogo from "@/components/BrandLogo";
-import { useTheme } from "@/context/ThemeContext";
 import {
   BRAND_NAME,
   CONTACTS,
@@ -18,7 +17,6 @@ const spring = { type: "spring" as const, damping: 30, stiffness: 150 };
 
 export default function Footer() {
   const year = new Date().getFullYear();
-  const { theme } = useTheme();
 
   return (
     <footer
@@ -41,7 +39,7 @@ export default function Footer() {
             >
               <BrandLogo
                 height={26}
-                dark={theme === "dark"}
+                dark
                 className="opacity-90 group-hover:opacity-100 transition-opacity"
               />
             </Link>

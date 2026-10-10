@@ -79,14 +79,8 @@ export const metadata: Metadata = {
   },
 };
 
-// ── FOUC-prevention script ──────────────────────────────────────────────────────
-// Runs synchronously before the browser paints — applies saved theme class
-// to <html> so there is no flash of wrong theme on page load.
-const themeInitScript = `(function(){try{var t=localStorage.getItem('ksd-theme');if(t==='light')document.documentElement.classList.add('light');}catch(e){}})();`;
-
-// Enables smooth CSS transitions only after the first client-side paint,
-// preventing any transition animation on initial page load.
-const themeReadyScript = `(function(){requestAnimationFrame(function(){requestAnimationFrame(function(){document.documentElement.classList.add('theme-ready');});});})();`;
+// Светлая тема отключена — сбрасываем legacy localStorage и класс .light
+const themeInitScript = `(function(){try{document.documentElement.classList.remove('light');if(localStorage.getItem('ksd-theme')==='light')localStorage.setItem('ksd-theme','dark');}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -94,12 +88,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    // suppressHydrationWarning: the "light" / "theme-ready" classes are applied
-    // client-side (localStorage) so the attribute will differ between SSR and
-    // the first client render — this tells React to ignore the mismatch.
     <html lang="ru" suppressHydrationWarning>
       <head>
-        {/* Theme init — must execute before first paint to prevent FOUC */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <JsonLd data={siteJsonLd()} />
       </head>
@@ -107,9 +97,6 @@ export default function RootLayout({
         className={`${inter.className} antialiased bg-zinc-950 text-white`}
         style={{ overflowX: "clip" }}
       >
-        {/* Enables smooth colour transitions after the initial paint */}
-        <script dangerouslySetInnerHTML={{ __html: themeReadyScript }} />
-
         <ThemeProvider>
           <CartProvider>
             <a href="#main-content" className="ksd-skip-link">
