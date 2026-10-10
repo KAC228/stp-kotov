@@ -256,16 +256,16 @@ export default function ForemanClient() {
         paddingTop: headerH,
       }}
     >
-      <div className="shrink-0 border-b border-zinc-800 px-4 py-3 sm:px-6">
-        <div className="mx-auto flex max-w-3xl items-start justify-between gap-3">
-          <div>
-            <p className="font-mono text-[11px] tracking-[0.22em] text-zinc-500 uppercase">
+      <div className="shrink-0 border-b border-zinc-800 px-3 py-2 sm:px-6 sm:py-3">
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 sm:items-start sm:gap-3">
+          <div className="min-w-0">
+            <p className="font-mono text-[9px] tracking-[0.18em] text-zinc-500 uppercase sm:text-[11px] sm:tracking-[0.22em]">
               На площадке
             </p>
-            <h1 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+            <h1 className="text-base font-semibold tracking-tight text-white sm:text-2xl">
               Прораб
             </h1>
-            <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-zinc-400">
+            <p className="mt-0.5 hidden max-w-xl text-[13px] leading-relaxed text-zinc-400 sm:mt-1 sm:block">
               Регламент монтажа: с чего начать и чем закончить. Идёшь по шагам, спорный узел не закрываешь.
             </p>
           </div>
@@ -273,9 +273,9 @@ export default function ForemanClient() {
             <button
               type="button"
               onClick={clearThread}
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-zinc-700 px-3 py-2 text-xs text-zinc-400 hover:text-white"
+              className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-zinc-700 px-2 py-1.5 text-[11px] text-zinc-400 hover:text-white sm:gap-1.5 sm:rounded-xl sm:px-3 sm:py-2 sm:text-xs"
             >
-              <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+              <Trash2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" strokeWidth={1.75} />
               Очистить
             </button>
           )}
@@ -284,13 +284,13 @@ export default function ForemanClient() {
 
       <div
         ref={threadRef}
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6"
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-2.5 sm:px-6 sm:py-4"
         aria-live="polite"
       >
-        <div className="mx-auto flex max-w-3xl flex-col gap-3">
+        <div className="mx-auto flex max-w-3xl flex-col gap-2 sm:gap-3">
           {mode === "steps" && (
             <>
-              <div className="flex items-center justify-between gap-3 text-[12px] text-zinc-500">
+              <div className="flex items-center justify-between gap-3 text-[11px] text-zinc-500 sm:text-[12px]">
                 <p>
                   Шаг {stepIndex + 1} из {REGULATION.length}
                   {allDone ? " · регламент пройден" : ""}
@@ -301,26 +301,26 @@ export default function ForemanClient() {
                   </button>
                 )}
               </div>
-              <div className="h-1 overflow-hidden rounded-full bg-zinc-800">
+              <div className="h-0.5 overflow-hidden rounded-full bg-zinc-800 sm:h-1">
                 <div
                   className="h-full bg-cyan-400"
                   style={{ width: `${(done.length / REGULATION.length) * 100}%` }}
                 />
               </div>
-              <article className="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-4">
-                <p className="font-mono text-[10px] tracking-[0.18em] text-cyan-400 uppercase">
+              <article className="rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-3 sm:rounded-2xl sm:px-4 sm:py-4">
+                <p className="font-mono text-[9px] tracking-[0.16em] text-cyan-400 uppercase sm:text-[10px] sm:tracking-[0.18em]">
                   {stepDone ? "Сделано" : "Сейчас"}
                 </p>
-                <h2 className="mt-1 text-lg font-semibold tracking-tight text-white">
+                <h2 className="mt-0.5 text-[15px] font-semibold tracking-tight text-white sm:mt-1 sm:text-lg">
                   {step.title}
                 </h2>
-                <p className="mt-3 text-[15px] leading-relaxed text-zinc-200">{step.doThis}</p>
-                <p className="mt-3 text-[14px] leading-relaxed text-zinc-400">
+                <p className="mt-2 text-[13px] leading-snug text-zinc-200 sm:mt-3 sm:text-[15px] sm:leading-relaxed">{step.doThis}</p>
+                <p className="mt-2 text-[12px] leading-snug text-zinc-400 sm:mt-3 sm:text-[14px] sm:leading-relaxed">
                   <span className="text-zinc-300">Стоп. </span>
                   {step.stopIf}
                 </p>
               </article>
-              <ol className="flex flex-col gap-1">
+              <ol className="flex flex-col gap-0.5 sm:gap-1">
                 {REGULATION.map((item, index) => {
                   const checked = done.includes(item.id);
                   const current = index === stepIndex;
@@ -329,12 +329,12 @@ export default function ForemanClient() {
                       <button
                         type="button"
                         onClick={() => setStepIndex(index)}
-                        className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[14px] ${
+                        className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[12px] sm:gap-3 sm:rounded-xl sm:px-3 sm:py-2.5 sm:text-[14px] ${
                           current ? "bg-zinc-900 text-white" : "text-zinc-400 hover:text-white"
                         }`}
                       >
                         <span
-                          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[11px] ${
+                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] sm:h-6 sm:w-6 sm:text-[11px] ${
                             checked
                               ? "border-cyan-400/50 bg-cyan-400/15 text-cyan-300"
                               : "border-zinc-700 text-zinc-500"
@@ -352,17 +352,17 @@ export default function ForemanClient() {
           )}
 
           {mode === "ask" && messages.length === 0 && (
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-4">
-              <p className="text-[15px] leading-relaxed text-zinc-300">
-                Спросите, как на объекте. Можно голосом: высота камеры, диаметр, потолок, крепёж, заслонка.
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-3 sm:rounded-2xl sm:px-4 sm:py-4">
+              <p className="text-[12px] leading-snug text-zinc-300 sm:text-[15px] sm:leading-relaxed">
+                Спросите, как на объекте. Можно голосом: высота, диаметр, потолок, крепёж, заслонка.
               </p>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-2.5 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-2">
                 {QUICK_QUESTIONS.map((item) => (
                   <button
                     key={item.label}
                     type="button"
                     onClick={() => ask(item.query)}
-                    className="rounded-full border border-zinc-700 bg-zinc-950 px-3 py-2 text-left text-[13px] text-zinc-300 hover:border-cyan-400/40 hover:text-white"
+                    className="rounded-full border border-zinc-700 bg-zinc-950 px-2.5 py-1 text-[11px] leading-tight text-zinc-300 hover:border-cyan-400/40 hover:text-white sm:px-3 sm:py-2 sm:text-[13px]"
                   >
                     {item.label}
                   </button>
@@ -375,39 +375,39 @@ export default function ForemanClient() {
             message.role === "user" ? (
               <p
                 key={message.id}
-                className="ml-auto max-w-[85%] rounded-2xl bg-white px-4 py-3 text-[15px] leading-relaxed text-zinc-950"
+                className="ml-auto max-w-[88%] rounded-xl bg-white px-3 py-2 text-[13px] leading-snug text-zinc-950 sm:max-w-[85%] sm:rounded-2xl sm:px-4 sm:py-3 sm:text-[15px] sm:leading-relaxed"
               >
                 {message.text}
               </p>
             ) : (
               <article
                 key={message.id}
-                className="max-w-[95%] rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-4"
+                className="max-w-[96%] rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-3 sm:max-w-[95%] sm:rounded-2xl sm:px-4 sm:py-4"
               >
-                <p className="font-mono text-[10px] tracking-[0.18em] text-cyan-400 uppercase">
+                <p className="font-mono text-[9px] tracking-[0.16em] text-cyan-400 uppercase sm:text-[10px] sm:tracking-[0.18em]">
                   {message.reply.confident ? "Что делать" : "Нет готового ответа"}
                 </p>
-                <h2 className="mt-1 text-base font-semibold tracking-tight text-white">
+                <h2 className="mt-0.5 text-[14px] font-semibold tracking-tight text-white sm:mt-1 sm:text-base">
                   {message.reply.title}
                 </h2>
-                <p className="mt-2 text-[15px] leading-relaxed text-zinc-200">
+                <p className="mt-1.5 text-[13px] leading-snug text-zinc-200 sm:mt-2 sm:text-[15px] sm:leading-relaxed">
                   {message.reply.action}
                 </p>
-                <p className="mt-2 text-[14px] leading-relaxed text-zinc-400">
+                <p className="mt-1.5 text-[12px] leading-snug text-zinc-400 sm:mt-2 sm:text-[14px] sm:leading-relaxed">
                   {message.reply.detail}
                 </p>
-                <p className="mt-3 border-t border-zinc-800 pt-3 text-[12px] leading-relaxed text-zinc-500">
+                <p className="mt-2 border-t border-zinc-800 pt-2 text-[11px] leading-snug text-zinc-500 sm:mt-3 sm:pt-3 sm:text-[12px] sm:leading-relaxed">
                   <span className="text-zinc-300">{message.reply.source.label}. </span>
                   {message.reply.source.note}
                 </p>
                 {message.reply.related.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
                     {message.reply.related.map((item) => (
                       <button
                         key={item.id}
                         type="button"
                         onClick={() => ask(item.ask)}
-                        className="rounded-full border border-zinc-700 px-3 py-1.5 text-[12px] text-zinc-300 hover:border-cyan-400/40 hover:text-white"
+                        className="rounded-full border border-zinc-700 px-2.5 py-1 text-[11px] text-zinc-300 hover:border-cyan-400/40 hover:text-white sm:px-3 sm:py-1.5 sm:text-[12px]"
                       >
                         {item.title}
                       </button>
@@ -422,23 +422,23 @@ export default function ForemanClient() {
 
       {mode === "steps" ? (
         <div
-          className="shrink-0 border-t border-zinc-800 bg-zinc-950 px-4 pt-3 sm:px-6"
-          style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+          className="shrink-0 border-t border-zinc-800 bg-zinc-950 px-3 pt-2 sm:px-6 sm:pt-3"
+          style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}
         >
-          <div className="mx-auto flex max-w-3xl flex-col gap-2">
-            <div className="flex gap-2">
+          <div className="mx-auto flex max-w-3xl flex-col gap-1.5 sm:gap-2">
+            <div className="flex gap-1.5 sm:gap-2">
               <button
                 type="button"
                 onClick={() => setStepIndex((index) => Math.max(0, index - 1))}
                 disabled={stepIndex === 0}
-                className="h-12 rounded-2xl border border-zinc-700 px-4 text-sm text-zinc-300 disabled:opacity-40"
+                className="h-9 rounded-xl border border-zinc-700 px-3 text-[12px] text-zinc-300 disabled:opacity-40 sm:h-12 sm:rounded-2xl sm:px-4 sm:text-sm"
               >
                 Назад
               </button>
               <button
                 type="button"
                 onClick={finishStep}
-                className="h-12 flex-1 rounded-2xl bg-white text-sm font-semibold text-zinc-950"
+                className="h-9 flex-1 rounded-xl bg-white text-[12px] font-semibold text-zinc-950 sm:h-12 sm:rounded-2xl sm:text-sm"
               >
                 {stepIndex === REGULATION.length - 1 && stepDone ? "Регламент пройден" : "Дальше"}
               </button>
@@ -449,7 +449,7 @@ export default function ForemanClient() {
                 setMode("ask");
                 setDraft(`Шаг «${step.title}»: `);
               }}
-              className="py-1 text-center text-[13px] text-zinc-400 hover:text-white"
+              className="py-0.5 text-center text-[11px] text-zinc-400 hover:text-white sm:py-1 sm:text-[13px]"
             >
               Спросить по этому шагу
             </button>
@@ -458,34 +458,34 @@ export default function ForemanClient() {
       ) : (
       <form
         onSubmit={onSubmit}
-        className="shrink-0 border-t border-zinc-800 bg-zinc-950 px-4 pt-3 sm:px-6"
-        style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+        className="shrink-0 border-t border-zinc-800 bg-zinc-950 px-3 pt-2 sm:px-6 sm:pt-3"
+        style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}
       >
         <div className="mx-auto max-w-3xl">
           <button
             type="button"
             onClick={() => setMode("steps")}
-            className="mb-2 text-[13px] text-zinc-400 hover:text-white"
+            className="mb-1.5 text-[11px] text-zinc-400 hover:text-white sm:mb-2 sm:text-[13px]"
           >
             К регламенту
           </button>
           {voiceNote && (
-            <p className="mb-2 text-[12px] text-zinc-400">{voiceNote}</p>
+            <p className="mb-1.5 text-[11px] text-zinc-400 sm:mb-2 sm:text-[12px]">{voiceNote}</p>
           )}
-          <div className="flex items-end gap-2">
+          <div className="flex items-end gap-1.5 sm:gap-2">
             {canSpeak && (
               <button
                 type="button"
                 onClick={toggleVoice}
                 aria-pressed={listening}
                 aria-label={listening ? "Остановить запись" : "Спросить голосом"}
-                className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border ${
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border sm:h-12 sm:w-12 sm:rounded-2xl ${
                   listening
                     ? "border-cyan-400/50 bg-cyan-400/15 text-cyan-300"
                     : "border-zinc-700 text-zinc-300 hover:text-white"
                 }`}
               >
-                {listening ? <Square className="h-4 w-4" /> : <Mic className="h-5 w-5" strokeWidth={1.75} />}
+                {listening ? <Square className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Mic className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={1.75} />}
               </button>
             )}
             <label className="sr-only" htmlFor="foreman-question">
@@ -503,20 +503,20 @@ export default function ForemanClient() {
                   ask(draft);
                 }
               }}
-              placeholder="Например: высота 105, какой воздуховод"
-              className="ksd-input max-h-32 min-h-12 flex-1 resize-none rounded-2xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-base text-white placeholder:text-zinc-500"
+              placeholder="Высота 105, какой воздуховод"
+              className="ksd-input max-h-24 min-h-9 flex-1 resize-none rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-[14px] text-white placeholder:text-zinc-500 sm:max-h-32 sm:min-h-12 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-base"
             />
             <button
               type="submit"
               aria-label="Спросить"
               disabled={!draft.trim()}
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-zinc-950 disabled:opacity-40"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-zinc-950 disabled:opacity-40 sm:h-12 sm:w-12 sm:rounded-2xl"
             >
-              <Send className="h-4 w-4" strokeWidth={1.75} />
+              <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.75} />
             </button>
           </div>
-          <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
-            Полные тексты СП и ГОСТ в базу не входят. Инженер:{" "}
+          <p className="mt-1.5 text-[10px] leading-snug text-zinc-500 sm:mt-2 sm:text-[11px] sm:leading-relaxed">
+            СП и ГОСТ в базу не входят.{" "}
             <a href={`tel:${CONTACTS.phoneTel}`} className="text-zinc-300 underline-offset-2 hover:underline">
               {CONTACTS.phoneDisplay}
             </a>
