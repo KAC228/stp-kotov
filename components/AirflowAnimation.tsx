@@ -62,7 +62,7 @@ export default function AirflowAnimation() {
             inset: 0,
             borderRadius: "100%",            // ← ellipse clip → no rectangular ghost
             background:
-              "radial-gradient(ellipse 85% 100% at 50% 0%, rgba(0,210,255,0.70) 0%, transparent 100%)",
+              "radial-gradient(ellipse 85% 100% at 50% 0%, rgba(255,90,120,0.70) 0%, transparent 100%)",
             filter: "blur(20px)",
             willChange: "transform, opacity",
             transformOrigin: "top center",
@@ -81,7 +81,7 @@ export default function AirflowAnimation() {
             right: "10%",
             height: "3px",
             background:
-              "linear-gradient(to right, transparent 0%, rgba(0,210,255,0.80) 20%, rgba(0,210,255,1) 50%, rgba(0,210,255,0.80) 80%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(255,90,120,0.80) 20%, rgba(255,90,120,1) 50%, rgba(255,90,120,0.80) 80%, transparent 100%)",
             filter: "blur(2px)",
             willChange: "transform, opacity",
             transformOrigin: "center",
@@ -112,7 +112,7 @@ export default function AirflowAnimation() {
           inset: 0,
           borderRadius: "100%",             // ← ellipse clip
           background:
-            "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(0,210,255,0.72) 0%, transparent 100%)",
+            "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(255,90,120,0.72) 0%, transparent 100%)",
           filter: "blur(28px)",
           willChange: "transform, opacity",
           transformOrigin: "top center",
@@ -136,7 +136,7 @@ export default function AirflowAnimation() {
           bottom: 0,
           borderRadius: "100%",             // ← ellipse clip
           background:
-            "radial-gradient(ellipse 100% 100% at 50% 0%, rgba(0,210,255,0.90) 0%, transparent 100%)",
+            "radial-gradient(ellipse 100% 100% at 50% 0%, rgba(255,90,120,0.90) 0%, transparent 100%)",
           filter: "blur(14px)",
           willChange: "transform, opacity",
           transformOrigin: "top center",
@@ -155,7 +155,7 @@ export default function AirflowAnimation() {
           right: "8%",
           height: "3px",
           background:
-            "linear-gradient(to right, transparent 0%, rgba(0,210,255,0.80) 20%, rgba(0,210,255,1) 50%, rgba(0,210,255,0.80) 80%, transparent 100%)",
+            "linear-gradient(to right, transparent 0%, rgba(255,90,120,0.80) 20%, rgba(255,90,120,1) 50%, rgba(255,90,120,0.80) 80%, transparent 100%)",
           filter: "blur(2px)",
           willChange: "transform, opacity",
           transformOrigin: "center",

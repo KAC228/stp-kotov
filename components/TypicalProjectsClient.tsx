@@ -2,84 +2,11 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
-import { PATHS } from "@/constants/brand";
-import {
-  FLIBEN_TYPICAL,
-  formatRub,
-  type FlibenTypicalProject,
-} from "@/lib/fliben-content";
-import ProjectTariffInquiryForm from "@/components/ProjectTariffInquiryForm";
-import { CoverPhoto } from "@/components/SitePhoto";
+import { ArrowLeft, Phone, Mail } from "lucide-react";
+import { CONTACTS, PATHS } from "@/constants/brand";
+import { PROJECT_SEGMENTS } from "@/constants/project-segments";
 
 const ease = [0.16, 1, 0.3, 1] as const;
-
-function ProjectBlock({ project, index }: { project: FlibenTypicalProject; index: number }) {
-  return (
-    <motion.section
-      id={project.slug}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.45, delay: index * 0.05, ease }}
-      className="scroll-mt-28 rounded-2xl border border-zinc-800 bg-zinc-900/40 overflow-hidden"
-    >
-      <div className="grid lg:grid-cols-[1fr_1.1fr] gap-0">
-        <div className="p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-zinc-800">
-          {project.image && (
-            <CoverPhoto
-              src={project.image}
-              alt={project.title}
-              aspectClass="aspect-[4/3]"
-              frameClassName="rounded-xl mb-6 border border-zinc-800"
-              sizes="(max-width: 1024px) 100vw, 40vw"
-            />
-          )}
-          <p className="text-zinc-600 text-[11px] font-mono tracking-wider mb-2">
-            {String(project.areaSqm)} м²
-          </p>
-          <h2 className="text-white text-2xl font-semibold tracking-tight mb-2">{project.title}</h2>
-          <p className="text-cyan-400/80 text-sm mb-4">{project.subtitle}</p>
-          {project.description && (
-            <p className="text-zinc-400 text-sm leading-relaxed">{project.description}</p>
-          )}
-        </div>
-
-        <div className="p-6 sm:p-8 space-y-4">
-          {project.tariffs.map((tariff) => (
-            <div
-              key={tariff.id}
-              className={`rounded-xl border p-5 ${
-                tariff.recommended
-                  ? "border-cyan-400/35 bg-cyan-500/5"
-                  : "border-zinc-800 bg-zinc-950/60"
-              }`}
-            >
-              <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
-                <div>
-                  <h3 className="text-white font-medium">{tariff.name}</h3>
-                  {tariff.recommended && (
-                    <span className="text-cyan-400 text-xs mt-1 inline-block">Рекомендуем</span>
-                  )}
-                </div>
-                <p className="text-white text-lg font-semibold tabular-nums">{formatRub(tariff.priceRub)}</p>
-              </div>
-              {tariff.description && (
-                <p className="text-zinc-500 text-sm mb-4 leading-relaxed">{tariff.description}</p>
-              )}
-              <ProjectTariffInquiryForm
-                areaSqm={project.areaSqm}
-                projectTitle={project.title}
-                tariffName={tariff.name}
-                priceRub={tariff.priceRub}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </motion.section>
-  );
-}
 
 export default function TypicalProjectsClient() {
   return (
@@ -100,30 +27,83 @@ export default function TypicalProjectsClient() {
           className="mb-10 max-w-3xl"
         >
           <p className="text-zinc-600 text-[11px] font-mono tracking-[0.24em] uppercase mb-3">
-            Партнёр Fliben
-          </p>
-          <h1 className="text-white font-semibold tracking-tight text-3xl sm:text-4xl mb-4">
             Типовые проекты
+          </p>
+          <h1 className="text-white text-3xl sm:text-4xl font-semibold tracking-tight mb-4">
+            Сегменты применения
           </h1>
-          <p className="text-zinc-400 text-base leading-relaxed">{FLIBEN_TYPICAL.intro}</p>
         </motion.div>
 
-        <div className="flex flex-wrap gap-2 mb-10">
-          {FLIBEN_TYPICAL.projects.map((p) => (
-            <a
-              key={p.slug}
-              href={`#${p.slug}`}
-              className="px-4 py-2 rounded-full border border-zinc-800 text-zinc-400 text-sm hover:border-cyan-400/30 hover:text-white transition-colors"
+        <div className="space-y-5 mb-12">
+          {PROJECT_SEGMENTS.map((seg, index) => (
+            <motion.article
+              key={seg.id}
+              id={seg.id}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.4, delay: index * 0.03, ease }}
+              className="scroll-mt-28 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8"
             >
-              {p.title}
-            </a>
+              <p className="text-zinc-600 text-[11px] font-mono tracking-wider mb-2">
+                {String(index + 1).padStart(2, "0")}
+              </p>
+              <h2 className="text-white text-xl sm:text-2xl font-semibold tracking-tight mb-4">
+                {seg.title}
+              </h2>
+              <dl className="space-y-4 text-[15px] leading-relaxed">
+                <div>
+                  <dt className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Для кого</dt>
+                  <dd className="text-zinc-300">{seg.forWhom}</dd>
+                </div>
+                <div>
+                  <dt className="text-zinc-500 text-xs uppercase tracking-wider mb-1">
+                    Ваша проблема и запрос
+                  </dt>
+                  <dd className="text-zinc-400">{seg.problem}</dd>
+                </div>
+                <div>
+                  <dt className="text-cyan-400/80 text-xs uppercase tracking-wider mb-1">
+                    Предложение СТП-КОТОВ
+                  </dt>
+                  <dd className="text-zinc-300">{seg.offer}</dd>
+                </div>
+              </dl>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href={`tel:${CONTACTS.phoneTel}`}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-zinc-700 text-zinc-300 text-sm hover:border-cyan-400/40 hover:text-white transition-colors"
+                >
+                  <Phone className="w-4 h-4" strokeWidth={1.75} />
+                  Заказать звонок
+                </a>
+                <a
+                  href={`mailto:${CONTACTS.email}`}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-zinc-700 text-zinc-300 text-sm hover:border-cyan-400/40 hover:text-white transition-colors"
+                >
+                  <Mail className="w-4 h-4" strokeWidth={1.75} />
+                  Написать
+                </a>
+              </div>
+            </motion.article>
           ))}
         </div>
 
-        <div className="space-y-8">
-          {FLIBEN_TYPICAL.projects.map((project, index) => (
-            <ProjectBlock key={project.slug} project={project} index={index} />
-          ))}
+        <div className="sticky bottom-6 z-10 flex justify-center">
+          <div className="flex flex-wrap items-center justify-center gap-3 rounded-full border border-zinc-700 bg-zinc-950/95 backdrop-blur px-4 py-3 shadow-lg">
+            <a
+              href={`tel:${CONTACTS.phoneTel}`}
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-zinc-950 text-sm font-semibold hover:bg-zinc-100"
+            >
+              Заказать звонок
+            </a>
+            <Link
+              href={PATHS.contacts}
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-zinc-600 text-zinc-300 text-sm hover:text-white"
+            >
+              Написать
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -252,7 +252,7 @@ export default function FlibenCatalogClient({
                 layout
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="group rounded-2xl border border-zinc-800 bg-zinc-900/60 overflow-hidden shadow-[0_12px_32px_rgba(0,0,0,0.35)] hover:border-cyan-400/30 hover:shadow-[0_16px_40px_rgba(0,0,0,0.45),0_0_24px_rgba(0,210,255,0.08)] transition-[box-shadow,border-color] duration-300 flex flex-col"
+                className="group rounded-2xl border border-zinc-800 bg-zinc-900/60 overflow-hidden shadow-[0_12px_32px_rgba(0,0,0,0.35)] hover:border-cyan-400/30 hover:shadow-[0_16px_40px_rgba(0,0,0,0.45),0_0_24px_rgba(255,90,120,0.08)] transition-[box-shadow,border-color] duration-300 flex flex-col"
               >
                 <Link
                   href={FLIBEN_CATALOG_URL}

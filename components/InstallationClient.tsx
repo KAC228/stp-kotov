@@ -28,7 +28,7 @@ const fadeUp = (delay = 0) => ({
 });
 
 /** Единый холодный cyan (#00D2FF), как карточки на главной */
-const CARD_HOVER_GLOW = "rgba(0,210,255,0.18)";
+const CARD_HOVER_GLOW = "rgba(255,90,120,0.18)";
 
 const CARDS = [
   {
@@ -122,7 +122,7 @@ export default function InstallationClient() {
             href={sitePath(PATHS.foreman)}
             className="inline-flex items-center gap-2 rounded-2xl border border-cyan-400/35 bg-cyan-400/10 px-5 py-3 text-sm font-medium text-cyan-400 hover:bg-cyan-400/15"
           >
-            Спросить прораба на объекте
+            Регламент на объекте
             <ArrowRight className="h-4 w-4" strokeWidth={1.75} />
           </a>
         </motion.div>
@@ -143,7 +143,7 @@ export default function InstallationClient() {
                 initial={{ opacity: 0, y: 32 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ ...spring, delay: 0.22 + i * 0.07 }}
-                className="relative bg-zinc-900 border border-zinc-800 rounded-2xl p-8 overflow-hidden group hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(0,210,255,0.22)] transition-[border-color,box-shadow] duration-300"
+                className="relative bg-zinc-900 border border-zinc-800 rounded-2xl p-8 overflow-hidden group hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(255,90,120,0.22)] transition-[border-color,box-shadow] duration-300"
               >
                 <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none"
@@ -173,14 +173,14 @@ export default function InstallationClient() {
           transition={{ ...spring, delay: 0.5 }}
           className="mt-14 relative rounded-3xl overflow-hidden"
           style={{
-            background: "linear-gradient(135deg, rgba(0,210,255,0.06) 0%, rgba(14,14,18,0) 60%)",
-            border: "1px solid rgba(0,210,255,0.22)",
+            background: "linear-gradient(135deg, rgba(255,90,120,0.06) 0%, rgba(14,14,18,0) 60%)",
+            border: "1px solid rgba(255,90,120,0.22)",
           }}
         >
           <div
             className="absolute top-0 left-0 right-0 h-px"
             style={{
-              background: "linear-gradient(90deg, transparent, rgba(0,210,255,0.5), transparent)",
+              background: "linear-gradient(90deg, transparent, rgba(255,90,120,0.5), transparent)",
             }}
           />
 
@@ -205,8 +205,9 @@ export default function InstallationClient() {
             </div>
 
             <p className="text-zinc-300 text-base sm:text-lg leading-relaxed mb-10 max-w-2xl">
-              Гарантия {WARRANTY_YEARS} лет на камеры статического давления — это
-              обязательство, которое мы подтверждаем реальным делом.
+              Заводская гарантия {WARRANTY_YEARS} лет на камеры статического давления
+              действует при монтаже авторизованными специалистами и соблюдении
+              условий сервисного обслуживания, указанных в договоре и на этой странице.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
@@ -249,11 +250,11 @@ export default function InstallationClient() {
                   </p>
                 </div>
                 <p className="text-zinc-400 text-[15px] leading-relaxed">
-                  Договор на сервисное обслуживание — это не только
-                  формальность. Регулярные регламентные работы{" "}
-                  <span className="text-zinc-200 font-medium">предотвращают возможные неисправности</span>{" "}
-                  и гарантируют, что ваше оборудование будет работать
-                  идеально, а производитель несёт за это полную ответственность.
+                  Договор на сервисное обслуживание — это не только формальность.
+                  Регулярные регламентные работы{" "}
+                  <span className="text-zinc-200 font-medium">снижают риск неисправностей</span>{" "}
+                  и помогают сохранить право на гарантийный ремонт или замену
+                  в рамках условий договора.
                 </p>
               </div>
             </div>
@@ -263,9 +264,10 @@ export default function InstallationClient() {
                 <ShieldCheck className="w-4 h-4 text-cyan-400" strokeWidth={2.5} />
               </div>
               <p className="text-base leading-snug">
-                <span className="text-zinc-400">Главная цель: </span>
+                <span className="text-zinc-400">Цель сервиса: </span>
                 <span className="text-white font-semibold">
-                  Гарантировать вам {WARRANTY_YEARS} лет бесперебойной, эффективной и безопасной работы наших систем.
+                  обеспечить условия для реализации гарантии {WARRANTY_YEARS} лет —
+                  при соблюдении регламента обслуживания и правил эксплуатации.
                 </span>
               </p>
             </div>

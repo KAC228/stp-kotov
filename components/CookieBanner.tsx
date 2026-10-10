@@ -71,10 +71,17 @@ export default function CookieBanner() {
             <span className="text-zinc-300">только после вашего согласия</span>.
             Подробнее — в{" "}
             <Link
+              href={PATHS.cookies}
+              className="ksd-cookie-link text-zinc-300 underline underline-offset-2 decoration-zinc-600 hover:text-white hover:decoration-zinc-400 transition-colors"
+            >
+              политике cookie
+            </Link>
+            {" "}и{" "}
+            <Link
               href={PATHS.privacy}
               className="ksd-cookie-link text-zinc-300 underline underline-offset-2 decoration-zinc-600 hover:text-white hover:decoration-zinc-400 transition-colors"
             >
-              Политике конфиденциальности
+              политике конфиденциальности
             </Link>
             .
           </p>

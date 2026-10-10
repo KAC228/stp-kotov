@@ -4,11 +4,15 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { PATHS } from "@/constants/brand";
-import { splitArticleParagraphs, type FlibenArticle } from "@/lib/fliben-content";
-import { CoverPhoto } from "@/components/SitePhoto";
+import type { SiteArticle } from "@/lib/site-articles";
 
-export default function ArticleDetailClient({ article }: { article: FlibenArticle }) {
-  const paragraphs = splitArticleParagraphs(article.body);
+export default function ArticleDetailClient({ article }: { article: SiteArticle }) {
+  const historyParagraphs = article.body
+    ? article.body
+        .split(/\n{2,}/)
+        .map((p) => p.trim())
+        .filter(Boolean)
+    : [];
 
   return (
     <div className="min-h-screen bg-zinc-950 pt-24">
@@ -25,38 +29,42 @@ export default function ArticleDetailClient({ article }: { article: FlibenArticl
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
+          className="mb-10"
         >
-          {article.image && (
-            <CoverPhoto
-              src={article.image}
-              alt={article.title}
-              aspectClass="aspect-[16/9]"
-              frameClassName="rounded-2xl mb-8 border border-zinc-800"
-              sizes="768px"
-              priority
-            />
-          )}
           <h1 className="text-white font-semibold tracking-tight text-2xl sm:text-4xl leading-tight mb-4">
             {article.title}
           </h1>
-          {article.publishedAt && (
-            <p className="text-zinc-600 text-sm font-mono mb-8">
-              {new Date(article.publishedAt.replace(" ", "T")).toLocaleDateString("ru-RU", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
+          {article.thesis && (
+            <p className="text-zinc-400 text-base sm:text-lg leading-relaxed mb-4">{article.thesis}</p>
+          )}
+          {article.forWhom && (
+            <p className="text-zinc-600 text-sm">
+              <span className="text-zinc-500">Для кого: </span>
+              {article.forWhom}
             </p>
           )}
         </motion.header>
 
-        <div className="prose prose-invert prose-zinc max-w-none">
-          {paragraphs.map((p) => (
-            <p key={p.slice(0, 40)} className="text-zinc-300 text-[15px] sm:text-base leading-relaxed mb-5">
-              {p}
-            </p>
-          ))}
-        </div>
+        {article.body ? (
+          <div className="space-y-5">
+            {historyParagraphs.map((p) => (
+              <p key={p.slice(0, 48)} className="text-zinc-300 text-[15px] sm:text-base leading-relaxed">
+                {p}
+              </p>
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-8">
+            <section>
+              <h2 className="text-white font-semibold text-lg mb-3">Проблема</h2>
+              <p className="text-zinc-300 text-[15px] sm:text-base leading-relaxed">{article.problem}</p>
+            </section>
+            <section>
+              <h2 className="text-white font-semibold text-lg mb-3">Решение «СТП-КОТОВ»</h2>
+              <p className="text-zinc-300 text-[15px] sm:text-base leading-relaxed">{article.solution}</p>
+            </section>
+          </div>
+        )}
       </article>
     </div>
   );

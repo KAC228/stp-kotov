@@ -21,7 +21,7 @@ import {
   RotateCcw,
   Scale,
 } from "lucide-react";
-import { CONTACTS, PATHS, PRICE_PER_METER_RUB, WARRANTY_YEARS } from "@/constants/brand";
+import { CONTACTS, PATHS, WARRANTY_YEARS } from "@/constants/brand";
 
 const sp = { type: "spring" as const, damping: 28, stiffness: 130 };
 
@@ -424,11 +424,7 @@ function PaymentSection() {
           Удобные способы расчёта.
         </h2>
         <p className="text-zinc-500 text-[15px] leading-relaxed max-w-xl">
-          Стоимость КСД —{" "}
-          <span className="text-white font-medium">
-            {PRICE_PER_METER_RUB.toLocaleString("ru-RU")} ₽ за метр
-          </span>{" "}
-          — фиксирована. Оплата осуществляется в формате 100% предоплаты через эквайринг АО «ТБанк».
+          Оплата осуществляется в формате 100% предоплаты через эквайринг АО «ТБанк».
         </p>
       </div>
 

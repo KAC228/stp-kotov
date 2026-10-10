@@ -8,18 +8,32 @@
   display: none;
 }
 
-/* ── Glow design-token ──────────────────────────────────────────────────────────
-   Registers shadow-glow and shadow-glow-strong as Tailwind utility classes.
-   In dark mode: full cyan intensity.
-   In light mode (html.light): reduced opacity so glow reads as a halo, not mud.
-   ─────────────────────────────────────────────────────────────────────────── */
+/*
+  Палитра STP-KOTOV.pdf:
+  ink #120a0e / #040203 / #1f1016 / #3d2a31
+  cream #fbf3f0 / blush #e6d9d8
+  accent coral #ff5a78 / coralSoft #ff8761
+  Cyan utilities remapped → coral so existing cyan-* classes pick up brand accent.
+*/
 @theme {
-  --shadow-glow:        0 0 20px rgba(0, 210, 255, 0.50);
-  --shadow-glow-strong: 0 0 30px rgba(0, 210, 255, 0.70);
+  --shadow-glow:        0 0 22px rgba(255, 90, 120, 0.45);
+  --shadow-glow-strong: 0 0 34px rgba(255, 90, 120, 0.62);
+
+  --color-cyan-50:  #fff1f3;
+  --color-cyan-100: #ffe0e6;
+  --color-cyan-200: #ffc2cd;
+  --color-cyan-300: #ff9aab;
+  --color-cyan-400: #ff5a78;
+  --color-cyan-500: #ff8761;
+  --color-cyan-600: #e84562;
+  --color-cyan-700: #c2334d;
+  --color-cyan-800: #8f2a3c;
+  --color-cyan-900: #5c1c28;
+  --color-cyan-950: #2a1018;
 }
 
-/* ── Custom brand fonts ─────────────────────────────────────────────
-   Раскомментируйте после добавления файлов в /public/fonts/
+/* ?? Custom brand fonts ?????????????????????????????????????????????
+   ???????????????? ????? ?????????? ?????? ? /public/fonts/
    @font-face {
      font-family: "Zenter SP";
      src: local("Zenter SP"), url("/fonts/ZenterSP.woff2") format("woff2");
@@ -35,11 +49,27 @@
      font-style: normal;
      font-display: swap;
    }
-   ─────────────────────────────────────────────────────────────────── */
+   ??????????????????????????????????????????????????????????????????? */
 
 :root {
   --font-brand:  "Zenter SP",   system-ui, -apple-system, "Helvetica Neue", sans-serif;
   --font-slogan: "Lozung Caps", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+
+  --brand-ink: #120a0e;
+  --brand-ink-deep: #040203;
+  --brand-ink-elevated: #1f1016;
+  --brand-ink-muted: #3d2a31;
+  --brand-cream: #fbf3f0;
+  --brand-blush: #e6d9d8;
+  --brand-coral: #ff5a78;
+  --brand-coral-soft: #ff8761;
+  --brand-silver: #d4d8e0;
+
+  /* Dark surfaces → сливовый инк презентации */
+  --color-zinc-950: #120a0e;
+  --color-zinc-900: #1f1016;
+  --color-zinc-800: #2a1820;
+  --color-zinc-700: #3d2a31;
 }
 
 html {
@@ -47,46 +77,44 @@ html {
   overflow-x: clip;
 }
 
-/* ── Light theme — CSS variable overrides ───────────────────────────────────────
+/* ?? Light theme ? CSS variable overrides ???????????????????????????????????????
    The zinc scale is semantically inverted so that existing utility classes
    (bg-zinc-950, text-white, border-zinc-800, etc.) produce appropriate light-
    mode colours without touching any component files.
 
    Mapping intent:
-     bg-zinc-950  → premium light-grey page background   (#F2F2F7)
-     bg-zinc-900  → card / surface background             (#EAEAEF)
-     bg-zinc-800  → elevated / hover surface              (#DEDEE3)
-     border-zinc-800 / -700 → subtle light borders
-     text-zinc-400/500/600  → accessible dark body text
-     text-white   → near-black heading colour             (#1A1A1C)
-     bg-white / text-zinc-950 CTA buttons → naturally invert to
-                   dark button with light text            ✓
-   ─────────────────────────────────────────────────────────────────────────── */
+     bg-zinc-950  ? premium light-grey page background   (#F2F2F7)
+     bg-zinc-900  ? card / surface background             (#EAEAEF)
+     bg-zinc-800  ? elevated / hover surface              (#DEDEE3)
+     border-zinc-800 / -700 ? subtle light borders
+     text-zinc-400/500/600  ? accessible dark body text
+     text-white   ? near-black heading colour             (#1A1A1C)
+     bg-white / text-zinc-950 CTA buttons ? naturally invert to
+                   dark button with light text            ?
+   ??????????????????????????????????????????????????????????????????????????? */
 html.light {
   color-scheme: light;
 
-  /* Glow tokens — softer in light mode so cyan reads as a halo, not a stain */
-  --shadow-glow:        0 0 20px rgba(0, 210, 255, 0.22);
-  --shadow-glow-strong: 0 0 30px rgba(0, 210, 255, 0.32);
+  --shadow-glow:        0 0 20px rgba(255, 90, 120, 0.22);
+  --shadow-glow-strong: 0 0 30px rgba(255, 135, 97, 0.30);
 
-  /* Zinc scale — dark shades map to light values */
-  --color-zinc-950: oklch(96.7% 0.002 286);   /* page bg      ~#F5F5F7 */
-  --color-zinc-900: oklch(100%  0     0);     /* card bg      white     */
-  --color-zinc-800: oklch(95%   0.002 286);   /* elevated     ~#F0F0F3 */
-  --color-zinc-700: oklch(82%   0.004 285.9); /* borders      ~#CCCCD2 */
-  --color-zinc-600: oklch(61%   0.007 285.9); /* muted text   ~#8E8E95 */
-  --color-zinc-500: oklch(45%   0.007 285.9); /* secondary    ~#636369 */
-  --color-zinc-400: oklch(29%   0.007 285.9); /* body text    ~#3C3C3E */
-  --color-zinc-300: oklch(22%   0.006 285.9); /* strong text  ~#2C2C2E */
-  --color-zinc-200: oklch(16%   0.005 285.9); /* emphasis     ~#1E1E20 */
-  --color-zinc-100: oklch(11%   0.004 285.9); /* near-black   ~#131315 */
-  --color-zinc-50:  oklch(7%    0.003 285.9); /* darkest      ~#0A0A0C */
+  /* Light → cream / blush из презентации */
+  --color-zinc-950: #fbf3f0;
+  --color-zinc-900: #ffffff;
+  --color-zinc-800: #e6d9d8;
+  --color-zinc-700: #c9b8b6;
+  --color-zinc-600: #6b555c;
+  --color-zinc-500: #56444b;
+  --color-zinc-400: #3d2a31;
+  --color-zinc-300: #2a1820;
+  --color-zinc-200: #1f1016;
+  --color-zinc-100: #120a0e;
+  --color-zinc-50:  #040203;
 
-  /* "white" → near-black heading colour (headings stay readable) */
-  --color-white: oklch(14% 0.005 285.9);      /* ~#1A1A1C               */
+  --color-white: #120a0e;
 }
 
-/* ── Body base ──────────────────────────────────────────────────────────────── */
+/* ?? Body base ???????????????????????????????????????????????????????????????? */
 body {
   background-color: var(--color-zinc-950, #09090b);
   color: var(--color-white, #ffffff);
@@ -94,13 +122,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Selection follows theme ────────────────────────────────────────────────── */
+/* ?? Selection follows theme ?????????????????????????????????????????????????? */
 ::selection {
   background-color: var(--color-white, #ffffff);
   color: var(--color-zinc-950, #09090b);
 }
 
-/* ── Hero vignette: hide on light mode so dark overlay doesn't bleed ────────── */
+/* ?? Hero vignette: hide on light mode so dark overlay doesn't bleed ?????????? */
 html.light [data-hero-vignette] {
   display: none;
 }
@@ -109,18 +137,18 @@ html.light .wind-field {
   opacity: 1;
 }
 
-/* ── Wind field (hero) ─────────────────────────────────────────────────────── */
+/* ?? Wind field (hero) ??????????????????????????????????????????????????????? */
 .wind-field {
   z-index: 0;
-  background: radial-gradient(ellipse at 30% 20%, rgba(0, 210, 255, 0.06) 0%, transparent 55%),
-    radial-gradient(ellipse at 70% 80%, rgba(56, 189, 248, 0.04) 0%, transparent 50%),
-    linear-gradient(180deg, #0a0b10 0%, #090a0f 100%);
+  background: radial-gradient(ellipse at 30% 20%, rgba(255, 90, 120, 0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 80%, rgba(255, 135, 97, 0.05) 0%, transparent 50%),
+    linear-gradient(180deg, #120a0e 0%, #040203 100%);
 }
 
 html.light .wind-field {
-  background: radial-gradient(ellipse at 25% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 55%),
-    radial-gradient(ellipse at 75% 85%, rgba(100, 116, 139, 0.06) 0%, transparent 50%),
-    linear-gradient(180deg, #fafafa 0%, #f4f4f5 100%);
+  background: radial-gradient(ellipse at 25% 15%, rgba(255, 90, 120, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 85%, rgba(61, 42, 49, 0.06) 0%, transparent 50%),
+    linear-gradient(180deg, #fbf3f0 0%, #e6d9d8 100%);
 }
 
 .wind-field-canvas {
@@ -137,7 +165,7 @@ html.light .wind-field-canvas {
   }
 }
 
-/* ── Light mode grid — только Hero + блок «9 технологий» (см. .light-mesh-top на секциях) */
+/* ?? Light mode grid ? ?????? Hero + ???? 9 ?????????? (??. .light-mesh-top ?? ???????) */
 html.light section.light-mesh-top {
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
@@ -147,7 +175,7 @@ html.light section.light-mesh-top {
   background-attachment: fixed, fixed;
 }
 
-/* ── Hero CTA ─────────────────────────────────────────────────────────────── */
+/* ?? Hero CTA ??????????????????????????????????????????????????????????????? */
 .hero-cta-primary {
   display: inline-flex;
   align-items: center;
@@ -163,7 +191,7 @@ html.light section.light-mesh-top {
 }
 .hero-cta-primary:hover {
   background-color: #f4f4f5;
-  box-shadow: 0 0 36px rgba(0, 210, 255, 0.35);
+  box-shadow: 0 0 36px rgba(255, 90, 120, 0.38);
   transform: translateY(-1px);
 }
 
@@ -204,7 +232,7 @@ html.light section.light-mesh-top {
   flex-shrink: 0;
 }
 
-/* Stacked — на узком экране отдельные кнопки, без вложенной «таблетки» */
+/* Stacked ? ?? ????? ?????? ????????? ??????, ??? ????????? ???????? */
 .hero-cta-stacked {
   width: 100%;
   max-width: 19rem;
@@ -229,7 +257,7 @@ html.light section.light-mesh-top {
   .hero-cta-stacked .hero-cta-secondary-link:hover {
     color: #fafafa;
     background-color: transparent;
-    filter: drop-shadow(0 0 8px rgba(0, 210, 255, 0.75));
+    filter: drop-shadow(0 0 8px rgba(255, 90, 120, 0.7));
   }
 }
 
@@ -279,7 +307,7 @@ html.light .hero-cta-primary {
 }
 html.light .hero-cta-primary:hover {
   background-color: #18181b;
-  box-shadow: 0 0 28px rgba(0, 210, 255, 0.28);
+  box-shadow: 0 0 28px rgba(255, 90, 120, 0.28);
 }
 
 html.light .hero-cta-secondary {
@@ -313,11 +341,11 @@ html.light .hero-cta-secondary-sep {
   html.light .hero-cta-stacked .hero-cta-secondary-link:hover {
     color: #09090b;
     background-color: transparent;
-    filter: drop-shadow(0 0 8px rgba(0, 210, 255, 0.55));
+    filter: drop-shadow(0 0 8px rgba(255, 90, 120, 0.55));
   }
 }
 
-/* Вариант row — одна линия, outline-кнопки */
+/* ??????? row ? ???? ?????, outline-?????? */
 .hero-cta-row {
   display: flex;
   flex-wrap: wrap;
@@ -346,7 +374,7 @@ html.light .hero-cta-secondary-sep {
   border-color: #a1a1aa;
   color: #ffffff;
   background: rgba(39, 39, 42, 0.65);
-  box-shadow: 0 0 24px rgba(0, 210, 255, 0.12);
+  box-shadow: 0 0 24px rgba(255, 90, 120, 0.12);
 }
 
 @media (max-width: 640px) {
@@ -372,7 +400,7 @@ html.light .hero-cta-outline:hover {
   background: #ffffff;
 }
 
-/* Вариант minimal — текстовые ссылки */
+/* ??????? minimal ? ????????? ?????? */
 .hero-cta-text-link {
   display: inline-flex;
   align-items: center;
@@ -393,7 +421,7 @@ html.light .hero-cta-text-link:hover {
   color: #0e7490;
 }
 
-/* Hero: явные цвета без invert; точки едва заметны, fixed как у тёмной сетки */
+/* Hero: ????? ????? ??? invert; ????? ???? ???????, fixed ??? ? ?????? ????? */
 html.light [data-hero-grid].hero-grid-lines {
   opacity: 1;
   filter: none;
@@ -404,14 +432,14 @@ html.light [data-hero-grid].hero-grid-lines {
   background-attachment: fixed !important;
 }
 
-/* На светлой теме без radial — только линии (см. .hero-grid-lines) */
+/* ?? ??????? ???? ??? radial ? ?????? ????? (??. .hero-grid-lines) */
 html.light [data-hero-grid].hero-grid-dots {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 }
 
-/* Каталог: рамка карточки заметнее на светлом фоне (не «белая кайма») */
+/* ???????: ????? ???????? ???????? ?? ??????? ???? (?? ????? ?????) */
 html.light .border-zinc-800 {
   border-color: rgba(15, 23, 42, 0.12);
 }
@@ -430,7 +458,7 @@ html.light .bento-guarantee-text span {
   color: #052e16;
 }
 
-/* ── Smooth theme transition (applied after first mount via JS) ──────────────── */
+/* ?? Smooth theme transition (applied after first mount via JS) ???????????????? */
 html.theme-ready,
 html.theme-ready body {
   transition:
@@ -439,13 +467,13 @@ html.theme-ready body {
     border-color 0.25s ease;
 }
 
-/* ── Global input / textarea focus glow ─────────────────────────────────────
+/* ?? Global input / textarea focus glow ?????????????????????????????????????
    Every input that carries .ksd-input gets a cyan border + shadow on focus.
-   Applied in components via the shared inputCls constant.               ──── */
+   Applied in components via the shared inputCls constant.               ???? */
 .ksd-input:focus {
   outline: none;
-  border-color: rgba(0, 210, 255, 0.50) !important;
-  box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.12), var(--shadow-glow);
+  border-color: rgba(255, 90, 120, 0.50) !important;
+  box-shadow: 0 0 0 3px rgba(255, 90, 120, 0.12), var(--shadow-glow);
   will-change: box-shadow;
 }
 .ksd-input:focus-visible {
@@ -454,11 +482,11 @@ html.theme-ready body {
 
 /* Lighter ring in light mode */
 html.light .ksd-input:focus {
-  border-color: rgba(0, 210, 255, 0.40) !important;
-  box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.08), var(--shadow-glow);
+  border-color: rgba(255, 90, 120, 0.40) !important;
+  box-shadow: 0 0 0 3px rgba(255, 90, 120, 0.08), var(--shadow-glow);
 }
 
-/* ── Единые тени для фото (каталог + блоки) ───────────────────────────────── */
+/* ?? ?????? ???? ??? ???? (??????? + ?????) ????????????????????????????????? */
 .site-photo-frame--product {
   position: relative;
   background-color: #09090b;
@@ -469,7 +497,7 @@ html.light .ksd-input:focus {
 }
 
 .site-photo--product {
-  /* без filter:drop-shadow — цвет продукта даёт цветную «тень» (зелёная у GREEN LINE) */
+  /* ??? filter:drop-shadow ? ???? ???????? ???? ??????? ???? (??????? ? GREEN LINE) */
   transition: transform 0.3s ease;
 }
 
@@ -517,7 +545,7 @@ html.light .ksd-input:focus {
 }
 
 html.light .site-photo-frame--product {
-  /* Не чисто белый — иначе на светлой теме «белая рамка» вокруг фото */
+  /* ?? ????? ????? ? ????? ?? ??????? ???? ????? ????? ?????? ???? */
   background-color: #eef0f3;
   box-shadow:
     0 8px 22px rgba(15, 23, 42, 0.08),
@@ -532,7 +560,7 @@ html.light .site-photo-frame--product:hover {
     0 4px 10px rgba(15, 23, 42, 0.08);
 }
 
-/* Миниатюры каталога наследуют фон темы */
+/* ????????? ???????? ????????? ??? ???? */
 .site-photo-thumb {
   background-color: #09090b;
 }
@@ -540,7 +568,7 @@ html.light .site-photo-thumb {
   background-color: #eef0f3;
 }
 
-/* Cookie-баннер: читаемый текст в светлой теме */
+/* Cookie-??????: ???????? ????? ? ??????? ???? */
 html.light .ksd-cookie-banner .ksd-cookie-panel {
   background: rgba(255, 255, 255, 0.96) !important;
   border-color: rgba(212, 212, 216, 0.9) !important;
@@ -577,7 +605,7 @@ html.light .site-photo-frame--cover::after {
     inset 0 0 0 1px rgba(15, 23, 42, 0.06);
 }
 
-/* ── Fliben product HTML (описание с fliben.ru) ───────────────────────────── */
+/* ?? Fliben product HTML (???????? ? fliben.ru) ????????????????????????????? */
 .fliben-product-html p {
   margin: 0 0 1em;
 }
@@ -597,14 +625,14 @@ html.light .site-photo-frame--cover::after {
   font-weight: 600;
 }
 .fliben-product-html a {
-  color: rgba(0, 210, 255, 0.85);
+  color: rgba(255, 90, 120, 0.85);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-/* ── TechFeatures («Инженерная точность в каждом узле») — light theme ─────── */
+/* ?? TechFeatures (?????????? ???????? ? ?????? ????) ? light theme ??????? */
 .tech-feature-photo {
-  background: linear-gradient(135deg, rgba(0, 210, 255, 0.15) 0%, rgba(24, 24, 27, 0.96) 70%);
+  background: linear-gradient(135deg, rgba(255, 90, 120, 0.15) 0%, rgba(24, 24, 27, 0.96) 70%);
 }
 .tech-feature-photo-grid {
   background-image:
@@ -616,7 +644,7 @@ html.light .site-photo-frame--cover::after {
   color: rgba(63, 63, 70, 0.38);
 }
 .tech-feature-lightbox {
-  background: linear-gradient(135deg, rgba(0, 210, 255, 0.15) 0%, rgba(24, 24, 27, 0.98) 65%);
+  background: linear-gradient(135deg, rgba(255, 90, 120, 0.15) 0%, rgba(24, 24, 27, 0.98) 65%);
 }
 
 html.light .tech-feature-card {
@@ -626,7 +654,7 @@ html.light .tech-feature-photo-ring {
   --tw-ring-color: var(--color-zinc-700);
 }
 html.light .tech-feature-photo {
-  background: linear-gradient(135deg, rgba(0, 210, 255, 0.12) 0%, rgba(245, 245, 247, 0.98) 70%);
+  background: linear-gradient(135deg, rgba(255, 90, 120, 0.12) 0%, rgba(245, 245, 247, 0.98) 70%);
 }
 html.light .tech-feature-photo-grid {
   opacity: 0.08;
@@ -647,14 +675,14 @@ html.light .tech-feature-slider-nav {
   color: var(--color-zinc-500);
 }
 html.light .tech-feature-lightbox {
-  background: linear-gradient(135deg, rgba(0, 210, 255, 0.10) 0%, rgba(255, 255, 255, 0.98) 65%);
+  background: linear-gradient(135deg, rgba(255, 90, 120, 0.10) 0%, rgba(255, 255, 255, 0.98) 65%);
 }
 html.light .tech-feature-lightbox .text-zinc-500,
 html.light .tech-feature-lightbox .text-zinc-400 {
   color: var(--color-zinc-600);
 }
 
-/* ── FieldRow focus-within highlight (OrderForm) ────────────────────────────
+/* ?? FieldRow focus-within highlight (OrderForm) ????????????????????????????
    When any child input/textarea is focused, the row separator gets a cyan tint. */
 .ksd-field-row:not(:first-child) {
   border-top: 1px solid;
@@ -662,13 +690,13 @@ html.light .tech-feature-lightbox .text-zinc-400 {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .ksd-field-row:focus-within:not(:first-child) {
-  border-color: rgba(0, 210, 255, 0.40);
-  box-shadow: inset 0 1px 0 rgba(0, 210, 255, 0.10);
+  border-color: rgba(255, 90, 120, 0.40);
+  box-shadow: inset 0 1px 0 rgba(255, 90, 120, 0.10);
 }
 
-/* ── KSD Header — always uses dark-mode zinc values so that text stays dark  ──
+/* ?? KSD Header ? always uses dark-mode zinc values so that text stays dark  ??
    on the silver metallic surface, regardless of the active site theme.
-   Applied via class="ksd-header" on the <header> element.              ──────── */
+   Applied via class="ksd-header" on the <header> element.              ???????? */
 .ksd-header {
   --color-white:    #ffffff;
   --color-zinc-50:  #fafafa;
@@ -684,7 +712,7 @@ html.light .tech-feature-lightbox .text-zinc-400 {
   --color-zinc-950: #09090b;
 }
 
-/* ── Scrollbar hidden globally ─────────────────────────────────────────────── */
+/* ?? Scrollbar hidden globally ??????????????????????????????????????????????? */
 ::-webkit-scrollbar {
   display: none;
 }
@@ -696,7 +724,7 @@ html.light .tech-feature-lightbox .text-zinc-400 {
   -ms-overflow-style: none;
 }
 
-/* ── Skip link: виден только при фокусе с клавиатуры ─────────────────────────── */
+/* ?? Skip link: ????? ?????? ??? ?????? ? ?????????? ??????????????????????????? */
 .ksd-skip-link {
   position: fixed;
   left: 1rem;
@@ -719,8 +747,23 @@ html.light .tech-feature-lightbox .text-zinc-400 {
   width: auto;
   height: auto;
   overflow: visible;
-  outline: 2px solid rgba(0, 210, 255, 0.6);
+  outline: 2px solid rgba(255, 90, 120, 0.6);
   outline-offset: 2px;
+}
+
+/* ???????????? ????? ? ??????? ?????? ??? ?????? ? ?????? ??? ?????? ????? */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+summary:focus-visible {
+  outline: 2px solid rgba(255, 90, 120, 0.65);
+  outline-offset: 2px;
+}
+
+html.light a:focus-visible,
+html.light button:focus-visible,
+html.light [role="button"]:focus-visible {
+  outline-color: rgba(200, 70, 95, 0.85);
 }
 
 @keyframes ksd-cookie-banner-in {
@@ -738,7 +781,7 @@ html.light .tech-feature-lightbox .text-zinc-400 {
   animation: ksd-cookie-banner-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* ── Payment ticker (бегущая строка про онлайн-оплату) ── */
+/* ?? Payment ticker (??????? ?????? ??? ??????-??????) ?? */
 :root {
   --ksd-ticker-h: 2.25rem;
 }
@@ -771,4 +814,62 @@ html.light .tech-feature-lightbox .text-zinc-400 {
 
 body:has(.ksd-payment-ticker) .pt-24 {
   padding-top: calc(6rem + var(--ksd-ticker-h));
+}
+
+/* ── Silver wordmark shimmer (hero) ───────────────────────────────────────── */
+@keyframes ksd-logo-shimmer {
+  0% {
+    background-position: 120% 0;
+  }
+  100% {
+    background-position: -120% 0;
+  }
+}
+
+.ksd-logo-shimmer {
+  position: relative;
+  isolation: isolate;
+}
+
+.ksd-logo-shimmer::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.18) 45%,
+    rgba(242, 244, 247, 0.45) 50%,
+    rgba(255, 255, 255, 0.18) 55%,
+    transparent 65%
+  );
+  background-size: 220% 100%;
+  mix-blend-mode: soft-light;
+  animation: ksd-logo-shimmer 3.6s ease-in-out 1.1s infinite;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ksd-logo-shimmer::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* ── Ash-like section divider pulse ───────────────────────────────────────── */
+@keyframes ksd-line-draw {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.ksd-section-line {
+  transform-origin: center;
+  animation: ksd-line-draw 1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }

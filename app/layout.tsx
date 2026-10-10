@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 import AppShellOverlays from "@/components/AppShellOverlays";
 import CookieBanner from "@/components/CookieBanner";
 import YandexMetrika from "@/components/YandexMetrika";
-import { BRAND_NAME, PRICE_PER_METER_RUB, SITE_URL, WARRANTY_YEARS } from "@/constants/brand";
+import { BRAND_NAME, HERO_TAGLINE, SITE_URL, WARRANTY_YEARS } from "@/constants/brand";
 import { sitePath } from "@/lib/site-path";
 import { OG_IMAGE } from "@/lib/metadata";
 import { siteJsonLd } from "@/lib/jsonld";
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: `${BRAND_NAME} — Скрытые теневые потоки`,
   description:
-    `Камеры статического давления нового поколения. Единая цена ${PRICE_PER_METER_RUB.toLocaleString("ru-RU")} ₽ за погонный метр. Гарантия ${WARRANTY_YEARS} лет. Тип потолка и врезки включены в стоимость.`,
+    `Камеры статического давления СТП-КОТОВ — ${HERO_TAGLINE}. Заводская гарантия ${WARRANTY_YEARS} лет при сертифицированном монтаже.`,
   keywords:
     `КСД, камера статического давления, СТП-КОТОВ, стп-котов, натяжной потолок, ГКЛ, ${BRAND_NAME}, шинопровод, вентиляция, гарантия ${WARRANTY_YEARS} лет, Fliben`,
   applicationName: BRAND_NAME,
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${BRAND_NAME} — Скрытые теневые потоки`,
     description:
-      `Единая цена ${PRICE_PER_METER_RUB.toLocaleString("ru-RU")} ₽ за метр. Гарантия ${WARRANTY_YEARS} лет. Тип потолка и врезки уже включены в стоимость. Монтаж из коробки.`,
+      `${HERO_TAGLINE}. Заводская гарантия ${WARRANTY_YEARS} лет при сертифицированном монтаже.`,
     url: SITE_URL,
     siteName: BRAND_NAME,
     locale: "ru_RU",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: `${BRAND_NAME} — Скрытые теневые потоки`,
-    description: `Камеры статического давления. Гарантия ${WARRANTY_YEARS} лет.`,
+    description: `Камеры статического давления. Заводская гарантия ${WARRANTY_YEARS} лет при сертифицированном монтаже.`,
     images: [OG_IMAGE.url],
   },
   robots: {

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/constants/brand";
-import { getAllArticleSlugs } from "@/lib/fliben-content";
+import { getAllSiteArticleSlugs } from "@/lib/site-articles";
 
 export const dynamic = "force-static";
 
@@ -14,6 +14,7 @@ const STATIC_PAGES: Array<{
   priority: number;
 }> = [
   { path: "", changeFrequency: "weekly", priority: 1 },
+  { path: "/catalog", changeFrequency: "weekly", priority: 0.85 },
   { path: "/projects", changeFrequency: "weekly", priority: 0.85 },
   { path: "/articles", changeFrequency: "weekly", priority: 0.8 },
   { path: "/installation", changeFrequency: "monthly", priority: 0.75 },
@@ -25,6 +26,7 @@ const STATIC_PAGES: Array<{
   { path: "/contacts", changeFrequency: "monthly", priority: 0.7 },
   { path: "/team", changeFrequency: "monthly", priority: 0.5 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
+  { path: "/cookies", changeFrequency: "yearly", priority: 0.3 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
 ];
 
@@ -39,7 +41,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority,
   }));
 
-  const articlePages = getAllArticleSlugs().map((slug) => ({
+  const articlePages = getAllSiteArticleSlugs().map((slug) => ({
     url: `${SITE_ORIGIN}/articles/${slug}`,
     lastModified,
     changeFrequency: "monthly" as const,

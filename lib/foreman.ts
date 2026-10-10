@@ -1,4 +1,4 @@
-import { CONTACTS, PRICE_PER_METER_RUB } from "../constants/brand";
+import { CONTACTS } from "../constants/brand";
 import { cardById, FOREMAN_CARDS, type ForemanCard, type ForemanSource } from "../data/foreman-cards";
 
 export type ForemanReply = {
@@ -258,11 +258,10 @@ function interpretProduct(query: string): ForemanReply | null {
   }
 
   if (lengths.length > 0 && /(длин|пилить|подрез|укорот|метр)/.test(query)) {
-    const price = PRICE_PER_METER_RUB.toLocaleString("ru-RU");
     return reply({
       cardId: "custom-length",
       title: "Длина камеры",
-      action: `Камеру под проём не пилят. В ряду ${LENGTHS.join(", ")} мм. Цена ${price} ₽ за погонный метр, тип потолка и врезка её не увеличивают.`,
+      action: `Камеру под проём не пилят. В ряду ${LENGTHS.join(", ")} мм. Тип потолка и врезка не меняют состав заказа без согласования.`,
       detail: "Другая длина — отдельный заказ на производство, не рез на объекте.",
       source: PRODUCT_FIT,
       related: relatedFrom(["custom-length", "mark-diffuser"]),

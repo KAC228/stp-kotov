@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Trash2, Plus, Minus, ArrowRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { PATHS, PRICE_PER_METER_RUB } from "@/constants/brand";
+import { PATHS } from "@/constants/brand";
 
 const spring = { type: "spring" as const, damping: 32, stiffness: 280 };
 
@@ -12,12 +13,27 @@ export default function CartSlider() {
   const {
     state,
     closeCart,
-    addItem,
     removeItem,
     updateQuantity,
     totalPrice,
     openOrderForm,
   } = useCart();
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!state.isOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeBtnRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeCart();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [state.isOpen, closeCart]);
 
   const handleCheckout = () => {
     closeCart();
@@ -41,6 +57,9 @@ export default function CartSlider() {
           />
 
           <motion.aside
+            role="dialog"
+            aria-modal="true"
+            aria-label="Корзина"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -57,9 +76,10 @@ export default function CartSlider() {
                 )}
               </h2>
               <button
+                ref={closeBtnRef}
                 onClick={closeCart}
-                className="w-7 h-7 flex items-center justify-center rounded-full bg-[#f5f5f7] text-[#86868b] hover:text-[#1d1d1f] transition-colors duration-200"
-                aria-label="Закрыть"
+                className="w-7 h-7 flex items-center justify-center rounded-full bg-[#f5f5f7] text-[#86868b] hover:text-[#1d1d1f] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1d1d1f]"
+                aria-label="Закрыть корзину"
               >
                 <X className="w-3.5 h-3.5" strokeWidth={2} />
               </button>
@@ -141,7 +161,7 @@ export default function CartSlider() {
                                     item.quantity - 1
                                   )
                                 }
-                                className="w-9 h-9 flex items-center justify-center text-[#86868b] hover:text-[#1d1d1f] hover:drop-shadow-[0_0_6px_rgba(0,210,255,0.6)] transition-all duration-200"
+                                className="w-9 h-9 flex items-center justify-center text-[#86868b] hover:text-[#1d1d1f] hover:drop-shadow-[0_0_6px_rgba(255,90,120,0.6)] transition-all duration-200"
                               >
                                 <Minus className="w-3 h-3" strokeWidth={2} />
                               </button>
@@ -156,7 +176,7 @@ export default function CartSlider() {
                                     item.quantity + 1
                                   )
                                 }
-                                className="w-9 h-9 flex items-center justify-center text-[#86868b] hover:text-[#1d1d1f] hover:drop-shadow-[0_0_6px_rgba(0,210,255,0.6)] transition-all duration-200"
+                                className="w-9 h-9 flex items-center justify-center text-[#86868b] hover:text-[#1d1d1f] hover:drop-shadow-[0_0_6px_rgba(255,90,120,0.6)] transition-all duration-200"
                               >
                                 <Plus className="w-3 h-3" strokeWidth={2} />
                               </button>
@@ -186,7 +206,7 @@ export default function CartSlider() {
                 </div>
                 {hasKsdItems ? (
                   <p className="text-[#86868b] text-xs">
-                    {PRICE_PER_METER_RUB.toLocaleString("ru-RU")} ₽/м — цена КСД включает тип потолка и врезки.
+                    Стоимость КСД уточняется при оформлении заказа.
                   </p>
                 ) : (
                   <p className="text-[#86868b] text-xs">

@@ -25,9 +25,10 @@ DirectoryIndex index.html
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # Каталог снят — старые URL → раздел партнёров
-  RewriteRule ^catalog(/.*)?$ /our-partners [R=301,L]
+  # Старый URL каталога партнёра → раздел партнёров
   RewriteRule ^our-partners/fliben/catalog/?$ /our-partners [R=301,L]
+  # Старые карточки товаров Fliben → новый каталог-заглушка
+  RewriteRule ^catalog/.+$ /catalog [R=301,L]
 
   # Next.js export: папка без index.html → одноимённый .html (QSA — не терять ?PaymentId=…)
   RewriteCond %{REQUEST_FILENAME} -d

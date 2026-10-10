@@ -7,7 +7,6 @@ import { useTheme } from "@/context/ThemeContext";
 import {
   BRAND_NAME,
   CONTACTS,
-  PRICE_PER_METER_RUB,
   LEGAL,
   MAIN_NAV,
   PATHS,
@@ -35,24 +34,19 @@ export default function Footer() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-zinc-800"
         >
           <div className="lg:col-span-2">
-            <Link href="/" className="inline-flex items-center gap-2.5 mb-4 group">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/80 group-hover:border-zinc-600 transition-colors">
-                <BrandLogo height={26} dark={theme === "dark"} />
-              </span>
-              <span
-                style={{ fontFamily: "var(--font-brand)" }}
-                className="text-white font-black tracking-tighter text-[17px]"
-              >
-                {BRAND_NAME}
-              </span>
+            <Link
+              href="/"
+              className="inline-flex items-center mb-4 group max-w-[14rem]"
+              aria-label={BRAND_NAME}
+            >
+              <BrandLogo
+                height={26}
+                dark={theme === "dark"}
+                className="opacity-90 group-hover:opacity-100 transition-opacity"
+              />
             </Link>
             <p className="text-[15px] leading-relaxed mb-8 max-w-md text-zinc-400">
-              Камеры статического давления нового поколения. Единая цена{" "}
-              <span className="text-zinc-300">
-                {PRICE_PER_METER_RUB.toLocaleString("ru-RU")} ₽ за метр
-              </span>{" "}
-              — тип потолка и
-              врезки включены в стоимость.
+              Камеры статического давления нового поколения, матрица независимых контуров.
             </p>
             <div className="flex flex-wrap gap-3">
               <a
@@ -170,8 +164,17 @@ export default function Footer() {
             <Link href={PATHS.privacy} className="hover:text-zinc-400 transition-colors">
               Политика конфиденциальности
             </Link>
+            <Link href={PATHS.cookies} className="hover:text-zinc-400 transition-colors">
+              Cookie
+            </Link>
             <Link href={PATHS.terms} className="hover:text-zinc-400 transition-colors">
               Публичная оферта
+            </Link>
+            <Link href={PATHS.delivery} className="hover:text-zinc-400 transition-colors">
+              Доставка и возврат
+            </Link>
+            <Link href={`${PATHS.privacy}#delete-data`} className="hover:text-zinc-400 transition-colors">
+              Удаление данных
             </Link>
             <Link href={PATHS.contacts} className="hover:text-zinc-400 transition-colors">
               Связаться с нами

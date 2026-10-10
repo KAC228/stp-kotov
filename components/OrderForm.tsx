@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -21,7 +21,7 @@ import {
   LegalFormData,
   PaymentMethod,
 } from "@/types";
-import { PATHS, PRICE_PER_METER_RUB } from "@/constants/brand";
+import { PATHS } from "@/constants/brand";
 import { formatPhoneRuInput, isPhoneCompleteRu } from "@/lib/phone";
 import {
   fileToAttachmentFields,
@@ -502,6 +502,22 @@ export default function OrderForm() {
 
   const isIndividual = customerType === "individual";
   const isQuoteFlow = quoteDraft !== null;
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!state.isOrderFormOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeBtnRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeOrderForm();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [state.isOrderFormOpen, closeOrderForm]);
 
   // --- field change handlers ---
 
@@ -722,6 +738,9 @@ export default function OrderForm() {
 
           {/* Modal */}
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Оформить заказ"
             initial={{ opacity: 0, scale: 0.96, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 20 }}
@@ -746,17 +765,18 @@ export default function OrderForm() {
                         {totalPrice.toLocaleString("ru-RU")} ₽
                       </span>
                       <span className="text-zinc-700 text-xs ml-1.5">
-                        ({PRICE_PER_METER_RUB.toLocaleString("ru-RU")} ₽/м · без скрытых доплат)
+                        (без скрытых доплат)
                       </span>
                     </>
                   )}
                 </p>
               </div>
               <button
+                ref={closeBtnRef}
                 type="button"
                 onClick={handleClose}
                 aria-label="Закрыть форму заказа"
-                className="mt-0.5 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 text-zinc-500 hover:text-white transition-colors duration-200"
+                className="mt-0.5 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/60"
               >
                 <X className="w-3.5 h-3.5" strokeWidth={2} />
               </button>

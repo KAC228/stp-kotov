@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import { CONTACTS, LEGAL, SITE_DOMAIN } from "@/constants/brand";
+import { CONTACTS, LEGAL, PATHS, SITE_DOMAIN } from "@/constants/brand";
+import DataDeletionForm from "@/components/DataDeletionForm";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -225,6 +226,38 @@ const SECTIONS: Section[] = [
   },
   {
     num: "7",
+    title: "Файлы cookie и сторонние сервисы",
+    blocks: [
+      {
+        type: "p",
+        text: "Подробные правила использования cookie изложены в отдельном документе — Политике cookie на странице /cookies. Кратко: необходимые cookie обеспечивают работу Сайта; аналитика «Яндекс.Метрика» (включая вебвизор) включается только после согласия в баннере.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Яндекс.Метрика (ООО «ЯНДЕКС») — веб-аналитика при согласии на cookie.",
+          "АО «ТБанк» — проведение оплаты и формирование фискального чека.",
+          "ООО «В Контакте» — доставка уведомлений о заявках с форм Сайта ответственному сотруднику.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Рекламные и маркетинговые рассылки Оператор не осуществляет. Если такие рассылки будут введены в будущем, в каждом письме будет размещена ссылка для отказа (отписки).",
+      },
+    ],
+  },
+  {
+    num: "8",
+    title: "Возраст субъектов. Данные детей",
+    blocks: [
+      {
+        type: "p",
+        text: "Сайт и услуги Оператора предназначены для совершеннолетних лиц и представителей организаций. Оператор не осуществляет целенаправленный сбор персональных данных лиц младше 18 лет. Если вам стало известно, что ребёнок передал данные через Сайт, сообщите Оператору — данные будут удалены в установленном порядке.",
+      },
+    ],
+  },
+  {
+    num: "9",
     title: "Трансграничная передача персональных данных",
     blocks: [
       {
@@ -238,12 +271,12 @@ const SECTIONS: Section[] = [
     ],
   },
   {
-    num: "8",
+    num: "10",
     title: "Заключительные положения",
     blocks: [
       {
         type: "p",
-        text: `Пользователь может получить любые разъяснения по интересующим вопросам, касающимся обработки персональных данных, обратившись к Оператору по адресу электронной почты ${CONTACTS.email} или по телефону ${CONTACTS.phoneDisplay}.`,
+        text: `Пользователь может получить любые разъяснения по интересующим вопросам, касающимся обработки персональных данных, обратившись к Оператору по адресу электронной почты ${CONTACTS.email} или по телефону ${CONTACTS.phoneDisplay}. Запрос на удаление данных можно направить через форму ниже на этой странице.`,
       },
       {
         type: "p",
@@ -255,7 +288,7 @@ const SECTIONS: Section[] = [
       },
       {
         type: "p",
-        text: "Настоящая Политика действует с 06 августа 2026 года. Предыдущие редакции хранятся в архиве Оператора.",
+        text: "Настоящая Политика действует с 04 октября 2026 года (ранее — редакция от 06 августа 2026 года). Предыдущие редакции хранятся в архиве Оператора.",
       },
     ],
   },
@@ -390,8 +423,8 @@ export default function PrivacyContent() {
           transition={{ ...sp, delay: 0.13 }}
           className="flex flex-wrap items-center gap-4 mb-8"
         >
-          <span className="text-zinc-600 text-sm">
-            Редакция от 06.08.2026
+          <span className="text-zinc-400 text-sm">
+            Редакция от 04.10.2026
           </span>
           <span className="w-1 h-1 rounded-full bg-zinc-700" />
           <span className="text-zinc-600 text-sm">
@@ -428,6 +461,34 @@ export default function PrivacyContent() {
           ))}
         </div>
 
+        <motion.div
+          id="delete-data"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={sp}
+          className="mt-14 scroll-mt-28"
+        >
+          <p className="text-zinc-500 text-[11px] font-mono tracking-[0.2em] uppercase mb-3">
+            Право субъекта
+          </p>
+          <h2 className="text-white font-semibold text-xl tracking-tight mb-6">
+            Удаление персональных данных
+          </h2>
+          <DataDeletionForm />
+          <p className="text-zinc-500 text-xs mt-4 leading-relaxed">
+            Также можно написать на{" "}
+            <a href={`mailto:${CONTACTS.email}`} className="text-zinc-400 underline underline-offset-2 hover:text-white">
+              {CONTACTS.email}
+            </a>{" "}
+            или ознакомиться с{" "}
+            <Link href={PATHS.cookies} className="text-zinc-400 underline underline-offset-2 hover:text-white">
+              политикой cookie
+            </Link>
+            .
+          </p>
+        </motion.div>
+
         {/* ── Footer stamp ── */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -437,14 +498,14 @@ export default function PrivacyContent() {
           className="mt-16 pt-10 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center gap-4 justify-between"
         >
           <div>
-            <p className="text-zinc-700 text-xs font-mono">{LEGAL.companyShort}</p>
-            <p className="text-zinc-700 text-xs font-mono mt-0.5">
+            <p className="text-zinc-500 text-xs font-mono">{LEGAL.companyShort}</p>
+            <p className="text-zinc-500 text-xs font-mono mt-0.5">
               ИНН {LEGAL.inn} / {LEGAL.ogrnLabel} {LEGAL.ogrn}
             </p>
           </div>
           <Link
             href="/contacts"
-            className="text-zinc-500 hover:text-white text-sm transition-colors duration-200"
+            className="text-zinc-400 hover:text-white text-sm transition-colors duration-200"
           >
             Задать вопрос →
           </Link>

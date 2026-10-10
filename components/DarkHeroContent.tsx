@@ -2,80 +2,61 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { BRAND_NAME, SLOGAN, PATHS } from "@/constants/brand";
+import BrandLogo from "@/components/BrandLogo";
+import { SLOGAN, HERO_TAGLINE, PATHS } from "@/constants/brand";
 import HeroCtaSection from "@/components/HeroCtaSection";
 
-const titleContainer = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.055, delayChildren: 0.18 },
-  },
-};
-
-const titleChar = {
-  hidden: { opacity: 0, y: 32 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring" as const, damping: 24, stiffness: 160 },
-  },
-};
-
 const fadeUp = (delay: number) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  transition: { type: "spring" as const, damping: 30, stiffness: 140, delay },
+  initial: { opacity: 0, y: 22, filter: "blur(6px)" },
+  animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+  transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as const, delay },
 });
-
-const TITLE_CHARS = BRAND_NAME.split("");
-const AFTER_TITLE = 0.18 + TITLE_CHARS.length * 0.055 + 0.38;
 
 export default function DarkHeroContent() {
   return (
     <div className="relative z-10 max-w-6xl mx-auto w-full">
       <motion.p
-        {...fadeUp(0.04)}
-        className="text-zinc-600 text-[11px] tracking-[0.30em] uppercase font-mono mb-6"
+        {...fadeUp(0.06)}
+        className="text-zinc-500 text-sm sm:text-base tracking-[0.22em] uppercase font-mono mb-8"
       >
-        {SLOGAN}
+        Скрытые теневые потоки
       </motion.p>
 
-      <motion.h1
-        variants={titleContainer}
-        initial="hidden"
-        animate="visible"
-        aria-label={BRAND_NAME}
-        style={{
-          fontFamily: "var(--font-brand)",
-          lineHeight: 0.9,
-          letterSpacing: "-0.04em",
-        }}
-        className="font-black text-white mb-6 select-none whitespace-nowrap text-center
-                   text-6xl sm:text-7xl md:text-8xl lg:text-9xl"
+      {/* Серебристый wordmark на фото/атмосфере героя */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.94, filter: "blur(12px)" }}
+        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+        transition={{ duration: 1.15, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
+        className="flex justify-center mb-8 sm:mb-10"
       >
-        {TITLE_CHARS.map((ch, i) => (
-          <motion.span
-            key={i}
-            variants={titleChar}
-            className="inline-block will-change-[transform,opacity]"
-          >
-            {ch}
-          </motion.span>
-        ))}
-      </motion.h1>
+        <div className="ksd-logo-shimmer relative mx-auto w-[min(92vw,40rem)]">
+          <BrandLogo
+            dark
+            fluid
+            height={84}
+            className="drop-shadow-[0_8px_32px_rgba(0,0,0,0.55)]"
+          />
+        </div>
+      </motion.div>
 
       <motion.p
-        {...fadeUp(AFTER_TITLE)}
+        {...fadeUp(0.55)}
         style={{ fontFamily: "var(--font-slogan)" }}
-        className="text-zinc-400 text-lg sm:text-xl lg:text-2xl font-light tracking-wide mb-10 max-w-2xl mx-auto leading-relaxed"
+        className="text-zinc-400 text-lg sm:text-xl lg:text-2xl font-light tracking-wide mb-4 max-w-3xl mx-auto leading-relaxed"
       >
-        Камеры статического давления нового поколения
+        {HERO_TAGLINE}
+      </motion.p>
+      <motion.p
+        {...fadeUp(0.62)}
+        className="text-zinc-600 text-sm mb-10 max-w-2xl mx-auto"
+      >
+        {SLOGAN}
       </motion.p>
 
       <HeroCtaSection />
 
       <motion.nav
-        {...fadeUp(AFTER_TITLE + 0.2)}
+        {...fadeUp(0.85)}
         aria-label="Быстрые ссылки"
         className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8 text-zinc-600 text-xs font-mono tracking-[0.12em] uppercase"
       >

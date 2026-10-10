@@ -69,7 +69,7 @@ function ThemeToggle() {
     <button
       onClick={toggleTheme}
       aria-label={isDark ? "Включить светлую тему" : "Включить тёмную тему"}
-      className={`relative flex items-center justify-center w-8 h-8 rounded-xl border will-change-[box-shadow] hover:shadow-[0_0_18px_rgba(0,210,255,0.55)] transition-all duration-200 ${btnCls}`}
+      className={`relative flex items-center justify-center w-8 h-8 rounded-xl border will-change-[box-shadow] hover:shadow-[0_0_18px_rgba(255,90,120,0.55)] transition-all duration-200 ${btnCls}`}
     >
       <AnimatePresence mode="wait" initial={false}>
         {mounted ? (
@@ -131,8 +131,8 @@ function DesktopNav({ navLinkCls, isDark }: { navLinkCls: string; isDark: boolea
   };
 
   const arrowEnabledCls = isDark
-    ? "border-cyan-300/85 bg-cyan-300/24 text-cyan-100 shadow-[0_0_22px_rgba(0,210,255,0.65)] hover:bg-cyan-300/34 hover:border-cyan-300/95 hover:text-white hover:shadow-[0_0_32px_rgba(0,210,255,0.82)]"
-    : "border-cyan-500/75 bg-cyan-500/20 text-cyan-700 shadow-[0_0_18px_rgba(0,210,255,0.35)] hover:bg-cyan-500/28 hover:border-cyan-600/90 hover:text-cyan-900 hover:shadow-[0_0_26px_rgba(0,210,255,0.55)]";
+    ? "border-cyan-300/85 bg-cyan-300/24 text-cyan-100 shadow-[0_0_22px_rgba(255,90,120,0.65)] hover:bg-cyan-300/34 hover:border-cyan-300/95 hover:text-white hover:shadow-[0_0_32px_rgba(255,90,120,0.82)]"
+    : "border-cyan-500/75 bg-cyan-500/20 text-cyan-700 shadow-[0_0_18px_rgba(255,90,120,0.35)] hover:bg-cyan-500/28 hover:border-cyan-600/90 hover:text-cyan-900 hover:shadow-[0_0_26px_rgba(255,90,120,0.55)]";
 
   const arrowIdleCls = isDark
     ? "border-zinc-600/70 bg-zinc-900/60 text-zinc-600 opacity-50"
@@ -225,20 +225,13 @@ export default function Header() {
 
   // ── per-theme text / icon colour strings ────────────────────────────────────
   const navLinkCls = isDark
-    ? "text-zinc-400 text-sm xl:text-[15px] font-medium tracking-wide whitespace-nowrap hover:text-white hover:drop-shadow-[0_0_8px_rgba(0,210,255,0.85)] transition-all duration-200"
-    : "text-zinc-700 text-sm xl:text-[15px] font-semibold tracking-wide whitespace-nowrap hover:text-zinc-950 hover:drop-shadow-[0_0_8px_rgba(0,210,255,0.85)] transition-all duration-200";
+    ? "text-zinc-400 text-sm xl:text-[15px] font-medium tracking-wide whitespace-nowrap hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,90,120,0.85)] transition-all duration-200"
+    : "text-zinc-700 text-sm xl:text-[15px] font-semibold tracking-wide whitespace-nowrap hover:text-zinc-950 hover:drop-shadow-[0_0_8px_rgba(255,90,120,0.85)] transition-all duration-200";
 
   const iconCls = isDark
-    ? "relative text-zinc-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(0,210,255,0.85)] transition-all duration-200"
-    : "relative text-zinc-600 hover:text-zinc-950 hover:drop-shadow-[0_0_8px_rgba(0,210,255,0.85)] transition-all duration-200";
+    ? "relative text-zinc-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,90,120,0.85)] transition-all duration-200"
+    : "relative text-zinc-600 hover:text-zinc-950 hover:drop-shadow-[0_0_8px_rgba(255,90,120,0.85)] transition-all duration-200";
 
-  const logoIconCls = isDark
-    ? "border-zinc-700 bg-zinc-900/70 group-hover:border-cyan-400/50 group-hover:shadow-[0_0_20px_rgba(0,210,255,0.40)]"
-    : "border-zinc-400 bg-white/60 group-hover:border-cyan-400/60 group-hover:shadow-[0_0_20px_rgba(0,210,255,0.45)]";
-
-  const logoTextCls = isDark
-    ? "text-white group-hover:text-zinc-300"
-    : "text-zinc-900 group-hover:text-zinc-700";
 
   // ── top-edge sheen ──────────────────────────────────────────────────────────
   const sheenBg = isDark
@@ -278,18 +271,17 @@ export default function Header() {
       <div className="max-w-[92rem] mx-auto px-5 sm:px-7 lg:px-9 xl:px-10 pt-2.5 pb-3 relative z-20">
         <div className="flex items-center justify-between min-h-[3rem] lg:min-h-[3.25rem] lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-x-8 xl:gap-x-12 2xl:gap-x-14">
 
-          {/* Logo */}
+          {/* Logo — серебристый wordmark */}
           <Link
             href="/"
-            className="flex items-center gap-2 lg:gap-2.5 group shrink-0 min-w-0 max-w-[46vw] sm:max-w-none mr-3 lg:mr-0"
-            style={{ fontFamily: "var(--font-brand)" }}
+            className="flex items-center group shrink-0 min-w-0 max-w-[48vw] sm:max-w-[14rem] lg:max-w-[16rem] mr-3 lg:mr-0"
+            aria-label={BRAND_NAME}
           >
-            <span className={`flex h-9 w-9 lg:h-10 lg:w-10 shrink-0 items-center justify-center rounded-lg border will-change-[box-shadow] transition-all duration-200 ${logoIconCls}`}>
-              <BrandLogo height={26} dark={isDark} />
-            </span>
-            <span className={`font-black tracking-tighter text-sm lg:text-base truncate transition-colors duration-200 ${logoTextCls}`}>
-              {BRAND_NAME}
-            </span>
+            <BrandLogo
+              height={22}
+              dark={isDark}
+              className="opacity-95 group-hover:opacity-100 transition-opacity duration-200"
+            />
           </Link>
 
           {/* Desktop nav — горизонтальная прокрутка со стрелками */}
@@ -354,7 +346,7 @@ export default function Header() {
                   key={href + label}
                   href={href}
                   onClick={() => setMobileOpen(false)}
-                  className="text-zinc-300 text-base hover:text-white hover:drop-shadow-[0_0_8px_rgba(0,210,255,0.8)] transition-all duration-200 py-0.5"
+                  className="text-zinc-300 text-base hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,90,120,0.8)] transition-all duration-200 py-0.5"
                 >
                   {label}
                 </HeaderNavLink>

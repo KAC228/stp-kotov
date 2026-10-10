@@ -8,12 +8,11 @@ import {
   ShoppingCart,
   Lightbulb,
   Lock,
-  Box,
   ChevronDown,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { ConfiguratorQuotePayload, Product } from "@/types";
-import { PATHS, PRICE_PER_METER_RUB, WARRANTY_YEARS, FLIBEN_CATALOG_URL } from "@/constants/brand";
+import { PATHS, WARRANTY_YEARS, FLIBEN_CATALOG_URL } from "@/constants/brand";
 import CustomSizeForm from "./CustomSizeForm";
 import IdleInterceptor from "./IdleInterceptor";
 import KsdEngineerViewer from "./KsdEngineerViewer";
@@ -21,18 +20,9 @@ import KsdEngineerViewer from "./KsdEngineerViewer";
 // ─── types ─────────────────────────────────────────────────────────────────────
 
 type CeilingType   = "stretch" | "gkl";
-type LengthKey     = 500 | 1000 | 1500 | 2000 | "custom";
-type HeightKey     = 85 | 105 | 110 | 125 | 145 | 155 | 160 | 185 | 225;
-type ConnectionKey =
-  | "flex75"
-  | "flex90"
-  | "flex110"
-  | "flex125"
-  | "flex160"
-  | "flex200"
-  | "rect204"
-  | "rect100"
-  | "rect132";
+type LengthKey     = 500 | 1000 | 1500 | 2000 | 2500 | 3000 | "custom";
+type HeightKey     = 105 | 145;
+type ConnectionKey = "flex75" | "flex110";
 type TrackLightKey = "none" | "10cm" | "20cm" | "30cm";
 type ColorKey      = "black" | "white";
 type ExtColorKey   = "black" | "white" | "ral";
@@ -56,22 +46,15 @@ const CEILING_OPTIONS: Array<{
 ];
 
 const LENGTH_OPTIONS: Array<{ id: Exclude<LengthKey, "custom">; label: string; price: number }> =
-  ([500, 1000, 1500, 2000] as const).map((mm) => ({
+  ([500, 1000, 1500, 2000, 2500, 3000] as const).map((mm) => ({
     id: mm,
     label: `${mm} мм`,
-    price: Math.round((mm / 1000) * PRICE_PER_METER_RUB),
+    price: 0,
   }));
 
 const HEIGHT_OPTIONS: Array<{ id: HeightKey; label: string }> = [
-  { id: 85,  label: "85 мм" },
   { id: 105, label: "105 мм" },
-  { id: 110, label: "110 мм" },
-  { id: 125, label: "125 мм" },
   { id: 145, label: "145 мм" },
-  { id: 155, label: "155 мм" },
-  { id: 160, label: "160 мм" },
-  { id: 185, label: "185 мм" },
-  { id: 225, label: "225 мм" },
 ];
 
 const CONNECTION_OPTIONS: Array<{
@@ -80,51 +63,12 @@ const CONNECTION_OPTIONS: Array<{
   description: string;
 }> = [
   {
-    id: "rect204", code: "П204", label: "Прямоугольный", spec: "204 × 60",
-    shape: "rect", badge: "Стандарт",
-    description: "Плоский воздуховод Slim. Стандартное подключение КСД, высота сечения 60 мм.",
-  },
-  {
-    id: "rect100", code: "П100", label: "Прямоугольный", spec: "100 × 60",
-    shape: "rect-sm",
-    description: "Узкий прямоугольник для компактных трасс. Высота сечения 60 мм — как у 204×60.",
-  },
-  {
-    id: "rect132", code: "О132", label: "Овальный", spec: "132 × 32",
-    shape: "oval",
-    description: "Овальное сечение 132×32 мм — подходит для любой высоты КСД, удобно в плоских трассах.",
-  },
-  {
     id: "flex75", code: "Г075", label: "Гибкий", spec: "Ø 75 мм", shape: "sm",
     description: "Гибкий воздуховод DN 75 — для коротких отводов и сложной геометрии потолка.",
   },
   {
-    id: "flex90", code: "Г090", label: "Гибкий", spec: "Ø 90 мм", shape: "lg",
-    description: "Гибкий воздуховод DN 90 — повышенная пропускная способность при высоте КСД от 110 мм.",
-  },
-  {
     id: "flex110", code: "Г110", label: "Гибкий", spec: "Ø 110 мм", shape: "md",
-    description: "Гибкий воздуховод DN 110 — доступен при высоте КСД от 145 мм.",
-  },
-  {
-    id: "flex125", code: "Г125", label: "Гибкий", spec: "Ø 125 мм", shape: "lg",
-    description: "Гибкий воздуховод DN 125 — только для КСД высотой 155 мм (максимальная конфигурация).",
-  },
-  {
-    id: "flex160",
-    code: "Г160",
-    label: "Гибкий",
-    spec: "Ø 160 мм",
-    shape: "lg",
-    description: "Гибкий воздуховод DN 160 — доступен для КСД высотой 185 мм и выше.",
-  },
-  {
-    id: "flex200",
-    code: "Г200",
-    label: "Гибкий",
-    spec: "Ø 200 мм",
-    shape: "lg",
-    description: "Гибкий воздуховод DN 200 — доступен только для КСД высотой 225 мм.",
+    description: "Гибкий воздуховод DN 110.",
   },
 ];
 
@@ -177,52 +121,19 @@ const RAL_COLORS = [
 
 // ─── height → available connections ────────────────────────────────────────────
 
-function getAvailableConnections(h: HeightKey | null): Set<ConnectionKey> {
-  const withOval = (keys: ConnectionKey[]) => new Set<ConnectionKey>([...keys, "rect132"]);
-  if (h === 85)  return withOval(["rect204", "rect100"]);
-  if (h === 105) return withOval(["rect204", "rect100", "flex75"]);
-  if (h === 110) return withOval(["rect204", "rect100", "flex75", "flex90"]);
-  if (h === 125) return withOval(["rect204", "rect100", "flex75", "flex90"]);
-  if (h === 145) return withOval(["rect204", "rect100", "flex75", "flex90", "flex110"]);
-  if (h === 155) return withOval(["rect204", "rect100", "flex75", "flex90", "flex110", "flex125"]);
-  if (h === 160 || h === 185) return withOval(["rect204", "rect100", "flex75", "flex90", "flex110", "flex125", "flex160"]);
-  if (h === 225) return withOval(["rect204", "rect100", "flex75", "flex90", "flex110", "flex125", "flex160", "flex200"]);
-  return withOval(["rect204", "rect100", "flex75", "flex90", "flex110", "flex125"]);
+function getAvailableConnections(_h: HeightKey | null): Set<ConnectionKey> {
+  return new Set<ConnectionKey>(["flex75", "flex110"]);
 }
 
 function getConnectionRestrictionHint(h: HeightKey): string | null {
-  switch (h) {
-    case 85:
-      return "Для высоты 85 мм доступны прямоугольные воздуховоды 204×60 и 100×60 (высота сечения 60 мм).";
-    case 105:
-      return "Для высоты 105 мм: прямоугольные 204×60, 100×60 и гибкий Ø 75 мм.";
-    case 110:
-      return "Для высоты 110 мм доступны гибкие Ø 75 и Ø 90 мм (максимум Ø 90).";
-    case 125:
-      return "Для высоты 125 мм: гибкие Ø 75 и Ø 90 мм. Овальное 132×32 — на любой высоте КСД.";
-    case 145:
-      return "Для высоты 145 мм доступны все сечения, кроме гибкого Ø 125 мм (нужна высота КСД 155 мм).";
-    case 155:
-      return null;
-    case 160:
-      return "Для высоты 160 мм: доступны все виды подключения, кроме гибкого Ø 200 мм.";
-    case 185:
-      return "Для высоты 185 мм: доступны все виды подключения, кроме гибкого Ø 200 мм.";
-    case 225:
-      return null;
-  }
+  if (h === 105) return "Для высоты 105 мм: гибкий Ø 75 мм и Ø 110 мм.";
+  if (h === 145) return "Для высоты 145 мм: гибкий Ø 75 мм и Ø 110 мм.";
+  return null;
 }
 
 function connectionSpecLabel(c: ConnectionKey | null): string {
   if (c === "flex75") return "Ø 75 мм";
-  if (c === "flex90") return "Ø 90 мм";
   if (c === "flex110") return "Ø 110 мм";
-  if (c === "flex125") return "Ø 125 мм";
-  if (c === "flex160") return "Ø 160 мм";
-  if (c === "flex200") return "Ø 200 мм";
-  if (c === "rect204") return "204×60 мм";
-  if (c === "rect100") return "100×60 мм";
-  if (c === "rect132") return "132×32 мм";
   return "—";
 }
 
@@ -717,12 +628,8 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
     !lightSelected ||
     (lightColor !== null && (lightColor !== "ral" || (lightPaintType !== null && lightRalCode !== null)));
 
-  // Any path that requires a quote instead of a fixed price
-  const needsQuote =
-    isCustomLength ||
-    ksdColor === "ral" ||
-    (lightSelected && lightColor === "ral") ||
-    collectorEnabled;
+  // Цена ₽/м снята с сайта по ТЗ — все конфигурации «по запросу»
+  const needsQuote = true;
 
   const basePrice =
     !needsQuote && typeof length === "number"
@@ -1184,231 +1091,6 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
                         )}
                       </AnimatePresence>
 
-                      {/* ── COLLECTOR ──────────────────────────────────────── */}
-                      <div>
-                        {/* Divider */}
-                        <div className="h-px bg-zinc-800 mb-8" />
-
-                        {/* Toggle header */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setCollectorEnabled((e) => !e);
-                            if (collectorEnabled) {
-                              setCollectorColor(null);
-                              setCollectorLen("");
-                              setCollectorWidth("");
-                              setCollectorHt("");
-                              setInDuctShape(null);
-                              setInDuctDiam("");
-                              setInDuctRectH("");
-                              setInDuctRectW("");
-                              setOutDuctCount("");
-                              setOutDuctSize(null);
-                            }
-                          }}
-                          className={`w-full flex items-center justify-between p-5 rounded-2xl border transition-all duration-200 will-change-[box-shadow] ${
-                            collectorEnabled
-                              ? "bg-zinc-800 border-cyan-400/40 shadow-glow ring-1 ring-cyan-400/25"
-                              : "bg-zinc-900 border-zinc-800 hover:border-zinc-600 hover:shadow-glow"
-                          }`}
-                        >
-                          <div className="flex items-center gap-3.5">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center border transition-colors ${
-                              collectorEnabled ? "bg-zinc-700 border-zinc-600" : "bg-zinc-800 border-zinc-700"
-                            }`}>
-                              <Box className="w-4 h-4 text-zinc-400" strokeWidth={1.75} />
-                            </div>
-                            <div className="text-left">
-                              <p className="text-white font-semibold text-[15px] tracking-tight">Коллектор</p>
-                              <p className="text-zinc-600 text-xs mt-0.5">
-                                {collectorEnabled ? "Включён в заказ · цена по запросу" : "Опционально — добавить в заказ"}
-                              </p>
-                            </div>
-                          </div>
-                          {/* Toggle switch */}
-                          <div className={`w-12 h-6 rounded-full relative transition-all duration-300 ${
-                            collectorEnabled
-                              ? "bg-cyan-500/70 shadow-[0_0_10px_rgba(0,210,255,0.45)]"
-                              : "bg-zinc-800 border border-zinc-700"
-                          }`}>
-                            <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-300 ${
-                              collectorEnabled ? "left-[calc(100%-22px)]" : "left-0.5"
-                            }`} />
-                          </div>
-                        </button>
-
-                        {/* Collector form — animated expand */}
-                        <AnimatePresence>
-                          {collectorEnabled && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.28 }}
-                              className="overflow-hidden"
-                            >
-                              <div className="mt-4 p-5 rounded-2xl border border-zinc-800 bg-zinc-900/50 space-y-6">
-
-                                {/* Collector colour */}
-                                <div>
-                                  <p className={`${labelCls} mb-3`}>Цвет коллектора</p>
-                                  <div className="grid grid-cols-2 gap-3">
-                                    {COLOR_OPTIONS.map((opt) => (
-                                      <OptionTile key={opt.id} active={collectorColor === opt.id}
-                                        onClick={() => setCollectorColor(opt.id)}>
-                                        <div className="p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5">
-                                          <div className="w-7 h-7 rounded-full shrink-0 border"
-                                            style={{ background: opt.hex, borderColor: opt.id === "white" ? "rgba(255,255,255,0.22)" : "rgba(255,255,255,0.1)" }} />
-                                          <p className="text-white font-semibold text-sm">{opt.label}</p>
-                                        </div>
-                                      </OptionTile>
-                                    ))}
-                                  </div>
-                                </div>
-
-                                {/* Dimensions */}
-                                <div>
-                                  <p className={`${labelCls} mb-3`}>Габариты, мм</p>
-                                  <div className="grid grid-cols-3 gap-3">
-                                    <div className="flex flex-col gap-1.5">
-                                      <label className={labelCls}>Длина</label>
-                                      <input type="number" min="0" value={collectorLen}
-                                        onChange={(e) => setCollectorLen(e.target.value)}
-                                        placeholder="мм" className={inputCls} />
-                                    </div>
-                                    <div className="flex flex-col gap-1.5">
-                                      <label className={labelCls}>Ширина</label>
-                                      <input type="number" min="0" value={collectorWidth}
-                                        onChange={(e) => setCollectorWidth(e.target.value)}
-                                        placeholder="мм" className={inputCls} />
-                                    </div>
-                                    <div className="flex flex-col gap-1.5">
-                                      <label className={labelCls}>Высота</label>
-                                      <input type="number" min="0" value={collectorHt}
-                                        onChange={(e) => setCollectorHt(e.target.value)}
-                                        placeholder="мм" className={inputCls} />
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* Input duct */}
-                                <div>
-                                  <p className={`${labelCls} mb-3`}>Входной воздуховод</p>
-                                  {/* Shape selector */}
-                                  <div className="grid grid-cols-2 gap-3 mb-3">
-                                    {(["round", "rect"] as InDuctShape[]).map((sh) => (
-                                      <button
-                                        key={sh}
-                                        type="button"
-                                        onClick={() => { setInDuctShape(sh); setInDuctDiam(""); setInDuctRectH(""); setInDuctRectW(""); }}
-                                        className={`py-3 px-4 rounded-xl border text-sm font-medium transition-all duration-200 will-change-[box-shadow] flex items-center justify-center gap-2 ${
-                                          inDuctShape === sh
-                                            ? "bg-zinc-800 border-cyan-400/40 text-white shadow-glow ring-1 ring-cyan-400/25"
-                                            : "bg-zinc-900 border-zinc-800 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 hover:shadow-glow"
-                                        }`}
-                                      >
-                                        {sh === "round" ? (
-                                          <>
-                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
-                                              <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.5"/>
-                                            </svg>
-                                            <span className="text-[11px] sm:text-sm leading-tight">Круглое</span>
-                                          </>
-                                        ) : (
-                                          <>
-                                            <svg width="20" height="14" viewBox="0 0 20 14" fill="none" className="shrink-0">
-                                              <rect x="1" y="1" width="18" height="12" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-                                            </svg>
-                                            <span className="sm:hidden text-[11px] leading-tight">Прямоуг.</span>
-                                            <span className="hidden sm:inline text-sm leading-tight">Прямоугольное</span>
-                                          </>
-                                        )}
-                                      </button>
-                                    ))}
-                                  </div>
-
-                                  {/* Conditional fields */}
-                                  <AnimatePresence>
-                                    {inDuctShape === "round" && (
-                                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}
-                                        exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
-                                        <div className="flex flex-col gap-1.5">
-                                          <label className={labelCls}>Диаметр, мм</label>
-                                          <input type="number" min="0" value={inDuctDiam}
-                                            onChange={(e) => setInDuctDiam(e.target.value)}
-                                            placeholder="напр. 200" className={inputCls} />
-                                        </div>
-                                      </motion.div>
-                                    )}
-                                    {inDuctShape === "rect" && (
-                                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}
-                                        exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
-                                        <div className="grid grid-cols-2 gap-3">
-                                          <div className="flex flex-col gap-1.5">
-                                            <label className={labelCls}>Высота, мм</label>
-                                            <input type="number" min="0" value={inDuctRectH}
-                                              onChange={(e) => setInDuctRectH(e.target.value)}
-                                              placeholder="мм" className={inputCls} />
-                                          </div>
-                                          <div className="flex flex-col gap-1.5">
-                                            <label className={labelCls}>Ширина, мм</label>
-                                            <input type="number" min="0" value={inDuctRectW}
-                                              onChange={(e) => setInDuctRectW(e.target.value)}
-                                              placeholder="мм" className={inputCls} />
-                                          </div>
-                                        </div>
-                                      </motion.div>
-                                    )}
-                                  </AnimatePresence>
-                                </div>
-
-                                {/* Output ducts */}
-                                <div>
-                                  <p className={`${labelCls} mb-3`}>Выходные воздуховоды</p>
-                                  <div className="grid grid-cols-2 gap-3 mb-3">
-                                    <div className="flex flex-col gap-1.5">
-                                      <label className={labelCls}>Количество</label>
-                                      <input type="number" min="1" max="20" value={outDuctCount}
-                                        onChange={(e) => setOutDuctCount(e.target.value)}
-                                        placeholder="шт." className={inputCls} />
-                                    </div>
-                                    <div className="flex flex-col gap-1.5">
-                                      <label className={labelCls}>Сечение</label>
-                                      {/* Styled select via relative wrapper */}
-                                      <div className="relative">
-                                        <select
-                                          value={outDuctSize ?? ""}
-                                          onChange={(e) => setOutDuctSize(e.target.value as OutDuctSize || null)}
-                                          className={`${inputCls} pr-8 appearance-none cursor-pointer`}
-                                        >
-                                          <option value="" disabled>Выбрать…</option>
-                                          <option value="75">Ø 75 мм</option>
-                                          <option value="90">Ø 90 мм</option>
-                                          <option value="110">Ø 110 мм</option>
-                                          <option value="125">Ø 125 мм</option>
-                                          <option value="100x60">100 × 60 мм</option>
-                                          <option value="132x32">132 × 32 мм</option>
-                                          <option value="204x60">204 × 60 мм</option>
-                                        </select>
-                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-600 pointer-events-none" strokeWidth={2} />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* Info notice */}
-                                <div className="flex items-start gap-2.5 pt-1 border-t border-zinc-800">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-600 shrink-0 mt-1.5" />
-                                  <p className="text-zinc-600 text-[11px] leading-relaxed">
-                                    Стоимость коллектора рассчитывается индивидуально — цена будет указана в коммерческом предложении.
-                                  </p>
-                                </div>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
 
                     </motion.div>
               </div>
@@ -1455,7 +1137,9 @@ export default function ProductConfigurator({ dark = false }: { dark?: boolean }
         <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-zinc-800 bg-zinc-900/60">
           <Check className="w-4 h-4 text-emerald-400 shrink-0" strokeWidth={2.5} />
           <span className="text-zinc-300 text-sm font-medium tracking-wide">
-            Гарантия <span className="text-white font-bold">{WARRANTY_YEARS} лет</span> на все изделия
+            Заводская гарантия{" "}
+            <span className="text-white font-bold">{WARRANTY_YEARS} лет</span>
+            {" "}при сертифицированном монтаже
           </span>
         </div>
       </motion.div>

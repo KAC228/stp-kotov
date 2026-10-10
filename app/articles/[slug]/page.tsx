@@ -4,32 +4,31 @@ import JsonLd from "@/components/JsonLd";
 import { BRAND_NAME } from "@/constants/brand";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 import { buildPageMetadata, clipDescription } from "@/lib/metadata";
-import { getAllArticleSlugs, getArticleBySlug } from "@/lib/fliben-content";
+import { getAllSiteArticleSlugs, getSiteArticleBySlug } from "@/lib/site-articles";
 import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  return getAllArticleSlugs().map((slug) => ({ slug }));
+  return getAllSiteArticleSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = getSiteArticleBySlug(slug);
   if (!article) return { title: BRAND_NAME };
 
   return buildPageMetadata({
     title: `${article.title} | ${BRAND_NAME}`,
-    description: clipDescription(article.excerpt),
+    description: clipDescription(article.thesis || article.title),
     path: `/articles/${slug}`,
     ogType: "article",
-    image: article.image ?? undefined,
   });
 }
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = getSiteArticleBySlug(slug);
   if (!article) notFound();
 
   return (
@@ -37,10 +36,10 @@ export default async function ArticlePage({ params }: Props) {
       <JsonLd
         data={articleJsonLd({
           title: article.title,
-          excerpt: article.excerpt,
+          excerpt: article.thesis,
           slug: article.slug,
-          image: article.image,
-          publishedAt: article.publishedAt,
+          image: null,
+          publishedAt: null,
         })}
       />
       <JsonLd

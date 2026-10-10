@@ -135,7 +135,7 @@ export default function WindBackground() {
       t += 1;
 
       const light = isLight();
-      const accentRgb = light ? "14, 165, 233" : "0, 210, 255";
+      const accentRgb = light ? "232, 90, 110" : "255, 90, 120";
       const baseRgb = light ? "100, 116, 139" : "125, 211, 252";
 
       ctx.clearRect(0, 0, w, h);

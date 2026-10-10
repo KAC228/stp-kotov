@@ -75,7 +75,7 @@ function ProductGallery({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={skipResize ? src : resolveImg(src)}
-                alt=""
+                alt={`${title} — фото ${i + 1}`}
                 className="absolute inset-0 w-full h-full object-contain p-1 site-photo-thumb"
               />
             </button>

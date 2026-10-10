@@ -81,7 +81,7 @@ export default function OurPartnersClient() {
               <motion.article
                 key={partner.id}
                 variants={item}
-                className="rounded-2xl border border-zinc-800 bg-zinc-900/70 overflow-hidden hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(0,210,255,0.14)] transition-[box-shadow,border-color] duration-300"
+                className="rounded-2xl border border-zinc-800 bg-zinc-900/70 overflow-hidden hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(255,90,120,0.14)] transition-[box-shadow,border-color] duration-300"
               >
                 <div className="px-6 py-5 border-b border-zinc-800 bg-zinc-900/90 flex items-center justify-between gap-4">
                   {/* #fff: не bg-white — в light-теме --color-white инвертируется в почти чёрный */}

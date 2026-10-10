@@ -1,36 +1,46 @@
 /**
- * Логотип СТП-КОТОВ — геометрическая голова кота.
- * Использует готовый SVG-файл из /public/images/logo.svg.
- * Автоматически инвертируется на тёмном фоне (dark=true по умолчанию).
+ * Словесный логотип СТП-КОТОВ (серебристый wordmark, прозрачный фон).
  */
 import Image from "next/image";
 import { sitePath } from "@/lib/site-path";
 
 interface BrandLogoProps {
   className?: string;
-  /** Инвертировать для тёмного фона (по умолчанию true) */
+  /** true = серебро на тёмном фоне; false = тёмный wordmark на светлом */
   dark?: boolean;
-  /** Высота в пикселях */
   height?: number;
-  /** Ширина в пикселях (по умолчанию = height) */
   width?: number;
+  /** Растянуть по ширине контейнера (height: auto) */
+  fluid?: boolean;
 }
+
+const ASPECT = 659 / 77;
 
 export default function BrandLogo({
   className = "",
   dark = true,
-  height = 32,
+  height = 28,
   width,
+  fluid = false,
 }: BrandLogoProps) {
-  const w = width ?? height;
+  const h = height;
+  const w = width ?? Math.round(h * ASPECT);
+  const src = dark
+    ? sitePath("/images/logo-wordmark-silver.png")
+    : sitePath("/images/logo-wordmark-dark.png");
+
   return (
     <Image
-      src={sitePath("/images/logo.svg")}
+      src={src}
       alt="Логотип СТП-КОТОВ"
       width={w}
-      height={height}
-      className={className}
-      style={dark ? { filter: "invert(1) brightness(1.1)" } : undefined}
+      height={h}
+      className={`ksd-logo-wordmark max-w-full ${className}`.trim()}
+      style={
+        fluid
+          ? { width: "100%", height: "auto" }
+          : { height: h, width: "auto" }
+      }
       priority
     />
   );

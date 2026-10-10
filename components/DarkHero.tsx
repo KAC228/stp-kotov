@@ -25,7 +25,7 @@ export default function DarkHero() {
 
       <div
         data-hero-vignette
-        className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,transparent_0%,rgba(9,10,15,0.72)_100%)]"
+        className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,transparent_0%,rgba(18,10,14,0.78)_100%)]"
       />
 
       <div

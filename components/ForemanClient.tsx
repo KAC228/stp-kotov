@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Mic, Send, Square, Trash2 } from "lucide-react";
 import { CONTACTS } from "@/constants/brand";
+import { REGULATION } from "@/data/foreman-regulation";
 import { answerForeman, QUICK_QUESTIONS, type ForemanReply } from "@/lib/foreman";
 
 type ThreadMessage =
@@ -10,6 +11,7 @@ type ThreadMessage =
   | { id: string; role: "foreman"; reply: ForemanReply };
 
 const STORAGE_KEY = "stp-foreman-thread";
+const PROGRESS_KEY = "stp-foreman-progress";
 
 type SpeechResult = ArrayLike<{ transcript: string }> & { isFinal: boolean };
 
@@ -71,6 +73,9 @@ export default function ForemanClient() {
   const [keyboard, setKeyboard] = useState(0);
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<ThreadMessage[]>([]);
+  const [mode, setMode] = useState<"steps" | "ask">("steps");
+  const [stepIndex, setStepIndex] = useState(0);
+  const [done, setDone] = useState<string[]>([]);
   const [listening, setListening] = useState(false);
   const [voiceNote, setVoiceNote] = useState("");
   const [canSpeak, setCanSpeak] = useState(false);
@@ -82,6 +87,24 @@ export default function ForemanClient() {
 
   useEffect(() => {
     setMessages(readThread());
+    try {
+      const raw = localStorage.getItem(PROGRESS_KEY);
+      if (raw) {
+        const parsed: unknown = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") {
+          const saved = parsed as { index?: unknown; done?: unknown };
+          if (typeof saved.index === "number" && saved.index >= 0 && saved.index < REGULATION.length) {
+            setStepIndex(saved.index);
+          }
+          if (Array.isArray(saved.done)) {
+            const ids = new Set(REGULATION.map((step) => step.id));
+            setDone(saved.done.filter((id): id is string => typeof id === "string" && ids.has(id)));
+          }
+        }
+      }
+    } catch {
+      /* ignore broken progress */
+    }
     hydrated.current = true;
     setCanSpeak(Boolean(speechCtor()));
   }, []);
@@ -94,6 +117,15 @@ export default function ForemanClient() {
       /* private mode */
     }
   }, [messages]);
+
+  useEffect(() => {
+    if (!hydrated.current) return;
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify({ index: stepIndex, done }));
+    } catch {
+      /* private mode */
+    }
+  }, [stepIndex, done]);
 
   useEffect(() => {
     const header = document.querySelector("header");
@@ -195,6 +227,20 @@ export default function ForemanClient() {
     }
   };
 
+  const step = REGULATION[stepIndex];
+  const stepDone = done.includes(step.id);
+  const allDone = REGULATION.every((item) => done.includes(item.id));
+
+  const finishStep = () => {
+    setDone((prev) => (prev.includes(step.id) ? prev : [...prev, step.id]));
+    setStepIndex((index) => Math.min(index + 1, REGULATION.length - 1));
+  };
+
+  const resetProgress = () => {
+    setDone([]);
+    setStepIndex(0);
+  };
+
   const clearThread = () => {
     speechRef.current?.stop();
     setListening(false);
@@ -220,11 +266,10 @@ export default function ForemanClient() {
               Прораб
             </h1>
             <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-zinc-400">
-              Ответ из базы монтажа КСД. Норма указана документом, без выдуманного пункта.
-              Если узел расходится с проектом — остановитесь.
+              Регламент монтажа: с чего начать и чем закончить. Идёшь по шагам, спорный узел не закрываешь.
             </p>
           </div>
-          {messages.length > 0 && (
+          {mode === "ask" && messages.length > 0 && (
             <button
               type="button"
               onClick={clearThread}
@@ -243,7 +288,70 @@ export default function ForemanClient() {
         aria-live="polite"
       >
         <div className="mx-auto flex max-w-3xl flex-col gap-3">
-          {messages.length === 0 && (
+          {mode === "steps" && (
+            <>
+              <div className="flex items-center justify-between gap-3 text-[12px] text-zinc-500">
+                <p>
+                  Шаг {stepIndex + 1} из {REGULATION.length}
+                  {allDone ? " · регламент пройден" : ""}
+                </p>
+                {done.length > 0 && (
+                  <button type="button" onClick={resetProgress} className="text-zinc-400 hover:text-white">
+                    Сначала
+                  </button>
+                )}
+              </div>
+              <div className="h-1 overflow-hidden rounded-full bg-zinc-800">
+                <div
+                  className="h-full bg-cyan-400"
+                  style={{ width: `${(done.length / REGULATION.length) * 100}%` }}
+                />
+              </div>
+              <article className="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-4">
+                <p className="font-mono text-[10px] tracking-[0.18em] text-cyan-400 uppercase">
+                  {stepDone ? "Сделано" : "Сейчас"}
+                </p>
+                <h2 className="mt-1 text-lg font-semibold tracking-tight text-white">
+                  {step.title}
+                </h2>
+                <p className="mt-3 text-[15px] leading-relaxed text-zinc-200">{step.doThis}</p>
+                <p className="mt-3 text-[14px] leading-relaxed text-zinc-400">
+                  <span className="text-zinc-300">Стоп. </span>
+                  {step.stopIf}
+                </p>
+              </article>
+              <ol className="flex flex-col gap-1">
+                {REGULATION.map((item, index) => {
+                  const checked = done.includes(item.id);
+                  const current = index === stepIndex;
+                  return (
+                    <li key={item.id}>
+                      <button
+                        type="button"
+                        onClick={() => setStepIndex(index)}
+                        className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[14px] ${
+                          current ? "bg-zinc-900 text-white" : "text-zinc-400 hover:text-white"
+                        }`}
+                      >
+                        <span
+                          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[11px] ${
+                            checked
+                              ? "border-cyan-400/50 bg-cyan-400/15 text-cyan-300"
+                              : "border-zinc-700 text-zinc-500"
+                          }`}
+                        >
+                          {checked ? "✓" : index + 1}
+                        </span>
+                        {item.title}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+            </>
+          )}
+
+          {mode === "ask" && messages.length === 0 && (
             <div className="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-4">
               <p className="text-[15px] leading-relaxed text-zinc-300">
                 Спросите, как на объекте. Можно голосом: высота камеры, диаметр, потолок, крепёж, заслонка.
@@ -263,7 +371,7 @@ export default function ForemanClient() {
             </div>
           )}
 
-          {messages.map((message) =>
+          {mode === "ask" && messages.map((message) =>
             message.role === "user" ? (
               <p
                 key={message.id}
@@ -312,12 +420,55 @@ export default function ForemanClient() {
         </div>
       </div>
 
+      {mode === "steps" ? (
+        <div
+          className="shrink-0 border-t border-zinc-800 bg-zinc-950 px-4 pt-3 sm:px-6"
+          style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+        >
+          <div className="mx-auto flex max-w-3xl flex-col gap-2">
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setStepIndex((index) => Math.max(0, index - 1))}
+                disabled={stepIndex === 0}
+                className="h-12 rounded-2xl border border-zinc-700 px-4 text-sm text-zinc-300 disabled:opacity-40"
+              >
+                Назад
+              </button>
+              <button
+                type="button"
+                onClick={finishStep}
+                className="h-12 flex-1 rounded-2xl bg-white text-sm font-semibold text-zinc-950"
+              >
+                {stepIndex === REGULATION.length - 1 && stepDone ? "Регламент пройден" : "Дальше"}
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("ask");
+                setDraft(`Шаг «${step.title}»: `);
+              }}
+              className="py-1 text-center text-[13px] text-zinc-400 hover:text-white"
+            >
+              Спросить по этому шагу
+            </button>
+          </div>
+        </div>
+      ) : (
       <form
         onSubmit={onSubmit}
         className="shrink-0 border-t border-zinc-800 bg-zinc-950 px-4 pt-3 sm:px-6"
         style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
       >
         <div className="mx-auto max-w-3xl">
+          <button
+            type="button"
+            onClick={() => setMode("steps")}
+            className="mb-2 text-[13px] text-zinc-400 hover:text-white"
+          >
+            К регламенту
+          </button>
           {voiceNote && (
             <p className="mb-2 text-[12px] text-zinc-400">{voiceNote}</p>
           )}
@@ -372,6 +523,7 @@ export default function ForemanClient() {
           </p>
         </div>
       </form>
+      )}
     </div>
   );
 }

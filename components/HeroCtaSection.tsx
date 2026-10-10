@@ -27,13 +27,13 @@ function StackedLayout() {
         <PrimaryCta />
       </motion.div>
       <motion.div {...enter(0.95)} className="hero-cta-secondary">
-        <Link href={PATHS.ourPartners} className="hero-cta-secondary-link">
-          Наши партнёры
+        <Link href={PATHS.catalog} className="hero-cta-secondary-link">
+          Каталог
         </Link>
         <span className="hero-cta-secondary-sep" aria-hidden />
-        <Link href={PATHS.partnership} className="hero-cta-secondary-link">
-          Партнёрская программа
-        </Link>
+        <a href={`tel:+79110156002`} className="hero-cta-secondary-link">
+          Заказать звонок
+        </a>
       </motion.div>
     </div>
   );
@@ -43,12 +43,12 @@ function RowLayout() {
   return (
     <motion.div {...enter(0.8)} className="hero-cta-row">
       <PrimaryCta />
-      <Link href={PATHS.ourPartners} className="hero-cta-outline">
-        Наши партнёры
+      <Link href={PATHS.catalog} className="hero-cta-outline">
+        Каталог
       </Link>
-      <Link href={PATHS.partnership} className="hero-cta-outline">
-        Партнёрская программа
-      </Link>
+      <a href={`tel:+79110156002`} className="hero-cta-outline">
+        Заказать звонок
+      </a>
     </motion.div>
   );
 }
@@ -63,14 +63,14 @@ function MinimalLayout() {
         {...enter(0.95)}
         className="flex flex-col sm:flex-row items-center gap-4 sm:gap-10"
       >
-        <Link href={PATHS.ourPartners} className="hero-cta-text-link">
-          Наши партнёры
+        <Link href={PATHS.catalog} className="hero-cta-text-link">
+          Каталог
           <ArrowRight className="w-4 h-4" strokeWidth={2} />
         </Link>
-        <Link href={PATHS.partnership} className="hero-cta-text-link">
-          Партнёрская программа
+        <a href={`tel:+79110156002`} className="hero-cta-text-link">
+          Заказать звонок
           <ArrowRight className="w-4 h-4" strokeWidth={2} />
-        </Link>
+        </a>
       </motion.div>
     </div>
   );

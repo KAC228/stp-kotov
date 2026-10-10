@@ -23,9 +23,9 @@ import {
 
 // ─── data ──────────────────────────────────────────────────────────────────────
 
-// Unified cold-blue accent — matches header airflow and all glow effects.
-const CYAN_ACCENT = "rgba(0,210,255,0.15)";
-const CYAN_BORDER = "rgba(0,210,255,0.32)";
+// Акцент палитры презентации (coral)
+const CYAN_ACCENT = "rgba(255,90,120,0.14)";
+const CYAN_BORDER = "rgba(255,90,120,0.32)";
 
 const FEATURES = [
   {
@@ -163,7 +163,7 @@ function Lightbox({
   const btnBase =
     "absolute top-1/2 -translate-y-1/2 z-20 w-4 h-4 sm:w-8 sm:h-8 flex items-center justify-center " +
     "rounded-full bg-zinc-900/80 border border-zinc-700 text-zinc-400 " +
-    "hover:text-white hover:border-cyan-400/50 hover:shadow-[0_0_14px_rgba(0,210,255,0.50)] " +
+    "hover:text-white hover:border-cyan-400/50 hover:shadow-[0_0_14px_rgba(255,90,120,0.50)] " +
     "will-change-[box-shadow] transition-all duration-200 focus-visible:outline-none " +
     "focus-visible:ring-2 focus-visible:ring-cyan-400/60";
 
@@ -243,10 +243,10 @@ function Lightbox({
                 width:  i === item.photoIdx ? "14px" : "6px",
                 height: "6px",
                 background: i === item.photoIdx
-                  ? "rgba(0,210,255,0.90)"
+                  ? "rgba(255,90,120,0.90)"
                   : "rgba(255,255,255,0.30)",
                 boxShadow: i === item.photoIdx
-                  ? "0 0 8px rgba(0,210,255,0.7)"
+                  ? "0 0 8px rgba(255,90,120,0.7)"
                   : "none",
               }}
             />
@@ -342,7 +342,7 @@ function CardPhotoSlider({
         type="button"
         onClick={prev}
         aria-label="Предыдущее фото"
-        className="tech-feature-slider-nav absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-950/80 border border-zinc-600/60 text-zinc-300 opacity-80 hover:opacity-100 hover:text-cyan-400 hover:border-cyan-400/50 hover:shadow-[0_0_14px_rgba(0,210,255,0.55)] will-change-[box-shadow,opacity] transition-all duration-200"
+        className="tech-feature-slider-nav absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-950/80 border border-zinc-600/60 text-zinc-300 opacity-80 hover:opacity-100 hover:text-cyan-400 hover:border-cyan-400/50 hover:shadow-[0_0_14px_rgba(255,90,120,0.55)] will-change-[box-shadow,opacity] transition-all duration-200"
       >
         <ChevronLeft className="w-4 h-4" strokeWidth={2.25} />
       </button>
@@ -352,7 +352,7 @@ function CardPhotoSlider({
         type="button"
         onClick={next}
         aria-label="Следующее фото"
-        className="tech-feature-slider-nav absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-950/80 border border-zinc-600/60 text-zinc-300 opacity-80 hover:opacity-100 hover:text-cyan-400 hover:border-cyan-400/50 hover:shadow-[0_0_14px_rgba(0,210,255,0.55)] will-change-[box-shadow,opacity] transition-all duration-200"
+        className="tech-feature-slider-nav absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-950/80 border border-zinc-600/60 text-zinc-300 opacity-80 hover:opacity-100 hover:text-cyan-400 hover:border-cyan-400/50 hover:shadow-[0_0_14px_rgba(255,90,120,0.55)] will-change-[box-shadow,opacity] transition-all duration-200"
       >
         <ChevronRight className="w-4 h-4" strokeWidth={2.25} />
       </button>
@@ -373,8 +373,8 @@ function CardPhotoSlider({
               width: i === idx ? "14px" : "6px",
               height: "6px",
               background:
-                i === idx ? "rgba(0,210,255,0.90)" : "rgba(255,255,255,0.28)",
-              boxShadow: i === idx ? "0 0 8px rgba(0,210,255,0.7)" : "none",
+                i === idx ? "rgba(255,90,120,0.90)" : "rgba(255,255,255,0.28)",
+              boxShadow: i === idx ? "0 0 8px rgba(255,90,120,0.7)" : "none",
             }}
           />
         ))}
@@ -437,7 +437,7 @@ export default function TechFeatures() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: viewDuration, ease: viewEase, delay: (index % 3) * 0.08 }}
-              className="tech-feature-card w-full flex flex-col bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden relative isolate group hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(0,210,255,0.22)] transition-[box-shadow,border-color,z-index] duration-300 z-0 hover:z-10"
+              className="tech-feature-card w-full flex flex-col bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden relative isolate group hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(255,90,120,0.22)] transition-[box-shadow,border-color,z-index] duration-300 z-0 hover:z-10"
             >
               {/* Glow overlay — identical pattern to InstallationClient cards */}
               <div

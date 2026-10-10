@@ -57,7 +57,7 @@ function AdvantageCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: viewDuration, ease: viewEase, delay: index * 0.06 }}
-      className="w-full bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden relative group hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(0,210,255,0.18)] transition-[box-shadow,border-color] duration-300"
+      className="w-full bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden relative group hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(255,90,120,0.18)] transition-[box-shadow,border-color] duration-300"
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
       <div className="p-8 sm:p-10 lg:p-12 flex flex-col sm:flex-row gap-6 sm:gap-10">
@@ -100,7 +100,7 @@ export default function AsaAdvantagesSection() {
             style={{ fontSize: "clamp(1.65rem, 3.8vw, 2.75rem)" }}
           >
             Преимущества инновационной камеры статического давления из{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-cyan-400 to-teal-300">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-cyan-400 to-[#ff8761]">
               атмосферостойкого пластика ASA
             </span>
           </h2>
@@ -130,7 +130,7 @@ export default function AsaAdvantagesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: viewDuration, ease: viewEase, delay: 0.15 }}
-          className="mt-10 sm:mt-12 mx-auto max-w-4xl rounded-3xl border border-cyan-400/25 bg-gradient-to-br from-cyan-500/10 via-zinc-900 to-zinc-900 px-8 py-10 sm:px-12 sm:py-12 text-center shadow-[0_0_40px_rgba(0,210,255,0.08)]"
+          className="mt-10 sm:mt-12 mx-auto max-w-4xl rounded-3xl border border-cyan-400/25 bg-gradient-to-br from-cyan-500/10 via-zinc-900 to-zinc-900 px-8 py-10 sm:px-12 sm:py-12 text-center shadow-[0_0_40px_rgba(255,90,120,0.08)]"
         >
           <p
             className="text-white font-medium leading-snug tracking-tight"

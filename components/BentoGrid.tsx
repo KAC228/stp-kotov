@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { BadgeCheck, Lightbulb, Package, ShieldCheck } from "lucide-react";
-import { BRAND_NAME, PRICE_PER_METER_RUB, WARRANTY_YEARS } from "@/constants/brand";
+import { BRAND_NAME, WARRANTY_YEARS } from "@/constants/brand";
 
 /** Как в TechFeatures: заголовок секции и карточки */
 const viewEase = "easeOut" as const;
@@ -27,7 +27,7 @@ const cardMotionProps = (delay: number) => ({
 
 const montageCardCls =
   "relative bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden " +
-  "hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(0,210,255,0.22)] " +
+  "hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(255,90,120,0.22)] " +
   "transition-[box-shadow,border-color] duration-300";
 
 function BentoCard({
@@ -52,7 +52,7 @@ function BentoCard({
   return (
     <motion.div
       {...cardMotionProps(animationDelay)}
-      className={`relative bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden flex flex-col hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(0,210,255,0.22)] transition-[box-shadow,border-color] duration-300 ${className}`}
+      className={`relative bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden flex flex-col hover:border-cyan-400/35 hover:shadow-[0_0_28px_rgba(255,90,120,0.22)] transition-[box-shadow,border-color] duration-300 ${className}`}
     >
       <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${accent}`} />
 
@@ -117,7 +117,7 @@ export default function BentoGrid() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
           <motion.div
             {...cardMotionProps(0)}
-            className="col-span-full bento-guarantee-strip relative mb-2 flex items-center gap-3 px-5 py-3.5 rounded-3xl overflow-hidden border border-cyan-400/25 bg-cyan-950/20 hover:border-cyan-400/45 hover:shadow-[0_0_28px_rgba(0,210,255,0.22)] transition-[box-shadow,border-color] duration-300 w-fit"
+            className="col-span-full bento-guarantee-strip relative mb-2 flex items-center gap-3 px-5 py-3.5 rounded-3xl overflow-hidden border border-cyan-400/25 bg-cyan-950/20 hover:border-cyan-400/45 hover:shadow-[0_0_28px_rgba(255,90,120,0.22)] transition-[box-shadow,border-color] duration-300 w-fit"
           >
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#00D2FF]/28 to-transparent" />
             <ShieldCheck className="w-5 h-5 text-cyan-400 shrink-0 relative z-10" strokeWidth={1.75} />
@@ -130,9 +130,9 @@ export default function BentoGrid() {
             audience="Для заказчика"
             icon={BadgeCheck}
             title="Абсолютная прозрачность."
-            description={`Единая цена ${PRICE_PER_METER_RUB.toLocaleString("ru-RU")} ₽ за метр. Тип потолка и врезки уже включены в стоимость — без скрытых доплат и сюрпризов на объекте.`}
+            description="Тип потолка и врезки уже включены в стоимость — без скрытых доплат и сюрпризов на объекте."
             accent="from-transparent via-[#00D2FF]/28 to-transparent"
-            watermark="50K"
+            watermark="КСД"
             className="lg:col-span-2 min-h-[280px]"
             animationDelay={0}
           />

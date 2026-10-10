@@ -241,7 +241,7 @@ export default function IdleInterceptor({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.6, y: 16 }}
             transition={{ type: "spring", damping: 22, stiffness: 280 }}
-            className="fixed z-[200] bottom-24 lg:bottom-5 right-5 w-14 h-14 rounded-full bg-zinc-900 border border-zinc-700/80 shadow-2xl shadow-black/70 flex items-center justify-center text-cyan-400 hover:border-cyan-400/50 hover:shadow-[0_0_24px_rgba(0,210,255,0.35)] transition-[border-color,box-shadow] duration-200"
+            className="fixed z-[200] bottom-24 lg:bottom-5 right-5 w-14 h-14 rounded-full bg-zinc-900 border border-zinc-700/80 shadow-2xl shadow-black/70 flex items-center justify-center text-cyan-400 hover:border-cyan-400/50 hover:shadow-[0_0_24px_rgba(255,90,120,0.35)] transition-[border-color,box-shadow] duration-200"
           >
             <span className="absolute inset-0 rounded-full animate-ping opacity-20 bg-cyan-400 pointer-events-none" />
             <MessageCircle className="w-6 h-6 relative z-10" strokeWidth={1.75} />

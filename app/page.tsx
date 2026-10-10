@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BRAND_NAME, PRICE_PER_METER_RUB, WARRANTY_YEARS } from "@/constants/brand";
+import { BRAND_NAME, HERO_TAGLINE, WARRANTY_YEARS } from "@/constants/brand";
 import { buildPageMetadata } from "@/lib/metadata";
 import DarkHero from "@/components/DarkHero";
 import AsaAdvantagesSection from "@/components/AsaAdvantagesSection";
@@ -10,16 +10,17 @@ import ConfiguratorSection from "@/components/ConfiguratorSection";
 import SystemSolutionsSection from "@/components/SystemSolutionsSection";
 import ReadySolutionsSection from "@/components/ReadySolutionsSection";
 import Footer from "@/components/Footer";
+import SectionReveal from "@/components/SectionReveal";
 
 export const metadata: Metadata = buildPageMetadata({
   title: `${BRAND_NAME} — Камеры статического давления нового поколения`,
-  description: `Камеры статического давления КСД нового поколения. Единая цена ${PRICE_PER_METER_RUB.toLocaleString("ru-RU")} ₽ за погонный метр. Гарантия ${WARRANTY_YEARS} лет. Тип потолка и врезки включены в стоимость.`,
+  description: `${HERO_TAGLINE}. Гарантия ${WARRANTY_YEARS} лет.`,
   path: "/",
 });
 
 const sectionDivider = (
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="h-px w-full bg-gradient-to-r from-transparent via-zinc-700/40 to-transparent" />
+    <div className="ksd-section-line h-px w-full bg-gradient-to-r from-transparent via-[rgba(255,90,120,0.35)] to-transparent" />
   </div>
 );
 
@@ -27,18 +28,32 @@ export default function Home() {
   return (
     <div className="bg-zinc-950">
       <DarkHero />
-      <AsaAdvantagesSection />
+      <SectionReveal>
+        <AsaAdvantagesSection />
+      </SectionReveal>
       {sectionDivider}
-      <TechFeatures />
+      <SectionReveal delay={0.04}>
+        <TechFeatures />
+      </SectionReveal>
       {sectionDivider}
-      <BentoGrid />
-      <QualityGuarantee />
+      <SectionReveal delay={0.04}>
+        <BentoGrid />
+      </SectionReveal>
+      <SectionReveal>
+        <QualityGuarantee />
+      </SectionReveal>
       {sectionDivider}
-      <ReadySolutionsSection />
+      <SectionReveal>
+        <ReadySolutionsSection />
+      </SectionReveal>
       {sectionDivider}
-      <SystemSolutionsSection />
+      <SectionReveal>
+        <SystemSolutionsSection />
+      </SectionReveal>
       {sectionDivider}
-      <ConfiguratorSection />
+      <SectionReveal>
+        <ConfiguratorSection />
+      </SectionReveal>
       <Footer />
     </div>
   );
