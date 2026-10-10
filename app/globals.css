@@ -794,9 +794,15 @@ html.light [role="button"]:focus-visible {
   animation: ksd-cookie-panel-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* ?? Payment ticker (??????? ?????? ??? ??????-??????) ?? */
+/* Высота fixed-шапки: тикер + ряд логотипа + нижний «слот» */
 :root {
-  --ksd-ticker-h: 2.25rem;
+  --ksd-ticker-h: 2rem;
+  --ksd-nav-h: 3.5rem;
+  --ksd-header-offset: calc(var(--ksd-nav-h) + 0.5rem);
+}
+
+body:has(.ksd-payment-ticker) {
+  --ksd-header-offset: calc(var(--ksd-ticker-h) + var(--ksd-nav-h) + 0.5rem);
 }
 
 @keyframes ksd-payment-ticker-scroll {
@@ -825,8 +831,10 @@ html.light [role="button"]:focus-visible {
   }
 }
 
+/* Внутренние страницы: pt-24 = точный зазор под fixed header */
+.pt-24,
 body:has(.ksd-payment-ticker) .pt-24 {
-  padding-top: calc(6rem + var(--ksd-ticker-h));
+  padding-top: var(--ksd-header-offset);
 }
 
 /* ── Silver wordmark shimmer (hero) ───────────────────────────────────────── */

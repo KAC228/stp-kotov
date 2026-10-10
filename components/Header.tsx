@@ -151,10 +151,10 @@ export default function Header() {
 
   const headerStyle: CSSProperties = {
     background: scrolled ? DARK_BG_SCROLLED : DARK_BG_TOP,
-    borderBottom: "8px solid #000000",
+    borderBottom: "1px solid rgba(63,63,70,0.7)",
     boxShadow: scrolled
-      ? "inset 0 -15px 30px rgba(0,0,0,0.80), inset 0 1px 0 rgba(255,255,255,0.04)"
-      : "inset 0 -10px 22px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.03)",
+      ? "0 8px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04)"
+      : "0 4px 16px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.03)",
     backdropFilter: scrolled ? "blur(24px) saturate(200%)" : "blur(10px) saturate(150%)",
     WebkitBackdropFilter: scrolled ? "blur(24px) saturate(200%)" : "blur(10px) saturate(150%)",
   };
@@ -180,8 +180,8 @@ export default function Header() {
         style={{ background: sheenBg }}
       />
 
-      <div className="max-w-[92rem] mx-auto px-5 sm:px-7 lg:px-9 xl:px-10 pt-2.5 pb-3 relative z-20">
-        <div className="flex items-center justify-between min-h-[3rem] lg:min-h-[3.25rem] lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-x-8 xl:gap-x-12 2xl:gap-x-14">
+      <div className="max-w-[92rem] mx-auto px-5 sm:px-7 lg:px-9 xl:px-10 pt-2 pb-2.5 relative z-20">
+        <div className="flex items-center justify-between min-h-[2.75rem] lg:min-h-[3rem] lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-x-8 xl:gap-x-12 2xl:gap-x-14">
 
           <Link
             href="/"

@@ -4,7 +4,10 @@ import WindBackground from "@/components/WindBackground";
 
 export default function DarkHero() {
   return (
-    <section className="light-mesh-top relative min-h-svh flex flex-col items-center justify-center text-center px-5 sm:px-6 bg-zinc-950 overflow-x-clip pt-28 pb-16 sm:pt-32 sm:pb-20">
+    <section
+      className="light-mesh-top relative min-h-svh flex flex-col items-center justify-start lg:justify-center text-center px-5 sm:px-6 bg-zinc-950 overflow-x-clip pb-14 sm:pb-20"
+      style={{ paddingTop: "calc(var(--ksd-header-offset) + 1rem)" }}
+    >
       <WindBackground />
 
       <div
