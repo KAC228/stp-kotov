@@ -109,7 +109,7 @@ function coverSvg(w = 1590, h = 400) {
   </text>
   <text x="${startX + logoW + gap}" y="${metaY}" fill="#e4e4e7"
     font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600">
-    50 000 ₽/м · Гарантия 25 лет · стп-котов.рф
+    Гарантия 25 лет · стп-котов.рф
   </text>
 </svg>`;
 }

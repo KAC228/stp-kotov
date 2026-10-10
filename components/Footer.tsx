@@ -31,9 +31,9 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={spring}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-zinc-800"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.35fr_1.25fr_0.9fr] gap-10 lg:gap-12 pb-14 border-b border-zinc-800"
         >
-          <div className="lg:col-span-2">
+          <div>
             <Link
               href="/"
               className="inline-flex items-center mb-4 group max-w-[14rem]"
@@ -72,7 +72,7 @@ export default function Footer() {
             <p className="text-white text-xs font-medium tracking-widest uppercase mb-5">
               Разделы
             </p>
-            <ul className="space-y-3 text-[15px]">
+            <ul className="grid grid-cols-2 gap-x-5 gap-y-2.5 text-[14px]">
               {MAIN_NAV.map(({ href, label }) => (
                 <li key={href + label}>
                   {href === PATHS.installation ? (
