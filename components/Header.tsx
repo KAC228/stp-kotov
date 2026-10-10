@@ -149,6 +149,15 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
+
   const headerStyle: CSSProperties = {
     background: scrolled ? DARK_BG_SCROLLED : DARK_BG_TOP,
     borderBottom: "1px solid rgba(63,63,70,0.7)",
@@ -234,30 +243,33 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile menu — always dark interior for legibility */}
+      {/* Mobile menu — scrollable panel under fixed header */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             id="mobile-nav"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ type: "spring", damping: 32, stiffness: 280 }}
-            className="lg:hidden overflow-hidden border-t border-zinc-700/50"
-            style={{ background: "linear-gradient(to bottom, #1c1c1e, #0d0d0f)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="lg:hidden border-t border-zinc-700/50 overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]"
+            style={{
+              background: "linear-gradient(to bottom, #1c1c1e, #0d0d0f)",
+              maxHeight: "calc(100dvh - var(--ksd-header-offset))",
+            }}
           >
-            <nav className="px-10 py-10 flex flex-col gap-7">
+            <nav className="px-5 py-4 flex flex-col gap-1 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
               {MAIN_NAV.map(({ href, label }) => (
                 <HeaderNavLink
                   key={href + label}
                   href={href}
                   onClick={() => setMobileOpen(false)}
-                  className="text-zinc-300 text-base hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,90,120,0.8)] transition-all duration-200 py-0.5"
+                  className="text-zinc-300 text-[15px] hover:text-white hover:bg-zinc-800/50 rounded-lg px-2 py-2.5 transition-colors duration-150"
                 >
                   {label}
                 </HeaderNavLink>
               ))}
-              <div className="pt-4 border-t border-zinc-700/50">
+              <div className="mt-2 pt-3 border-t border-zinc-700/50 px-2">
                 <a
                   href={`tel:${CONTACTS.phoneTel}`}
                   className="text-zinc-500 text-sm hover:text-white transition-colors"
