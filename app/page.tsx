@@ -8,7 +8,7 @@ import BentoGrid from "@/components/BentoGrid";
 import QualityGuarantee from "@/components/QualityGuarantee";
 import ConfiguratorSection from "@/components/ConfiguratorSection";
 import SystemSolutionsSection from "@/components/SystemSolutionsSection";
-import ReadySolutionsSection from "@/components/ReadySolutionsSection";
+import HistorySection from "@/components/HistorySection";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -34,7 +34,7 @@ export default function Home() {
       <BentoGrid />
       <QualityGuarantee />
       {sectionDivider}
-      <ReadySolutionsSection />
+      <HistorySection />
       {sectionDivider}
       <SystemSolutionsSection />
       {sectionDivider}
