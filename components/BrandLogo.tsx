@@ -14,7 +14,7 @@ interface BrandLogoProps {
   fluid?: boolean;
 }
 
-const ASPECT = 659 / 77;
+const ASPECT = 1977 / 231;
 
 export default function BrandLogo({
   className = "",
@@ -26,8 +26,8 @@ export default function BrandLogo({
   const h = height;
   const w = width ?? Math.round(h * ASPECT);
   const src = dark
-    ? sitePath("/images/logo-wordmark-silver.png")
-    : sitePath("/images/logo-wordmark-dark.png");
+    ? sitePath("/images/logo-stp-kotov-line-silver.png")
+    : sitePath("/images/logo-stp-kotov-line-dark.png");
 
   return (
     <Image
@@ -35,11 +35,11 @@ export default function BrandLogo({
       alt="Логотип СТП-КОТОВ"
       width={w}
       height={h}
-      className={`ksd-logo-wordmark max-w-full ${className}`.trim()}
+      className={`ksd-logo-wordmark max-w-full whitespace-nowrap shrink-0 ${className}`.trim()}
       style={
         fluid
-          ? { width: "100%", height: "auto" }
-          : { height: h, width: "auto" }
+          ? { width: "100%", height: "auto", maxWidth: "100%" }
+          : { height: h, width: "auto", maxWidth: "100%" }
       }
       priority
     />
