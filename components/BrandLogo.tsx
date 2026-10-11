@@ -14,7 +14,8 @@ interface BrandLogoProps {
   fluid?: boolean;
 }
 
-const ASPECT = 1977 / 231;
+/** Широкий однострочный PNG (длинная сторона ≤ 1200) */
+const ASPECT = 1200 / 140;
 
 export default function BrandLogo({
   className = "",
