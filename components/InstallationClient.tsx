@@ -17,6 +17,11 @@ import {
   ScrollText,
 } from "lucide-react";
 import { PATHS, CONTACTS, WARRANTY_YEARS } from "@/constants/brand";
+import {
+  INSTALLATION_GUIDE_STAGES,
+  INSTALLATION_GUIDE_TITLE,
+  PNR_SECTION,
+} from "@/constants/installation-guide";
 import { sitePath } from "@/lib/site-path";
 
 const spring = { type: "spring" as const, damping: 28, stiffness: 130 };
@@ -309,6 +314,147 @@ export default function InstallationClient() {
             );
           })}
         </div>
+
+        <motion.section
+          id="guide"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={spring}
+          className="mt-20 scroll-mt-28"
+        >
+          <p className="text-zinc-600 text-[11px] font-mono tracking-[0.24em] uppercase mb-3">
+            СМР
+          </p>
+          <h2 className="text-white text-2xl sm:text-3xl font-bold tracking-tight mb-8">
+            {INSTALLATION_GUIDE_TITLE}
+          </h2>
+          <div className="flex flex-col gap-6">
+            {INSTALLATION_GUIDE_STAGES.map((stage) => (
+              <article
+                key={stage.title}
+                className="rounded-2xl border border-zinc-800 bg-zinc-900/50 px-5 py-5 sm:px-6 sm:py-6"
+              >
+                <h3 className="text-white text-base sm:text-lg font-semibold tracking-tight mb-4">
+                  {stage.title}
+                </h3>
+                <ol className="space-y-3">
+                  {stage.items.map((item, index) => (
+                    <li
+                      key={`${stage.title}-${index}`}
+                      className="flex gap-3 text-[14px] sm:text-[15px] leading-relaxed text-zinc-400"
+                    >
+                      <span className="shrink-0 font-mono text-[11px] text-zinc-600 mt-0.5 w-5">
+                        {index + 1}.
+                      </span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ol>
+              </article>
+            ))}
+          </div>
+        </motion.section>
+
+        <motion.section
+          id="pnr"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={spring}
+          className="mt-20 scroll-mt-28 rounded-3xl border border-zinc-800 bg-zinc-900/40 overflow-hidden"
+        >
+          <div className="p-6 sm:p-10">
+            <p className="text-zinc-600 text-[11px] font-mono tracking-[0.24em] uppercase mb-3">
+              {PNR_SECTION.eyebrow}
+            </p>
+            <h2 className="text-white text-2xl sm:text-3xl font-bold tracking-tight mb-6">
+              {PNR_SECTION.title}
+            </h2>
+
+            <div className="rounded-2xl border border-cyan-400/25 bg-cyan-400/[0.06] px-5 py-5 mb-8">
+              <p className="text-cyan-300 text-sm font-semibold mb-2">
+                {PNR_SECTION.attentionTitle}
+              </p>
+              <p className="text-zinc-300 text-[15px] leading-relaxed">
+                {PNR_SECTION.attentionBody}
+              </p>
+            </div>
+
+            <h3 className="text-white text-lg font-semibold tracking-tight mb-3">
+              {PNR_SECTION.whoTitle}
+            </h3>
+            <p className="text-zinc-400 text-[15px] leading-relaxed mb-4">
+              {PNR_SECTION.whoIntro}
+            </p>
+            <ol className="space-y-3 mb-10">
+              {PNR_SECTION.whoItems.map((item, index) => (
+                <li
+                  key={item.slice(0, 40)}
+                  className="flex gap-3 text-[14px] sm:text-[15px] leading-relaxed text-zinc-400"
+                >
+                  <span className="shrink-0 font-mono text-[11px] text-zinc-600 mt-0.5 w-5">
+                    {index + 1}.
+                  </span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ol>
+
+            <h3 className="text-white text-lg font-semibold tracking-tight mb-3">
+              {PNR_SECTION.whyTitle}
+            </h3>
+            <p className="text-zinc-400 text-[15px] leading-relaxed mb-3">
+              {PNR_SECTION.whyIntro}
+            </p>
+            <ul className="space-y-2 mb-6">
+              {PNR_SECTION.smrItems.map((item) => (
+                <li key={item} className="flex gap-3 text-[15px] text-zinc-400">
+                  <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-zinc-600 mt-2" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p className="text-zinc-300 text-[15px] leading-relaxed mb-3">
+              {PNR_SECTION.warningIntro}
+            </p>
+            <ol className="space-y-3 mb-10">
+              {PNR_SECTION.warningItems.map((item, index) => (
+                <li
+                  key={item.slice(0, 40)}
+                  className="flex gap-3 text-[14px] sm:text-[15px] leading-relaxed text-zinc-400"
+                >
+                  <span className="shrink-0 font-mono text-[11px] text-zinc-600 mt-0.5 w-5">
+                    {index + 1}.
+                  </span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ol>
+
+            <h3 className="text-white text-lg font-semibold tracking-tight mb-3">
+              {PNR_SECTION.partnerTitle}
+            </h3>
+            <p className="text-zinc-400 text-[15px] leading-relaxed mb-8">
+              {PNR_SECTION.partnerBody}
+            </p>
+
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+              <Link
+                href={PATHS.partnership}
+                className="inline-flex items-center justify-center px-6 py-3.5 rounded-full bg-white text-zinc-950 text-[14px] font-semibold hover:bg-zinc-100 transition-colors"
+              >
+                Стать сертифицированным партнером
+              </Link>
+              <Link
+                href={PATHS.contactsEngineer}
+                className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border border-zinc-700 text-zinc-300 text-[14px] font-medium hover:border-zinc-500 hover:text-white transition-colors"
+              >
+                Запросить визит инженера ПНР
+              </Link>
+            </div>
+          </div>
+        </motion.section>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

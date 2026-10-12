@@ -34,11 +34,11 @@ export default function Home() {
       <BentoGrid />
       <QualityGuarantee />
       {sectionDivider}
-      <HistorySection />
+      <ConfiguratorSection />
       {sectionDivider}
       <SystemSolutionsSection />
       {sectionDivider}
-      <ConfiguratorSection />
+      <HistorySection />
       <Footer />
     </div>
   );
