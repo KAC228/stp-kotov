@@ -39,7 +39,7 @@ export default function ArticleDetailClient({ article }: { article: SiteArticle 
           )}
           {article.forWhom && (
             <p className="text-zinc-600 text-sm">
-              <span className="text-zinc-500">Для кого: </span>
+              <span className="ksd-shimmer-text font-medium">Для кого: </span>
               {article.forWhom}
             </p>
           )}

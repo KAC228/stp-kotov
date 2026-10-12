@@ -72,7 +72,7 @@ function BentoCard({
         </div>
 
         <div className="flex-1">
-          <p className="text-zinc-600 text-[11px] font-mono tracking-[0.2em] uppercase mb-3">
+          <p className="ksd-shimmer-text text-[11px] font-mono tracking-[0.2em] uppercase mb-3 font-medium">
             {audience}
           </p>
 
@@ -117,12 +117,12 @@ export default function BentoGrid() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
           <motion.div
             {...cardMotionProps(0)}
-            className="col-span-full bento-guarantee-strip relative mb-2 flex items-center gap-3 px-5 py-3.5 rounded-3xl overflow-hidden border border-cyan-400/25 bg-cyan-950/20 hover:border-cyan-400/45 hover:shadow-[0_0_28px_rgba(255,90,120,0.22)] transition-[box-shadow,border-color] duration-300 w-fit"
+            className="ksd-shimmer col-span-full bento-guarantee-strip relative mb-2 flex items-center gap-3 px-5 py-3.5 rounded-3xl overflow-hidden border border-cyan-400/25 bg-cyan-950/20 hover:border-cyan-400/45 hover:shadow-[0_0_28px_rgba(255,90,120,0.22)] transition-[box-shadow,border-color] duration-300 w-fit"
           >
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#00D2FF]/28 to-transparent" />
             <ShieldCheck className="w-5 h-5 text-cyan-400 shrink-0 relative z-10" strokeWidth={1.75} />
             <p className="bento-guarantee-text text-cyan-300 text-sm font-semibold relative z-10">
-              Гарантия <span className="text-white">{WARRANTY_YEARS} лет</span> на все изделия {BRAND_NAME}
+              Гарантия <span className="ksd-shimmer-text--accent">{WARRANTY_YEARS} лет</span> на все изделия {BRAND_NAME}
             </p>
           </motion.div>
 
@@ -164,7 +164,7 @@ export default function BentoGrid() {
               </div>
 
               <div className="flex-1">
-                <p className="text-zinc-600 text-[11px] font-mono tracking-[0.2em] uppercase mb-3">
+                <p className="ksd-shimmer-text text-[11px] font-mono tracking-[0.2em] uppercase mb-3 font-medium">
                   Для монтажника
                 </p>
 

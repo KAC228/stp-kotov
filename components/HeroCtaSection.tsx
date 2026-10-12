@@ -14,7 +14,7 @@ const enter = (delay: number) => ({
 
 function PrimaryCta() {
   return (
-    <a href="#configurator" className="hero-cta-primary">
+    <a href="#configurator" className="hero-cta-primary ksd-shimmer">
       Собрать конфигурацию
     </a>
   );

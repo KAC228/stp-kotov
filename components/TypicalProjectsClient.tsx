@@ -53,7 +53,9 @@ export default function TypicalProjectsClient() {
               </h2>
               <dl className="space-y-4 text-[15px] leading-relaxed">
                 <div>
-                  <dt className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Для кого</dt>
+                  <dt className="ksd-shimmer-text text-xs uppercase tracking-wider mb-1 font-medium">
+                    Для кого
+                  </dt>
                   <dd className="text-zinc-300">{seg.forWhom}</dd>
                 </div>
                 <div>
@@ -63,7 +65,7 @@ export default function TypicalProjectsClient() {
                   <dd className="text-zinc-400">{seg.problem}</dd>
                 </div>
                 <div>
-                  <dt className="text-cyan-400/80 text-xs uppercase tracking-wider mb-1">
+                  <dt className="ksd-shimmer-text--accent text-xs uppercase tracking-wider mb-1 font-medium">
                     Предложение СТП-КОТОВ
                   </dt>
                   <dd className="text-zinc-300">{seg.offer}</dd>

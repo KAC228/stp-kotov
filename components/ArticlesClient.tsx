@@ -50,12 +50,12 @@ export default function ArticlesClient({ articles }: { articles: SiteArticle[] }
                 </h2>
                 <p className="text-zinc-400 text-sm leading-relaxed mb-3">{article.thesis}</p>
                 <p className="text-zinc-600 text-xs leading-relaxed mb-5 flex-1">
-                  <span className="text-zinc-500">Для кого: </span>
+                  <span className="ksd-shimmer-text font-medium">Для кого: </span>
                   {article.forWhom}
                 </p>
-                <span className="inline-flex items-center gap-2 text-cyan-400/80 text-sm">
-                  Открыть
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={1.75} />
+                <span className="inline-flex items-center gap-2 text-sm">
+                  <span className="ksd-shimmer-text--accent">Открыть</span>
+                  <ArrowRight className="w-4 h-4 text-cyan-400/80 group-hover:translate-x-0.5 transition-transform" strokeWidth={1.75} />
                 </span>
               </Link>
             </motion.article>
