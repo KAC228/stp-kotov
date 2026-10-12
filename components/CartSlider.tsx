@@ -183,7 +183,9 @@ export default function CartSlider() {
                             </div>
 
                             <p className="text-[#1d1d1f] font-semibold tracking-tight">
-                              {(unitPrice * item.quantity).toLocaleString("ru-RU")} ₽
+                              {unitPrice > 0
+                                ? `${(unitPrice * item.quantity).toLocaleString("ru-RU")} ₽`
+                                : "по запросу"}
                             </p>
                           </div>
                         </motion.li>
@@ -201,12 +203,14 @@ export default function CartSlider() {
                     Итого ({itemCount} шт.)
                   </span>
                   <span className="text-[#1d1d1f] text-2xl font-semibold tracking-tighter">
-                    {totalPrice.toLocaleString("ru-RU")} ₽
+                    {totalPrice > 0
+                      ? `${totalPrice.toLocaleString("ru-RU")} ₽`
+                      : "по запросу"}
                   </span>
                 </div>
                 {hasKsdItems ? (
                   <p className="text-[#86868b] text-xs">
-                    Стоимость КСД уточняется при оформлении заказа.
+                    Стоимость комплекта / КСД уточняется при оформлении заказа.
                   </p>
                 ) : (
                   <p className="text-[#86868b] text-xs">

@@ -16,7 +16,7 @@ interface CartState {
 }
 
 type CartAction =
-  | { type: "ADD_ITEM"; product: Product; size: ProductSize }
+  | { type: "ADD_ITEM"; product: Product; size: ProductSize; quantity?: number }
   | { type: "REMOVE_ITEM"; productId: string; sizeId: string }
   | { type: "UPDATE_QUANTITY"; productId: string; sizeId: string; quantity: number }
   | { type: "OPEN_CART" }
@@ -28,7 +28,7 @@ type CartAction =
 
 interface CartContextValue {
   state: CartState;
-  addItem: (product: Product, size: ProductSize) => void;
+  addItem: (product: Product, size: ProductSize, quantity?: number) => void;
   removeItem: (productId: string, sizeId: string) => void;
   updateQuantity: (productId: string, sizeId: string, quantity: number) => void;
   openCart: () => void;
@@ -46,6 +46,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "ADD_ITEM": {
+      const qty = Math.max(1, action.quantity ?? 1);
       const existingIndex = state.items.findIndex(
         (item) =>
           item.product.id === action.product.id &&
@@ -55,7 +56,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         const updated = [...state.items];
         updated[existingIndex] = {
           ...updated[existingIndex],
-          quantity: updated[existingIndex].quantity + 1,
+          quantity: updated[existingIndex].quantity + qty,
         };
         return { ...state, items: updated };
       }
@@ -63,7 +64,11 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         ...state,
         items: [
           ...state.items,
-          { product: action.product, selectedSize: action.size, quantity: 1 },
+          {
+            product: action.product,
+            selectedSize: action.size,
+            quantity: qty,
+          },
         ],
       };
     }
@@ -128,9 +133,12 @@ const initialState: CartState = {
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
-  const addItem = useCallback((product: Product, size: ProductSize) => {
-    dispatch({ type: "ADD_ITEM", product, size });
-  }, []);
+  const addItem = useCallback(
+    (product: Product, size: ProductSize, quantity = 1) => {
+      dispatch({ type: "ADD_ITEM", product, size, quantity });
+    },
+    []
+  );
 
   const removeItem = useCallback((productId: string, sizeId: string) => {
     dispatch({ type: "REMOVE_ITEM", productId, sizeId });

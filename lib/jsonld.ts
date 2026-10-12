@@ -33,7 +33,7 @@ export function siteJsonLd() {
           opens: "09:00",
           closes: "18:00",
         },
-        sameAs: [SOCIAL.vk, SOCIAL.whatsapp],
+        sameAs: [SOCIAL.telegram, SOCIAL.vk, SOCIAL.whatsapp],
         areaServed: {
           "@type": "Country",
           name: "Russia",

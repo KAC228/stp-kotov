@@ -2,8 +2,9 @@
 
 import { motion } from "framer-motion";
 import BrandLogo from "@/components/BrandLogo";
-import { SLOGAN } from "@/constants/brand";
 import HeroCtaSection from "@/components/HeroCtaSection";
+import SocialLinks from "@/components/SocialLinks";
+import { SLOGAN } from "@/constants/brand";
 
 const fadeUp = (delay: number) => ({
   initial: { opacity: 0, y: 16 },
@@ -46,6 +47,10 @@ export default function DarkHeroContent() {
       </motion.p>
 
       <HeroCtaSection />
+
+      <motion.div {...fadeUp(1.05)} className="mt-8 sm:mt-10">
+        <SocialLinks />
+      </motion.div>
     </div>
   );
 }

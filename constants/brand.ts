@@ -44,6 +44,7 @@ export const SITE_DOMAIN = "стп-котов.рф" as const;
 export const SITE_URL = "https://стп-котов.рф" as const;
 
 export const SOCIAL = {
+  telegram: "https://t.me/stp_kotov",
   vk: "https://vk.com/stp_kotov",
   whatsapp: "https://wa.me/79110156002",
 } as const;
