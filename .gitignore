@@ -49,3 +49,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# служебные заметки, не для публичного репозитория
+/AGENTS.md
+/CLAUDE.md
+/.cursorrules.txt
+/.cursorignore.txt
+/corrections_555.txt
+/tmp-img-check/
